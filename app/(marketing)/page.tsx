@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { CTABanner } from '@/components/marketing/cta-banner';
 import { FeatureGrid } from '@/components/marketing/feature-grid';
@@ -171,7 +169,7 @@ export default function HomePage() {
               Pricing preview
             </Badge>
             <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Launch with a service-assisted path, not a vague "talk to sales" wall.
+              Launch with a service-assisted path, not a vague &ldquo;talk to sales&rdquo; wall.
             </h2>
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">
               EntitleFlow launches with a workflow audit offer, clear starting prices, and founder-led onboarding for the first teams that want tighter approval operations.
