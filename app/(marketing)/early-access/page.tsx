@@ -1,22 +1,22 @@
-import { BellRing, MapPinned, NotebookText } from "lucide-react";
+import { BellRing, MapPinned, NotebookText } from 'lucide-react';
 
-import { EarlyAccessForm } from "@/components/forms/early-access-form";
-import { PageIntro } from "@/components/site/page-intro";
-import { SectionShell } from "@/components/site/section-shell";
-import { TrackedLinkButton } from "@/components/site/tracked-link-button";
-import { Card, CardContent } from "@/components/ui/card";
-import { buildMetadata } from "@/lib/site-config";
+import { EarlyAccessForm } from '@/components/forms/early-access-form';
+import { PageIntro } from '@/components/site/page-intro';
+import { SectionShell } from '@/components/site/section-shell';
+import { TrackedLinkButton } from '@/components/site/tracked-link-button';
+import { Card, CardContent } from '@/components/ui/card';
+import { buildMetadata } from '@/lib/site-config';
 
 export const metadata = buildMetadata({
-  title: "Join early access",
+  title: 'Join early access',
   description:
-    "Join the EntitleFlow NC early-access list for launch updates, pilot availability, and North Carolina workflow guide releases.",
-  path: "/early-access",
+    'Join the EntitleFlow NC early-access list for launch updates, pilot availability, and North Carolina workflow guide releases.',
+  path: '/early-access',
 });
 
 export default function EarlyAccessPage() {
   return (
-    <SectionShell>
+    <SectionShell animate>
       <div className="grid gap-10 lg:grid-cols-[0.76fr_1.24fr]">
         <div className="space-y-8">
           <PageIntro
@@ -29,30 +29,30 @@ export default function EarlyAccessPage() {
             {[
               {
                 icon: BellRing,
-                title: "Launch updates",
-                body: "Hear when new workflow pages, offer updates, and pilot availability open up.",
+                title: 'Launch updates',
+                body: 'Hear when new workflow pages, offer updates, and pilot availability open up.',
               },
               {
                 icon: MapPinned,
-                title: "NC guide releases",
-                body: "Get notified as more North Carolina jurisdiction coverage lands on the site.",
+                title: 'NC guide releases',
+                body: 'Get notified as more North Carolina jurisdiction coverage lands on the site.',
               },
               {
                 icon: NotebookText,
-                title: "Operational guidance",
-                body: "See when new comment and resubmittal workflow resources become available.",
+                title: 'Operational guidance',
+                body: 'See when new comment and resubmittal workflow resources become available.',
               },
             ].map((item) => {
               const Icon = item.icon;
               return (
                 <Card key={item.title}>
                   <CardContent className="flex gap-4 p-5">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="space-y-1">
-                      <div className="font-display text-xl font-semibold text-slate-950">{item.title}</div>
-                      <p className="text-sm leading-6 text-slate-600">{item.body}</p>
+                      <div className="font-display text-xl font-semibold text-foreground">{item.title}</div>
+                      <p className="text-sm leading-6 text-muted-foreground">{item.body}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -68,8 +68,8 @@ export default function EarlyAccessPage() {
         <Card>
           <CardContent className="space-y-6 p-6">
             <div className="space-y-2">
-              <h2 className="font-display text-2xl font-semibold text-slate-950">Join the list</h2>
-              <p className="text-sm leading-6 text-slate-600">
+              <h2 className="font-display text-2xl font-semibold text-foreground">Join the list</h2>
+              <p className="text-sm leading-6 text-muted-foreground">
                 This is the lighter path if you want updates on launch progress, NC workflow guides, and pilot availability without starting with a full walkthrough.
               </p>
             </div>

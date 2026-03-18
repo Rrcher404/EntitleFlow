@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 type EyebrowProps = {
   children: React.ReactNode;
   className?: string;
-  variant?: "default" | "brand" | "amber" | "outline";
+  variant?: "default" | "success" | "warning" | "outline";
 };
 
 export function Eyebrow({ children, className, variant = "outline" }: EyebrowProps) {

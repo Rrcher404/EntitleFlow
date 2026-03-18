@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import { Instrument_Sans, Manrope } from "next/font/google";
 
 import { buildMetadata } from "@/lib/site-config";
+import { fontClassNames } from "@/lib/fonts";
+import { ThemeProviderWrapper } from "@/components/theme-provider";
 
 import "./globals.css";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-manrope",
-});
 
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-instrument-sans",
-});
 
 export const metadata: Metadata = buildMetadata({
   title: "Permit chaos, comments, and resubmittals",
@@ -26,9 +17,9 @@ export const metadata: Metadata = buildMetadata({
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${manrope.variable} ${instrumentSans.variable} bg-background text-foreground antialiased`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${fontClassNames} bg-background text-foreground antialiased`}>
+        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
         <Analytics />
       </body>
     </html>

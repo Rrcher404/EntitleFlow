@@ -16,7 +16,7 @@ export function PricingCard({ tier }: PricingCardProps) {
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-display text-2xl font-semibold text-slate-950">{tier.name}</h3>
-            {tier.featured ? <Badge variant="brand">Launch focus</Badge> : null}
+            {tier.featured ? <Badge variant="success">Launch focus</Badge> : null}
           </div>
           <div className="text-3xl font-semibold tracking-tight text-slate-950">{tier.price}</div>
           <p className="text-sm leading-6 text-slate-600">{tier.description}</p>

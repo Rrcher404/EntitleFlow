@@ -11,7 +11,7 @@ type GuideCardProps = {
 };
 
 export function GuideCard({ guide }: GuideCardProps) {
-  const badgeVariant = guide.status === "Available now" ? "brand" : guide.status === "Research preview" ? "outline" : "amber";
+  const badgeVariant = guide.status === "Available now" ? "success" : guide.status === "Research preview" ? "outline" : "warning";
 
   return (
     <Card className="h-full">
