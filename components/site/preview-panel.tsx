@@ -23,18 +23,18 @@ export function PreviewPanel({ panel }: PreviewPanelProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6 p-6">
-        <p className="text-sm leading-7 text-slate-600">{panel.description}</p>
+        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">{panel.description}</p>
         <div className="grid gap-3 sm:grid-cols-3">
           {panel.stats.map((stat) => (
-            <div className="rounded-2xl border border-border bg-white px-4 py-3 text-center" key={stat.label}>
-              <div className="font-display text-2xl font-semibold text-slate-950">{stat.value}</div>
-              <div className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">{stat.label}</div>
+            <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-white dark:bg-slate-900 px-3 py-3 text-center" key={stat.label}>
+              <div className="truncate font-display text-xl font-semibold text-slate-950 dark:text-white sm:text-2xl">{stat.value}</div>
+              <div className="mt-1 truncate text-[0.65rem] uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">{stat.label}</div>
             </div>
           ))}
         </div>
         <ul className="space-y-3">
           {panel.notes.map((note) => (
-            <li className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700" key={note}>
+            <li className="rounded-2xl bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm leading-6 text-slate-700 dark:text-slate-300" key={note}>
               {note}
             </li>
           ))}

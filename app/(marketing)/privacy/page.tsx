@@ -14,17 +14,17 @@ export default function PrivacyPage() {
     <SectionShell className="py-16">
       <div className="mx-auto max-w-3xl space-y-10">
         <div className="space-y-4">
-          <h1 className="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-5xl">
             Privacy Policy
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Effective date: March 16, 2026
           </p>
         </div>
 
-        <div className="space-y-8 text-base leading-7 text-slate-700">
+        <div className="space-y-8 text-base leading-7 text-slate-700 dark:text-slate-300">
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Who we are
             </h2>
             <p>
@@ -33,7 +33,7 @@ export default function PrivacyPage() {
               software for North Carolina architecture and civil firms. This
               privacy policy covers information collected through our public
               marketing site at{" "}
-              <span className="font-medium text-slate-900">
+              <span className="font-medium text-slate-900 dark:text-slate-100">
                 {siteConfig.siteUrl}
               </span>
               .
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Information we collect
             </h2>
             <p>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               How we use your information
             </h2>
             <p>We use the information you provide to:</p>
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Data storage and security
             </h2>
             <p>
@@ -96,25 +96,25 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Third-party services
             </h2>
             <p>This site uses the following third-party services:</p>
             <ul className="list-disc space-y-1 pl-6">
               <li>
-                <span className="font-medium text-slate-900">
+                <span className="font-medium text-slate-900 dark:text-slate-100">
                   Vercel
                 </span>{" "}
                 — hosting and aggregated analytics
               </li>
               <li>
-                <span className="font-medium text-slate-900">
+                <span className="font-medium text-slate-900 dark:text-slate-100">
                   Supabase
                 </span>{" "}
                 — secure lead storage
               </li>
               <li>
-                <span className="font-medium text-slate-900">
+                <span className="font-medium text-slate-900 dark:text-slate-100">
                   Calendly
                 </span>{" "}
                 — walkthrough scheduling (when you choose to book)
@@ -127,14 +127,14 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Your rights
             </h2>
             <p>
               You may request access to, correction of, or deletion of your
               personal information at any time by contacting us at{" "}
               <a
-                className="font-medium text-slate-900 underline underline-offset-4"
+                className="font-medium text-slate-900 dark:text-slate-100 underline underline-offset-4"
                 href={`mailto:${siteConfig.email}`}
               >
                 {siteConfig.email}
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Changes to this policy
             </h2>
             <p>
@@ -154,14 +154,14 @@ export default function PrivacyPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-display text-xl font-semibold text-slate-950">
+            <h2 className="font-display text-xl font-semibold text-slate-950 dark:text-white">
               Contact
             </h2>
             <p>
               If you have questions about this privacy policy or your data,
               email us at{" "}
               <a
-                className="font-medium text-slate-900 underline underline-offset-4"
+                className="font-medium text-slate-900 dark:text-slate-100 underline underline-offset-4"
                 href={`mailto:${siteConfig.email}`}
               >
                 {siteConfig.email}

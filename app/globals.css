@@ -43,9 +43,9 @@
   --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
 }
 
+/* OS dark mode preference — only applies when no explicit class toggle is set */
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark mode color tokens - slate-950 with warm undertones */
+  :root:not(.light) {
     --background: #0f1419;
     --foreground: #f1f5f9;
     --card: #1a1f28;
@@ -64,14 +64,12 @@
     --input: #1a1f28;
     --ring: #25a18e;
 
-    /* Chart colors */
     --chart-1: #25a18e;
     --chart-2: #0d7e7e;
     --chart-3: #a8d8d8;
     --chart-4: #064e4e;
     --chart-5: #0f3c35;
 
-    /* Shadow elevations */
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);

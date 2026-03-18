@@ -17,7 +17,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
 
       {rows.map((row) => (
         <div className="grid border-b border-border last:border-b-0 lg:grid-cols-[0.95fr_1fr_1fr_1fr]" key={row.label}>
-          <div className="bg-slate-50 px-6 py-5 text-sm font-semibold text-slate-900 lg:border-r lg:border-border">{row.label}</div>
+          <div className="bg-slate-50 dark:bg-slate-800 px-6 py-5 text-sm font-semibold text-slate-900 dark:text-slate-100 lg:border-r lg:border-border">{row.label}</div>
           <Cell value={row.entitleFlow} />
           <Cell value={row.manual} />
           <Cell value={row.generic} />
@@ -30,7 +30,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
 function Cell({ value }: { value: string }) {
   return (
     <Card className="rounded-none border-0 border-t border-border shadow-none lg:border-l lg:border-t-0">
-      <CardContent className="h-full p-6 text-sm leading-7 text-slate-600">{value}</CardContent>
+      <CardContent className="h-full p-6 text-sm leading-7 text-slate-600 dark:text-slate-300">{value}</CardContent>
     </Card>
   );
 }
