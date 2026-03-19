@@ -1,57 +1,65 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr'
+import { type NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 export async function middleware(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // If Supabase isn't configured, pass through without auth checks
-  if (!url || !key) {
-    return NextResponse.next({ request });
-  }
-
-  let supabaseResponse = NextResponse.next({ request });
-
-  const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options),
-        );
-      },
+  const cookieStore = await cookies()
+  
+  const response = NextResponse.next({
+    request: {
+      headers: request.headers,
     },
-  });
+  })
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch {
+            // Handle cookies in middleware edge case
+          }
+        },
+      },
+    }
+  )
 
-  // Protected routes - redirect to login if not authenticated
-  if (!user && request.nextUrl.pathname.startsWith('/app')) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/login';
-    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+
+  // Check if the request is for /admin/* routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // If not authenticated, redirect to login
+    if (!session?.user) {
+      return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
+
+    // Fetch user profile to check if super_admin
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role, is_super_admin')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profileError || !profile?.is_super_admin) {
+      // Not a super admin, redirect to app dashboard
+      return NextResponse.redirect(new URL('/app/dashboard', request.url))
+    }
   }
 
-  // Auth pages - redirect to dashboard if already authenticated
-  if (
-    user &&
-    (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')
-  ) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/app/dashboard';
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  return supabaseResponse;
+  return response
 }
 
 export const config = {
-  matcher: ['/app/:path*', '/login', '/signup'],
-};
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+    '/admin/:path*',
+  ],
+}
