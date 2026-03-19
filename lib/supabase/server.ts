@@ -1,17 +1,46 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { createClient as createJsClient } from '@supabase/supabase-js';
+import type { Database } from '../database.types';
 
-let cachedClient: ReturnType<typeof createClient> | null = null;
+// Authenticated server client (uses cookies for user session)
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies();
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            );
+          } catch {
+            // ignore in Server Components
+          }
+        },
+      },
+    },
+  );
+}
+
+// Admin client (service role, no cookies, for server-only operations)
+let cachedAdminClient: ReturnType<typeof createJsClient> | null = null;
 
 export function getSupabaseAdminClient() {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!url || !key) {
     return null;
   }
 
-  if (!cachedClient) {
-    cachedClient = createClient(supabaseUrl, serviceRoleKey, {
+  if (!cachedAdminClient) {
+    cachedAdminClient = createJsClient(url, key, {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
@@ -19,5 +48,5 @@ export function getSupabaseAdminClient() {
     });
   }
 
-  return cachedClient;
+  return cachedAdminClient;
 }
