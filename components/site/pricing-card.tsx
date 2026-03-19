@@ -11,19 +11,19 @@ type PricingCardProps = {
 
 export function PricingCard({ tier }: PricingCardProps) {
   return (
-    <Card className={tier.featured ? "border-slate-900 dark:border-slate-100 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.35)]" : ""}>
+    <Card className={tier.featured ? "border-slate-900 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.35)]" : ""}>
       <CardContent className="space-y-6 p-6">
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-display text-2xl font-semibold text-slate-950 dark:text-white">{tier.name}</h3>
+            <h3 className="font-display text-2xl font-semibold text-slate-950">{tier.name}</h3>
             {tier.featured ? <Badge variant="success">Launch focus</Badge> : null}
           </div>
-          <div className="text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{tier.price}</div>
-          <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{tier.description}</p>
-          <p className="rounded-2xl bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm leading-6 text-slate-700 dark:text-slate-300">{tier.bestFor}</p>
+          <div className="text-3xl font-semibold tracking-tight text-slate-950">{tier.price}</div>
+          <p className="text-sm leading-6 text-slate-600">{tier.description}</p>
+          <p className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">{tier.bestFor}</p>
         </div>
 
-        <ul className="space-y-3 text-sm leading-6 text-slate-700 dark:text-slate-300">
+        <ul className="space-y-3 text-sm leading-6 text-slate-700">
           {tier.highlights.map((highlight) => (
             <li className="flex gap-3" key={highlight}>
               <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-600" />

@@ -139,7 +139,7 @@ function InfoCard({ title, items }: { title: string; items: string[] }) {
         <h2 className="font-display text-2xl font-semibold text-foreground">{title}</h2>
         <ul className="space-y-3">
           {items.map((item) => (
-            <li className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-muted-foreground dark:bg-slate-900 dark:text-slate-300" key={item}>
+            <li className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-muted-foreground" key={item}>
               {item}
             </li>
           ))}

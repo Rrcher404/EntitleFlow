@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TrackedLink } from "@/components/site/tracked-link";
 import { TrackedLinkButton } from "@/components/site/tracked-link-button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -29,43 +28,41 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-all duration-300",
+        "sticky top-0 z-50 transition-all duration-200",
         isScrolled
-          ? "border-b border-border/50 bg-background/80 backdrop-blur-xl dark:bg-background/80"
-          : "border-b border-transparent bg-background dark:bg-background"
+          ? "border-b border-border bg-background/95 backdrop-blur-md"
+          : "border-b border-transparent bg-background"
       )}
     >
-      <div className="container-shell flex h-20 items-center justify-between gap-6">
+      <div className="container-shell flex h-16 items-center justify-between gap-6">
         {/* Logo */}
-        <Link className="flex shrink-0 items-center gap-3" href="/">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-950">
-            <Building2 className="h-5 w-5" />
+        <Link className="flex shrink-0 items-center gap-2.5" href="/">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Building2 className="h-4 w-4" />
           </div>
-          <div className="hidden space-y-0.5 sm:block">
+          <div className="hidden space-y-0 sm:block">
             <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow NC</div>
-            <div className="text-xs text-muted-foreground">Approval operations</div>
+            <div className="text-[11px] text-muted-foreground">Approval operations</div>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
           {primaryNav.map((item) => (
-            <div key={item.href} className="relative group">
-              <TrackedLink
-                className="text-sm font-medium text-muted-foreground transition hover:text-foreground"
-                href={item.href}
-              >
-                {item.label}
-              </TrackedLink>
-              <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-primary/50 transition-all duration-300 group-hover:w-full" />
-            </div>
+            <TrackedLink
+              key={item.href}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              href={item.href}
+            >
+              {item.label}
+            </TrackedLink>
           ))}
         </nav>
 
-        {/* Desktop CTA & Theme Toggle */}
-        <div className="hidden items-center gap-4 md:flex">
+        {/* Desktop CTA */}
+        <div className="hidden items-center gap-3 md:flex">
           <TrackedLink
-            className="text-sm font-medium text-muted-foreground transition hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             eventName="early_access_cta_click"
             href="/early-access"
           >
@@ -74,17 +71,13 @@ export function SiteHeader() {
           <TrackedLinkButton eventName="walkthrough_cta_click" href="/walkthrough" size="sm">
             Request a walkthrough
           </TrackedLinkButton>
-          <div className="pl-2">
-            <ThemeToggle />
-          </div>
         </div>
 
-        {/* Mobile Menu & Theme Toggle */}
+        {/* Mobile Menu */}
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button aria-label="Open menu" size="sm" variant="ghost">
+              <Button aria-label="Open menu" size="icon" variant="ghost">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>

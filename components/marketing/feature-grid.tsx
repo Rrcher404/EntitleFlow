@@ -51,11 +51,9 @@ export function FeatureGrid({
   const cardHoverVariants = {
     rest: {
       y: 0,
-      boxShadow: '0 4px 6px -1px rgba(15, 23, 42, 0.1)',
     },
     hover: {
       y: -8,
-      boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.15)',
     },
   };
 
@@ -97,10 +95,10 @@ export function FeatureGrid({
                 whileHover="hover"
               >
                 <motion.div variants={cardHoverVariants}>
-                  <Card className="group h-full border-border/60 hover:border-primary/40 transition-colors duration-300">
+                  <Card className="group h-full rounded-xl border border-border bg-card">
                     <CardHeader>
-                      <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3 dark:bg-primary/20">
-                        <Icon className="h-6 w-6 text-primary dark:text-primary" />
+                      <div className="mb-4 inline-flex rounded-lg bg-accent p-3">
+                        <Icon className="h-6 w-6 text-primary" />
                       </div>
                       <CardTitle className="text-xl">{feature.title}</CardTitle>
                     </CardHeader>
@@ -114,7 +112,7 @@ export function FeatureGrid({
                             key={hIdx}
                             className="flex items-start gap-2 text-sm"
                           >
-                            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary dark:bg-primary flex-shrink-0" />
+                            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
                             <span className="text-foreground">{highlight}</span>
                           </div>
                         ))}

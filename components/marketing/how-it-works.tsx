@@ -100,10 +100,10 @@ export function HowItWorks({
 
                   {/* Step card */}
                   <motion.div variants={stepVariants} className="flex-1">
-                    <Card className="h-full border-border/60 hover:border-primary/40 transition-colors duration-300">
+                    <Card className="h-full rounded-xl border border-border bg-card">
                       <CardHeader>
-                        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20">
-                          <span className="text-xl font-display font-bold text-primary dark:text-primary">
+                        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                          <span className="text-xl font-display font-bold">
                             {stage.number}
                           </span>
                         </div>
@@ -146,13 +146,13 @@ export function HowItWorks({
                 {/* Mobile step card */}
                 <div className="flex gap-4">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 flex-shrink-0">
-                      <span className="text-lg font-display font-bold text-primary dark:text-primary">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground flex-shrink-0">
+                      <span className="text-lg font-display font-bold">
                         {stage.number}
                       </span>
                     </div>
                   </div>
-                  <Card className="flex-1 border-border/60">
+                  <Card className="flex-1 rounded-xl border border-border bg-card p-6">
                     <CardHeader>
                       <CardTitle className="text-base">{stage.title}</CardTitle>
                     </CardHeader>

@@ -15,13 +15,13 @@ export function FinalCtaBand({
   description,
 }: FinalCtaBandProps) {
   return (
-    <div className="rounded-[32px] bg-slate-950 px-8 py-10 text-white shadow-[0_28px_80px_-34px_rgba(15,23,42,0.55)] sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12">
+    <div className="rounded-xl bg-primary px-8 py-10 text-primary-foreground shadow-lg sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12">
       <div className="max-w-2xl space-y-4">
-        <Eyebrow className="border-white/10 bg-white/10 text-white" variant="outline">
+        <Eyebrow className="border-primary-foreground/15 bg-primary-foreground/10 text-primary-foreground" variant="outline">
           {eyebrow}
         </Eyebrow>
         <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
-        <p className="text-base leading-7 text-slate-300 sm:text-lg">{description}</p>
+        <p className="text-base leading-7 text-primary-foreground/70 sm:text-lg">{description}</p>
       </div>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:mt-0 lg:flex-col">
         <TrackedLinkButton className="justify-center bg-white text-slate-950 hover:bg-white/90" eventName="walkthrough_cta_click" href="/walkthrough" size="lg" variant="secondary">
@@ -29,7 +29,7 @@ export function FinalCtaBand({
           <ArrowRight className="h-4 w-4" />
         </TrackedLinkButton>
         <TrackedLinkButton
-          className="justify-center border-white/15 bg-transparent text-white hover:bg-white/10"
+          className="justify-center border-primary-foreground/15 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
           eventName="early_access_cta_click"
           href="/early-access"
           size="lg"

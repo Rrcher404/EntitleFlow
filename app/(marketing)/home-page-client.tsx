@@ -87,16 +87,16 @@ export function HomePageClient() {
       </SectionShell>
 
       {/* Who It's For Section */}
-      <SectionShell id="who-its-for" className="bg-slate-950 text-white" animate>
+      <SectionShell id="who-its-for" className="bg-primary text-primary-foreground" animate>
         <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
           <div className="space-y-4">
-            <Badge className="border-white/10 bg-white/10 text-white" variant="outline">
+            <Badge className="border-primary-foreground/10 bg-primary-foreground/5" variant="outline">
               Who it&apos;s for
             </Badge>
             <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Built for architecture and civil firms managing repeat approval complexity.
             </h2>
-            <p className="text-base leading-7 text-slate-300 sm:text-lg">
+            <p className="text-base leading-7 text-primary-foreground/70 sm:text-lg">
               EntitleFlow is designed for teams that need tighter control between submission and approval without living inside spreadsheets, private inboxes, and portal confusion.
             </p>
           </div>
@@ -104,13 +104,13 @@ export function HomePageClient() {
             {content.audiences.map((audience) => {
               const Icon = audience.icon;
               return (
-                <div className="rounded-[28px] border border-white/10 bg-white/6 p-6" key={audience.title}>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white">
-                    <Icon className="h-5 w-5" />
+                <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6" key={audience.title}>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-foreground/10">
+                    <Icon className="h-5 w-5 text-primary-foreground" />
                   </div>
                   <div className="mt-5 space-y-2">
-                    <h3 className="font-display text-xl font-semibold text-white">{audience.title}</h3>
-                    <p className="text-sm leading-6 text-slate-300">{audience.description}</p>
+                    <h3 className="font-display text-xl font-semibold">{audience.title}</h3>
+                    <p className="text-sm leading-6 text-primary-foreground/70">{audience.description}</p>
                   </div>
                 </div>
               );
@@ -207,11 +207,11 @@ export function HomePageClient() {
                 <CardContent className="p-5 text-sm leading-6 text-muted-foreground">{item}</CardContent>
               </Card>
             ))}
-            <Card className="border-slate-900 bg-slate-950 text-white md:col-span-2">
+            <Card className="bg-primary text-primary-foreground md:col-span-2">
               <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-2">
                   <div className="font-display text-2xl font-semibold">Start with Greensboro and Raleigh.</div>
-                  <p className="max-w-2xl text-sm leading-6 text-slate-300">
+                  <p className="max-w-2xl text-sm leading-6 text-primary-foreground/70">
                     Two initial jurisdiction guides are live now. More NC workflow coverage is feeding into the launch site and early pilot conversations next.
                   </p>
                 </div>

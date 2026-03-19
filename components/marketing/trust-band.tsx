@@ -75,11 +75,11 @@ export function TrustBand({ items = defaultItems }: TrustBandProps) {
           <motion.div
             key={index}
             variants={itemVariants}
-            className="surface-panel rounded-[26px] p-5 flex flex-col gap-3"
+            className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3"
           >
             <div className="flex items-center gap-3">
-              <div className="rounded-full bg-primary/10 p-2 dark:bg-primary/20">
-                <Icon className="h-5 w-5 text-primary dark:text-primary" />
+              <div className="rounded-full bg-primary/10 p-2">
+                <Icon className="h-5 w-5 text-primary" />
               </div>
             </div>
             <div>

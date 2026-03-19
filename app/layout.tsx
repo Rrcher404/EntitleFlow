@@ -3,11 +3,8 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { buildMetadata } from "@/lib/site-config";
 import { fontClassNames } from "@/lib/fonts";
-import { ThemeProviderWrapper } from "@/components/theme-provider";
 
 import "./globals.css";
-
-
 
 export const metadata: Metadata = buildMetadata({
   title: "Permit chaos, comments, and resubmittals",
@@ -17,9 +14,9 @@ export const metadata: Metadata = buildMetadata({
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={`${fontClassNames} bg-background text-foreground antialiased`}>
-        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+        {children}
         <Analytics />
       </body>
     </html>

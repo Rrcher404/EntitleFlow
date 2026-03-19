@@ -35,9 +35,7 @@ export function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-border bg-background dark:bg-slate-950">
-      {/* Gradient top border */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0" />
+    <footer className="border-t border-border bg-background">
 
       <div className="container-shell space-y-12 py-16 lg:py-20">
         {/* Main footer grid */}
@@ -158,13 +156,7 @@ export function SiteFooter() {
         </div>
 
         {/* Footer bottom */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="border-t border-border pt-8"
-        >
+        <div className="border-t border-border pt-8">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
             <p>&copy; {currentYear} EntitleFlow NC. All rights reserved.</p>
             <div className="flex items-center gap-6">
@@ -176,7 +168,7 @@ export function SiteFooter() {
               </TrackedLink>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </footer>
   );
