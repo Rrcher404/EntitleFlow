@@ -87,7 +87,7 @@ export function HeroSection({
             </motion.div>
             <motion.div variants={itemVariants}>
               <Link
-                href="/dashboard"
+                href="/demo/dashboard"
                 className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 Or explore the demo portal
