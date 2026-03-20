@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import type { Project, Permit, Comment, ActivityLogEntry } from '@/lib/types/index';
 import {
+  type ProjectStatus,
+  type PermitStatus,
+  type PermitType,
   PROJECT_STATUS_LABELS,
   PROJECT_STATUS_COLORS,
   PERMIT_STATUS_LABELS,
@@ -91,7 +94,7 @@ export default function AnalyticsPage() {
             .eq('organization_id', orgId),
           supabase
             .from('permits')
-            .select('status, permit_type, submitted_at, approved_at')
+            .select('status, permit_type, submitted_at, decision_date')
             .eq('organization_id', orgId),
           supabase
             .from('comments')
@@ -106,7 +109,8 @@ export default function AnalyticsPage() {
         // Process project data
         const projectsByStatus: Record<string, number> = {};
         (projectsRes.data || []).forEach(project => {
-          projectsByStatus[project.status] = (projectsByStatus[project.status] || 0) + 1;
+          const s = project.status ?? 'draft';
+          projectsByStatus[s] = (projectsByStatus[s] || 0) + 1;
         });
 
         // Process permit data
@@ -117,13 +121,14 @@ export default function AnalyticsPage() {
 
         const permits = permitsRes.data || [];
         permits.forEach(permit => {
-          permitsByStatus[permit.status] = (permitsByStatus[permit.status] || 0) + 1;
+          const ps = permit.status ?? 'draft';
+          permitsByStatus[ps] = (permitsByStatus[ps] || 0) + 1;
           permitsByType[permit.permit_type] = (permitsByType[permit.permit_type] || 0) + 1;
 
           // Calculate average review days for approved permits
-          if (permit.status === 'approved' && permit.submitted_at && permit.approved_at) {
+          if (permit.status === 'approved' && permit.submitted_at && permit.decision_date) {
             const submitted = new Date(permit.submitted_at).getTime();
-            const approved = new Date(permit.approved_at).getTime();
+            const approved = new Date(permit.decision_date).getTime();
             const days = Math.round((approved - submitted) / (1000 * 60 * 60 * 24));
             avgReviewDays += days;
             approvedCount++;
@@ -146,11 +151,11 @@ export default function AnalyticsPage() {
         const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
         const activityLast7Days = (activityRes.data || []).filter(
-          a => new Date(a.created_at) >= last7Days
+          a => a.created_at && new Date(a.created_at) >= last7Days
         ).length;
 
         const activityLast30Days = (activityRes.data || []).filter(
-          a => new Date(a.created_at) >= last30Days
+          a => a.created_at && new Date(a.created_at) >= last30Days
         ).length;
 
         setAnalytics({
@@ -264,8 +269,8 @@ export default function AnalyticsPage() {
           {Object.keys(analytics.projectsByStatus).length > 0 ? (
             <div className="space-y-3">
               {Object.entries(analytics.projectsByStatus).map(([status, count]) => {
-                const colors = PROJECT_STATUS_COLORS[status as any];
-                const label = PROJECT_STATUS_LABELS[status as any];
+                const colors = PROJECT_STATUS_COLORS[status as ProjectStatus];
+                const label = PROJECT_STATUS_LABELS[status as ProjectStatus];
                 return (
                   <div key={status} className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
@@ -306,8 +311,8 @@ export default function AnalyticsPage() {
           {Object.keys(analytics.permitsByStatus).length > 0 ? (
             <div className="space-y-3">
               {Object.entries(analytics.permitsByStatus).map(([status, count]) => {
-                const colors = PERMIT_STATUS_COLORS[status as any];
-                const label = PERMIT_STATUS_LABELS[status as any];
+                const colors = PERMIT_STATUS_COLORS[status as PermitStatus];
+                const label = PERMIT_STATUS_LABELS[status as PermitStatus];
                 return (
                   <div key={status} className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
@@ -350,7 +355,7 @@ export default function AnalyticsPage() {
               {Object.entries(analytics.permitsByType)
                 .sort(([, a], [, b]) => b - a)
                 .map(([type, count]) => {
-                  const label = PERMIT_TYPE_LABELS[type as any] || type;
+                  const label = PERMIT_TYPE_LABELS[type as PermitType] || type;
                   const total = Object.values(analytics.permitsByType).reduce((a, b) => a + b, 0);
                   return (
                     <div key={type} className="flex items-center justify-between text-sm">

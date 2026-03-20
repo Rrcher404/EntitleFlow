@@ -14,21 +14,27 @@ import {
   X,
   Loader2,
 } from 'lucide-react';
-import type { Document, Project, Permit } from '@/lib/types/index';
+import type { Document } from '@/lib/types/index';
 import { DOCUMENT_TYPE_LABELS } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
+/** Lightweight project reference for dropdowns */
+type ProjectRef = { id: string; name: string };
+
+/** Lightweight permit reference for dropdowns */
+type PermitRef = { id: string; permit_type: string };
+
 interface DocumentWithProject extends Document {
   project_name?: string;
 }
 
-const getDocumentIcon = (mimeType: string | null) => {
-  if (!mimeType) return FileText;
-  if (mimeType.startsWith('image/')) return Image;
-  if (mimeType.includes('pdf')) return FileText;
-  if (mimeType.includes('word')) return FileText;
+const getDocumentIcon = (fileType: string | null) => {
+  if (!fileType) return FileText;
+  if (fileType.startsWith('image/')) return Image;
+  if (fileType.includes('pdf')) return FileText;
+  if (fileType.includes('word')) return FileText;
   return File;
 };
 
@@ -51,8 +57,8 @@ const formatDate = (dateString: string | null | undefined): string => {
 export default function DocumentsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [documents, setDocuments] = useState<DocumentWithProject[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [permits, setPermits] = useState<Permit[]>([]);
+  const [projects, setProjects] = useState<ProjectRef[]>([]);
+  const [permits, setPermits] = useState<PermitRef[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -170,16 +176,13 @@ export default function DocumentsPage() {
           organization_id: profile.organization_id,
           project_id: formData.projectId || null,
           permit_id: formData.permitId || null,
-          name: formData.name,
-          file_path: formData.file.name,
+          file_name: formData.name,
+          storage_path: `uploads/${profile.organization_id}/${formData.file.name}`,
           file_size: formData.file.size,
-          mime_type: formData.file.type,
+          file_type: formData.file.type,
           document_type: formData.documentType,
           uploaded_by: userId,
-          metadata: {
-            original_name: formData.file.name,
-            upload_timestamp: new Date().toISOString(),
-          },
+          description: formData.name,
         });
 
       if (insertError) throw insertError;
@@ -191,7 +194,7 @@ export default function DocumentsPage() {
           organization_id: profile.organization_id,
           action: 'document_uploaded',
           description: `${formData.name} uploaded`,
-          created_by: userId,
+          actor_id: userId,
         });
 
       // Reset form and reload
@@ -397,8 +400,8 @@ export default function DocumentsPage() {
       {documents.length > 0 ? (
         <div className="space-y-3">
           {documents.map((doc) => {
-            const Icon = getDocumentIcon(doc.mime_type);
-            const docTypeLabel = DOCUMENT_TYPE_LABELS[doc.document_type];
+            const Icon = getDocumentIcon(doc.file_type);
+            const docTypeLabel = doc.document_type ? DOCUMENT_TYPE_LABELS[doc.document_type] : 'Other';
 
             return (
               <Card
@@ -418,7 +421,7 @@ export default function DocumentsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-semibold text-foreground truncate">
-                          {doc.name}
+                          {doc.file_name}
                         </h3>
                         <span
                           className="px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap"

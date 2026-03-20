@@ -5,19 +5,15 @@ import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Project,
   ProjectInsert,
   ProjectStatus,
   ProjectType,
-  Priority,
   Jurisdiction,
   PROJECT_STATUS_LABELS,
   PROJECT_STATUS_COLORS,
   PROJECT_TYPE_LABELS,
-  PRIORITY_LABELS,
-  PRIORITY_COLORS,
 } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
 import { Plus, X } from 'lucide-react';
@@ -36,7 +32,6 @@ interface FormData {
   address: string;
   project_type: ProjectType;
   jurisdiction: string;
-  priority: Priority;
 }
 
 const initialFormData: FormData = {
@@ -45,7 +40,6 @@ const initialFormData: FormData = {
   address: '',
   project_type: 'residential',
   jurisdiction: '',
-  priority: 'normal',
 };
 
 export default function ProjectsPage() {
@@ -181,9 +175,7 @@ export default function ProjectsPage() {
         address: formData.address.trim() || null,
         project_type: formData.project_type as ProjectType,
         jurisdiction: formData.jurisdiction,
-        priority: formData.priority as Priority,
         status: 'draft' as ProjectStatus,
-        metadata: null,
       };
 
       const { data: newProject, error: insertError } = await supabase
@@ -349,40 +341,22 @@ export default function ProjectsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Jurisdiction
-                </label>
-                <select
-                  name="jurisdiction"
-                  value={formData.jurisdiction}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white text-foreground text-sm"
-                  required
-                >
-                  <option value="">Select jurisdiction</option>
-                  {jurisdictions.map(j => (
-                    <option key={j.id} value={j.name}>{j.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Priority
-                </label>
-                <select
-                  name="priority"
-                  value={formData.priority}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white text-foreground text-sm"
-                >
-                  {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Jurisdiction
+              </label>
+              <select
+                name="jurisdiction"
+                value={formData.jurisdiction}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-white text-foreground text-sm"
+                required
+              >
+                <option value="">Select jurisdiction</option>
+                {jurisdictions.map(j => (
+                  <option key={j.id} value={j.name}>{j.name}</option>
+                ))}
+              </select>
             </div>
 
             <div className="flex gap-3 pt-2">
@@ -413,8 +387,8 @@ export default function ProjectsPage() {
       {projects.length > 0 ? (
         <div className="space-y-3">
           {projects.map(project => {
-            const statusColor = PROJECT_STATUS_COLORS[project.status as ProjectStatus];
-            const priorityColor = PRIORITY_COLORS[project.priority as Priority];
+            const statusKey = (project.status ?? 'draft') as ProjectStatus;
+            const statusColor = PROJECT_STATUS_COLORS[statusKey];
 
             return (
               <Card
@@ -435,16 +409,7 @@ export default function ProjectsPage() {
                           'px-2 py-0.5 rounded-full text-xs font-medium'
                         )}
                       >
-                        {PROJECT_STATUS_LABELS[project.status as ProjectStatus]}
-                      </span>
-                      <span
-                        className={cn(
-                          priorityColor.bg,
-                          priorityColor.text,
-                          'px-2 py-0.5 rounded-full text-xs font-medium'
-                        )}
-                      >
-                        {PRIORITY_LABELS[project.priority as Priority]}
+                        {PROJECT_STATUS_LABELS[statusKey]}
                       </span>
                     </div>
 
