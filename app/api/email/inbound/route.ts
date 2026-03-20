@@ -1,20 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase/server';
-import { parseEmailAddress, extractPermitNumber, classifyEmailCategory } from '@/lib/email/parser';
+import { getSupabaseAdminClient } from '@/lib/supabase/server';
+import { parseEmailAddress, extractPermitNumber, classifyEmailCategory, stripHtmlTags } from '@/lib/email/parser';
 import { InboundEmailPayload, ParsedEmail } from '@/lib/email/types';
 
 /**
  * POST /api/email/inbound
- * 
+ *
  * Webhook endpoint for receiving inbound emails.
- * Accepts emails from jurisdiction reviewers and other external sources.
- * 
+ * Accepts emails from:
+ *   - Google Apps Script (forwards from reviews@entitleflow.com)
+ *   - Any future email forwarding service
+ *
+ * Authentication: requires INBOUND_EMAIL_SECRET header or query param.
  * Creates comment records and activity logs for tracking.
  */
 export async function POST(request: NextRequest) {
   try {
-    // Parse incoming JSON payload
-    const payload: InboundEmailPayload = await request.json();
+    // ── Auth: verify webhook secret ──────────────────────────
+    const secret = process.env.INBOUND_EMAIL_SECRET;
+    if (secret) {
+      const headerToken = request.headers.get('x-webhook-secret');
+      const queryToken = request.nextUrl.searchParams.get('secret');
+      if (headerToken !== secret && queryToken !== secret) {
+        return NextResponse.json(
+          { error: 'Unauthorized' },
+          { status: 401 }
+        );
+      }
+    }
+
+    // Parse incoming JSON payload (supports both raw and Apps Script format)
+    const raw = await request.json();
+
+    // Normalise: Apps Script sends { from, to, subject, body, htmlBody, messageId, date }
+    const payload: InboundEmailPayload = {
+      from: raw.from,
+      to: raw.to,
+      subject: raw.subject,
+      text: raw.text ?? raw.body ?? (raw.htmlBody ? stripHtmlTags(raw.htmlBody) : ''),
+      html: raw.html ?? raw.htmlBody,
+      attachments: raw.attachments ?? [],
+      date: raw.date,
+      message_id: raw.message_id ?? raw.messageId,
+    };
 
     // Validate required fields
     if (!payload.from || !payload.to || !payload.subject || !payload.text) {
@@ -45,8 +73,15 @@ export async function POST(request: NextRequest) {
       message_id: payload.message_id
     };
 
-    // Initialize Supabase client
-    const supabase = await createServiceClient();
+    // Initialize Supabase admin client (service role, no cookies)
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      console.error('Supabase admin client not configured — missing SUPABASE_SERVICE_ROLE_KEY');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
 
     // Check for deduplication using message_id if provided
     if (payload.message_id) {
