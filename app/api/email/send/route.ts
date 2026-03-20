@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase/server';
+import { getSupabaseAdminClient } from '@/lib/supabase/server';
 import { OutboundEmailPayload } from '@/lib/email/types';
 
 const FROM_EMAIL = 'reviews@entitleflow.com';
@@ -36,8 +36,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize Supabase client
-    const supabase = await createServiceClient();
+    // Initialize Supabase admin client
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      console.error('Supabase admin client not configured');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
 
     // Determine organization_id for logging
     let organizationId: string | null = null;
