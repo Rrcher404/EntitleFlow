@@ -85,11 +85,11 @@ export async function POST(request: NextRequest) {
 
     // Check for deduplication using message_id if provided
     if (payload.message_id) {
-      const { data: existingRows } = await supabase
+      const { data: existingRows } = await (supabase
         .from('comments')
         .select('id')
         .filter('metadata->>message_id', 'eq', payload.message_id)
-        .limit(1);
+        .limit(1) as unknown as Promise<{ data: { id: string }[] | null }>);
 
       if (existingRows && existingRows.length > 0) {
         return NextResponse.json(
