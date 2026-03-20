@@ -118,4 +118,5 @@ export type AnalyticsEventName =
   | "calendly_handoff_click"
   | "pricing_cta_click"
   | "guide_card_click"
-  | "compare_page_cta_click";
+  | "compare_page_cta_click"
+  | "login_click";

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/client';
 
 const navItems = [
   { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
@@ -31,8 +32,15 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   const handleSignOut = async () => {
-    // Sign out implementation will be added when Supabase auth is integrated
-    console.log('Sign out clicked');
+    const supabase = createClient();
+    if (!supabase) return;
+
+    try {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (

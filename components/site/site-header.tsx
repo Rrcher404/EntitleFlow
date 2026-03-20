@@ -63,6 +63,13 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 md:flex">
           <TrackedLink
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            eventName="login_click"
+            href="/login"
+          >
+            Log in
+          </TrackedLink>
+          <TrackedLink
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             eventName="early_access_cta_click"
             href="/early-access"
           >
@@ -109,6 +116,14 @@ export function SiteHeader() {
                         </TrackedLink>
                       ))}
                       <div className="space-y-3 border-t border-border pt-3">
+                        <TrackedLink
+                          className="block text-base font-medium text-foreground transition hover:text-primary"
+                          eventName="login_click"
+                          href="/login"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Log in
+                        </TrackedLink>
                         <TrackedLink
                           className="block text-base font-medium text-foreground transition hover:text-primary"
                           eventName="early_access_cta_click"
