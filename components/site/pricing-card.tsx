@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { TrackedLinkButton } from "@/components/site/tracked-link-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,8 +12,13 @@ type PricingCardProps = {
 
 export function PricingCard({ tier }: PricingCardProps) {
   return (
-    <Card className={tier.featured ? "border-slate-900 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.35)]" : ""}>
-      <CardContent className="space-y-6 p-6">
+    <Card className={cn(
+      "flex flex-col transition-all duration-300",
+      tier.featured 
+        ? "border-slate-900 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.35)] hover:shadow-[0_24px_90px_-24px_rgba(15,23,42,0.45)] hover:-translate-y-1" 
+        : "hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:border-slate-300"
+    )}>
+      <CardContent className="flex flex-col flex-grow p-5">
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-display text-2xl font-semibold text-slate-950">{tier.name}</h3>
@@ -23,17 +29,17 @@ export function PricingCard({ tier }: PricingCardProps) {
           <p className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">{tier.bestFor}</p>
         </div>
 
-        <ul className="space-y-3 text-sm leading-6 text-slate-700">
+        <ul className="mt-6 flex-grow space-y-3 text-sm leading-6 text-slate-700">
           {tier.highlights.map((highlight) => (
             <li className="flex gap-3" key={highlight}>
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-600" />
+              <span className="mt-0.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
               <span>{highlight}</span>
             </li>
           ))}
         </ul>
 
         <TrackedLinkButton
-          className="w-full justify-center"
+          className="w-full justify-center mt-6"
           eventName={tier.eventName}
           eventProps={{ tier: tier.name }}
           href={tier.ctaHref}

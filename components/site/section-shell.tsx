@@ -23,7 +23,7 @@ export function SectionShell({ id, className, animate = true, children }: Sectio
 
   if (!shouldAnimate) {
     return (
-      <section className={cn("py-20 sm:py-24", className)} id={id} ref={ref}>
+      <section className={cn("py-14 sm:py-16", className)} id={id} ref={ref}>
         <div className="container-shell">{children}</div>
       </section>
     );
@@ -33,7 +33,7 @@ export function SectionShell({ id, className, animate = true, children }: Sectio
     <motion.section
       ref={ref}
       id={id}
-      className={cn("py-20 sm:py-24", className)}
+      className={cn("py-14 sm:py-16", className)}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{

@@ -37,7 +37,7 @@ export function HomePageClient() {
   return (
     <>
       {/* Hero Section */}
-      <SectionShell className="pt-0" animate>
+      <SectionShell className="pt-0 pb-8 sm:pb-10" animate>
         <HeroSection
           eyebrow={content.hero.eyebrow}
           title={content.hero.title}
@@ -52,8 +52,8 @@ export function HomePageClient() {
       </SectionShell>
 
       {/* Why Now Section */}
-      <SectionShell id="why-now" animate>
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <SectionShell id="why-now" className="py-12 sm:py-14" animate>
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-4">
             <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
               Why now
@@ -70,7 +70,7 @@ export function HomePageClient() {
               const Icon = item.icon;
               return (
                 <Card key={item.title}>
-                  <CardContent className="space-y-4 p-6">
+                  <CardContent className="space-y-4 p-5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
                       <Icon className="h-5 w-5" />
                     </div>
@@ -87,8 +87,8 @@ export function HomePageClient() {
       </SectionShell>
 
       {/* Who It's For Section */}
-      <SectionShell id="who-its-for" className="bg-primary text-primary-foreground" animate>
-        <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
+      <SectionShell id="who-its-for" className="bg-primary text-primary-foreground py-12 sm:py-14" animate>
+        <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
           <div className="space-y-4">
             <Badge className="border-primary-foreground/10 bg-primary-foreground/5" variant="outline">
               Who it&apos;s for
@@ -104,7 +104,7 @@ export function HomePageClient() {
             {content.audiences.map((audience) => {
               const Icon = audience.icon;
               return (
-                <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6" key={audience.title}>
+                <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-5" key={audience.title}>
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-foreground/10">
                     <Icon className="h-5 w-5 text-primary-foreground" />
                   </div>
@@ -136,7 +136,7 @@ export function HomePageClient() {
       />
 
       {/* Guided Product Preview */}
-      <SectionShell animate>
+      <SectionShell className="py-12 sm:py-14" animate>
         <div className="max-w-3xl space-y-4">
           <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
             Guided product preview
@@ -148,7 +148,7 @@ export function HomePageClient() {
             Launch conversations should make the wedge legible: reviewer comments, resubmittal prep, and clearer status visibility for the people who keep approvals moving.
           </p>
         </div>
-        <div className="mt-12 grid gap-6 xl:grid-cols-3">
+        <div className="mt-10 grid gap-6 xl:grid-cols-3">
           {previewPanels.map((panel) => (
             <PreviewPanel key={panel.title} panel={panel} />
           ))}
@@ -156,8 +156,8 @@ export function HomePageClient() {
       </SectionShell>
 
       {/* Pricing Preview */}
-      <SectionShell animate>
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <SectionShell className="py-12 sm:py-14" animate>
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-4">
             <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
               Pricing preview
@@ -176,7 +176,7 @@ export function HomePageClient() {
           <div className="grid gap-4 md:grid-cols-3">
             {pricingTiers.slice(0, 3).map((tier) => (
               <Card key={tier.name}>
-                <CardContent className="space-y-3 p-5">
+                <CardContent className="space-y-3 p-4">
                   <div className="font-display text-xl font-semibold text-foreground">{tier.name}</div>
                   <div className="text-2xl font-semibold text-foreground">{tier.price}</div>
                   <p className="text-sm leading-6 text-muted-foreground">{tier.description}</p>
@@ -188,8 +188,8 @@ export function HomePageClient() {
       </SectionShell>
 
       {/* North Carolina Depth */}
-      <SectionShell animate>
-        <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
+      <SectionShell className="py-12 sm:py-14" animate>
+        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
           <div className="space-y-4">
             <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
               North Carolina depth
@@ -204,11 +204,11 @@ export function HomePageClient() {
           <div className="grid gap-4 md:grid-cols-2">
             {content.jurisdictionTeaser.map((item) => (
               <Card key={item}>
-                <CardContent className="p-5 text-sm leading-6 text-muted-foreground">{item}</CardContent>
+                <CardContent className="p-4 text-sm leading-6 text-muted-foreground">{item}</CardContent>
               </Card>
             ))}
             <Card className="bg-primary text-primary-foreground md:col-span-2">
-              <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+              <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-2">
                   <div className="font-display text-2xl font-semibold">Start with Greensboro and Raleigh.</div>
                   <p className="max-w-2xl text-sm leading-6 text-primary-foreground/70">

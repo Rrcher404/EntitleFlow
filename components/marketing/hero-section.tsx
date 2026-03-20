@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { TextRotate } from '@/components/ui/text-rotate';
 import { DashboardPreview } from './dashboard-preview';
 
 export interface HeroSectionProps {
@@ -11,6 +12,7 @@ export interface HeroSectionProps {
   title: string;
   description: string;
   stats: Array<{ value: string; label: string }>;
+  rotatingWords?: string[];
 }
 
 export function HeroSection({
@@ -18,6 +20,7 @@ export function HeroSection({
   title,
   description,
   stats,
+  rotatingWords,
 }: HeroSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,16 +43,16 @@ export function HeroSection({
   };
 
   return (
-    <section className="relative py-20 lg:py-28">
+    <section className="relative py-16 lg:py-20">
       <div className="container-shell">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center"
+          className="grid gap-10 lg:grid-cols-2 lg:gap-14 items-center"
         >
           {/* Left content */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {/* Eyebrow */}
             <motion.div variants={itemVariants}>
               <Badge variant="outline" className="eyebrow-pill">
@@ -60,7 +63,22 @@ export function HeroSection({
             {/* Headline */}
             <motion.div variants={itemVariants}>
               <h1 className="text-fluid-h1 font-display text-foreground">
-                {title}
+                {rotatingWords && rotatingWords.length > 0 ? (
+                  title.split('[ROTATE]').map((part, idx) => (
+                    <span key={idx}>
+                      {part}
+                      {idx < title.split('[ROTATE]').length - 1 && (
+                        <TextRotate
+                          words={rotatingWords}
+                          interval={3000}
+                          className="inline text-primary"
+                        />
+                      )}
+                    </span>
+                  ))
+                ) : (
+                  title
+                )}
               </h1>
             </motion.div>
 
@@ -73,7 +91,7 @@ export function HeroSection({
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start gap-3 pt-2">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start gap-3 pt-1">
               <Button size="lg" asChild>
                 <Link href="/walkthrough">
                   Request a walkthrough
@@ -98,7 +116,7 @@ export function HeroSection({
             {/* Stats row */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-3 gap-6 pt-8 border-t border-border"
+              className="grid grid-cols-3 gap-6 pt-6 border-t border-border"
             >
               {stats.map((stat, idx) => (
                 <div key={idx}>
@@ -127,7 +145,7 @@ export function HeroSection({
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="mt-12 lg:hidden"
+          className="mt-10 lg:hidden"
         >
           <DashboardPreview />
         </motion.div>

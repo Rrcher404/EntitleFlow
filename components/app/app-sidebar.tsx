@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -15,6 +14,14 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
+import {
+  Sidebar,
+  SidebarBody,
+  SidebarLink,
+  DesktopSidebar,
+  MobileSidebar,
+  useSidebar,
+} from '@/components/ui/aceternity-sidebar';
 
 const navItems = [
   { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
@@ -30,6 +37,7 @@ const bottomItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpen } = useSidebar();
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -43,72 +51,162 @@ export function AppSidebar() {
     }
   };
 
+  const handleNavClick = () => {
+    // Close mobile sidebar on navigation
+    setOpen(false);
+  };
+
   return (
-    <aside className="flex h-screen w-60 flex-col border-r border-border bg-card">
-      {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Building2 className="h-4 w-4" />
-        </div>
-        <div>
-          <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow</div>
-          <div className="text-[10px] text-muted-foreground">Approval Ops</div>
-        </div>
-      </div>
+    <>
+      {/* Desktop Sidebar */}
+      <DesktopSidebar>
+        <Sidebar>
+          {/* Logo */}
+          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Building2 className="h-4 w-4" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <div className="text-sm font-semibold tracking-tight text-foreground truncate">EntitleFlow</div>
+              <div className="text-[10px] text-muted-foreground whitespace-nowrap">Approval Ops</div>
+            </div>
+          </div>
 
-      {/* Nav */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                isActive
-                  ? 'bg-accent text-foreground font-medium'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-              )}
+          {/* Nav */}
+          <SidebarBody className="space-y-1 flex-1 px-3 py-4">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    isActive
+                      ? 'bg-accent text-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  )}
+                  title={item.label}
+                >
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </a>
+              );
+            })}
+          </SidebarBody>
+
+          {/* Bottom nav */}
+          <div className="space-y-1 border-t border-border px-3 py-4 flex-shrink-0">
+            {bottomItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    isActive
+                      ? 'bg-accent text-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  )}
+                  title={item.label}
+                >
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </a>
+              );
+            })}
+
+            {/* Sign out button */}
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+              <LogOut className="h-4 w-4 flex-shrink-0" />
+              <span className="truncate">Sign out</span>
+            </Button>
+          </div>
+        </Sidebar>
+      </DesktopSidebar>
 
-      {/* Bottom nav */}
-      <div className="space-y-1 border-t border-border px-3 py-4">
-        {bottomItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                isActive
-                  ? 'bg-accent text-foreground font-medium'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-              )}
+      {/* Mobile Sidebar */}
+      <MobileSidebar>
+        <Sidebar className="md:hidden">
+          {/* Logo */}
+          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5 mt-12">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Building2 className="h-4 w-4" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <div className="text-sm font-semibold tracking-tight text-foreground truncate">EntitleFlow</div>
+              <div className="text-[10px] text-muted-foreground whitespace-nowrap">Approval Ops</div>
+            </div>
+          </div>
+
+          {/* Nav */}
+          <SidebarBody className="space-y-1 flex-1 px-3 py-4">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    isActive
+                      ? 'bg-accent text-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </a>
+              );
+            })}
+          </SidebarBody>
+
+          {/* Bottom nav */}
+          <div className="space-y-1 border-t border-border px-3 py-4 flex-shrink-0">
+            {bottomItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    isActive
+                      ? 'bg-accent text-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </a>
+              );
+            })}
+
+            {/* Sign out button */}
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-
-        {/* Sign out button */}
-        <Button
-          onClick={handleSignOut}
-          variant="ghost"
-          className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
-        >
-          <LogOut className="h-4 w-4" />
-          Sign out
-        </Button>
-      </div>
-    </aside>
+              <LogOut className="h-4 w-4" />
+              <span>Sign out</span>
+            </Button>
+          </div>
+        </Sidebar>
+      </MobileSidebar>
+    </>
   );
 }

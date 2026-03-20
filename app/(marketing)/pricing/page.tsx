@@ -4,7 +4,7 @@ import { CTABanner } from '@/components/marketing/cta-banner';
 import { PageIntro } from '@/components/site/page-intro';
 import { PricingCard } from '@/components/site/pricing-card';
 import { SectionShell } from '@/components/site/section-shell';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { FAQAccordionBlock } from '@/components/ui/faq-accordion-block';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { buildMetadata } from '@/lib/site-config';
@@ -29,7 +29,7 @@ export default function PricingPage() {
         />
       </SectionShell>
 
-      <SectionShell className="pt-4" animate>
+      <SectionShell className="py-10 sm:py-12" animate>
         <div className="grid gap-6 xl:grid-cols-4">
           {pricingTiers.map((tier) => (
             <PricingCard key={tier.name} tier={tier} />
@@ -37,7 +37,7 @@ export default function PricingPage() {
         </div>
       </SectionShell>
 
-      <SectionShell animate>
+      <SectionShell className="py-12 sm:py-14" animate>
         <div className="grid gap-6 lg:grid-cols-3">
           {[
             {
@@ -54,7 +54,7 @@ export default function PricingPage() {
             },
           ].map((item) => (
             <Card key={item.title}>
-              <CardContent className="space-y-3 p-6">
+              <CardContent className="space-y-3 p-5">
                 <Badge variant="outline">{item.title}</Badge>
                 <p className="text-sm leading-7 text-muted-foreground">{item.body}</p>
               </CardContent>
@@ -63,8 +63,8 @@ export default function PricingPage() {
         </div>
       </SectionShell>
 
-      <SectionShell animate>
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <SectionShell className="py-12 sm:py-14" animate>
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div className="space-y-4">
             <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
               Pricing FAQ
@@ -81,18 +81,13 @@ export default function PricingPage() {
             </TrackedLinkButton>
           </div>
 
-          <Card>
-            <CardContent className="p-6">
-              <Accordion collapsible className="w-full" type="single">
-                {pricingFaqs.map((faq) => (
-                  <AccordionItem key={faq.question} value={faq.question}>
-                    <AccordionTrigger>{faq.question}</AccordionTrigger>
-                    <AccordionContent>{faq.answer}</AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
+          <div>
+            <FAQAccordionBlock
+              faqs={pricingFaqs}
+              eyebrowLabel="Questions"
+              title=""
+            />
+          </div>
         </div>
       </SectionShell>
 
