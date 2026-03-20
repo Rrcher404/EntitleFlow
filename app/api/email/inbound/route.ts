@@ -85,16 +85,15 @@ export async function POST(request: NextRequest) {
 
     // Check for deduplication using message_id if provided
     if (payload.message_id) {
-      const { data: existingComment } = await supabase
+      const { data: existingRows } = await supabase
         .from('comments')
         .select('id')
-        .eq('metadata->message_id', payload.message_id)
-        .limit(1)
-        .single();
+        .filter('metadata->>message_id', 'eq', payload.message_id)
+        .limit(1);
 
-      if (existingComment) {
+      if (existingRows && existingRows.length > 0) {
         return NextResponse.json(
-          { message: 'Email already processed', comment_id: existingComment.id },
+          { message: 'Email already processed', comment_id: existingRows[0].id },
           { status: 200 }
         );
       }
