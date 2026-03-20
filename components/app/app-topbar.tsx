@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Bell, Search, LogOut, Settings, User, AlertCircle, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,30 @@ import Link from 'next/link';
 export function AppTopbar() {
   const router = useRouter();
   const supabase = createClient();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userInitials, setUserInitials] = useState('');
+
+  useEffect(() => {
+    async function fetchUser() {
+      if (!supabase) return;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const meta = user.user_metadata;
+        const name = meta?.full_name || meta?.name || user.email?.split('@')[0] || 'User';
+        const email = user.email || '';
+        setUserName(name);
+        setUserEmail(email);
+        // Generate initials from name
+        const parts = name.split(' ').filter(Boolean);
+        const initials = parts.length >= 2
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : name.slice(0, 2).toUpperCase();
+        setUserInitials(initials);
+      }
+    }
+    fetchUser();
+  }, [supabase]);
 
   const handleSignOut = async () => {
     await supabase?.auth.signOut();
@@ -56,11 +81,11 @@ export function AppTopbar() {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-medium text-primary">
-                --
+                {userInitials || '..'}
               </div>
               <div className="hidden sm:block">
-                <div className="text-sm font-medium text-foreground">Loading...</div>
-                <div className="text-[11px] text-muted-foreground">Authenticated user</div>
+                <div className="text-sm font-medium text-foreground">{userName || 'Loading...'}</div>
+                <div className="text-[11px] text-muted-foreground">{userEmail || ''}</div>
               </div>
             </div>
           </DropdownMenuTrigger>

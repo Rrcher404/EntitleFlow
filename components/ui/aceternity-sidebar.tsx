@@ -28,7 +28,7 @@ export interface SidebarProviderProps {
   animate?: boolean;
 }
 
-export const SidebarProvider = ({ children, open = true, setOpen, animate = true }: SidebarProviderProps) => {
+export const SidebarProvider = ({ children, open = false, setOpen, animate = true }: SidebarProviderProps) => {
   const [internalOpen, setInternalOpen] = useState(open);
 
   return (
@@ -75,19 +75,27 @@ export interface SidebarLinkProps {
 }
 
 export const SidebarLink = ({ link, className, isActive }: SidebarLinkProps) => {
+  const { open } = useSidebar();
+
   return (
     <a
       href={link.href}
       className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden',
         isActive
           ? 'bg-accent text-foreground font-medium'
           : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
         className
       )}
     >
-      {link.icon}
-      <span className="flex-1">{link.label}</span>
+      <span className="flex-shrink-0">{link.icon}</span>
+      <motion.span
+        className="flex-1"
+        animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        {link.label}
+      </motion.span>
     </a>
   );
 };
@@ -98,13 +106,15 @@ export interface DesktopSidebarProps {
 }
 
 export const DesktopSidebar = ({ children, className }: DesktopSidebarProps) => {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   return (
     <motion.div
       className={cn('hidden h-screen md:flex md:flex-col overflow-hidden bg-card border-r border-border', className)}
       animate={{ width: open ? 260 : 60 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
     >
       {children}
     </motion.div>

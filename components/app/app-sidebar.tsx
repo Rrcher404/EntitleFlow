@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -37,7 +38,7 @@ const bottomItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { setOpen } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -51,8 +52,8 @@ export function AppSidebar() {
     }
   };
 
-  const handleNavClick = () => {
-    // Close mobile sidebar on navigation
+  const handleMobileNavClick = () => {
+    // Only close on mobile
     setOpen(false);
   };
 
@@ -62,14 +63,18 @@ export function AppSidebar() {
       <DesktopSidebar>
         <Sidebar>
           {/* Logo */}
-          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5">
+          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5 overflow-hidden whitespace-nowrap">
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Building2 className="h-4 w-4" />
             </div>
-            <div className="flex flex-col min-w-0">
+            <motion.div
+              className="flex flex-col min-w-0"
+              animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="text-sm font-semibold tracking-tight text-foreground truncate">EntitleFlow</div>
               <div className="text-[10px] text-muted-foreground whitespace-nowrap">Approval Ops</div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Nav */}
@@ -81,9 +86,8 @@ export function AppSidebar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  onClick={handleNavClick}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden',
                     isActive
                       ? 'bg-accent text-foreground font-medium'
                       : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -91,7 +95,13 @@ export function AppSidebar() {
                   title={item.label}
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{item.label}</span>
+                  <motion.span
+                    className="truncate"
+                    animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {item.label}
+                  </motion.span>
                 </a>
               );
             })}
@@ -106,9 +116,8 @@ export function AppSidebar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  onClick={handleNavClick}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden',
                     isActive
                       ? 'bg-accent text-foreground font-medium'
                       : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -116,20 +125,32 @@ export function AppSidebar() {
                   title={item.label}
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{item.label}</span>
+                  <motion.span
+                    className="truncate"
+                    animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {item.label}
+                  </motion.span>
                 </a>
               );
             })}
 
             {/* Sign out button */}
-            <Button
+            <button
               onClick={handleSignOut}
-              variant="ghost"
-              className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors duration-200 whitespace-nowrap overflow-hidden"
+              title="Sign out"
             >
               <LogOut className="h-4 w-4 flex-shrink-0" />
-              <span className="truncate">Sign out</span>
-            </Button>
+              <motion.span
+                className="truncate"
+                animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                Sign out
+              </motion.span>
+            </button>
           </div>
         </Sidebar>
       </DesktopSidebar>
@@ -157,7 +178,7 @@ export function AppSidebar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  onClick={handleNavClick}
+                  onClick={handleMobileNavClick}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
                     isActive
@@ -181,7 +202,7 @@ export function AppSidebar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  onClick={handleNavClick}
+                  onClick={handleMobileNavClick}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200',
                     isActive
