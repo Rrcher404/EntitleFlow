@@ -11,6 +11,9 @@ import {
   Settings,
   LogOut,
   Building2,
+  MapPin,
+  Bell,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,8 +31,10 @@ const navItems = [
   { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
   { label: 'Projects', href: '/app/projects', icon: FolderKanban },
   { label: 'Permits', href: '/app/permits', icon: FileCheck2 },
+  { label: 'Map View', href: '/app/projects/map', icon: MapPin },
   { label: 'Analytics', href: '/app/analytics', icon: BarChart3 },
   { label: 'Documents', href: '/app/documents', icon: FileText },
+  { label: 'Notifications', href: '/app/notifications', icon: Bell },
 ];
 
 const bottomItems = [

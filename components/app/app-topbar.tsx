@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Bell, Search, LogOut, Settings, User, AlertCircle, BarChart3 } from 'lucide-react';
+import { Search, LogOut, Settings, User, Bell, BarChart3, Users } from 'lucide-react';
+import { NotificationBell } from '@/components/app/notification-bell';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -58,23 +59,8 @@ export function AppTopbar() {
 
       {/* Right side */}
       <div className="flex items-center gap-3">
-        {/* Notifications Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
-              <AlertCircle className="h-4 w-4 mr-2" />
-              <span>No new notifications</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Notifications Bell */}
+        <NotificationBell />
 
         {/* User Profile Dropdown */}
         <DropdownMenu>
@@ -102,9 +88,17 @@ export function AppTopbar() {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell className="h-4 w-4 mr-2" />
-              <span>Notifications</span>
+            <DropdownMenuItem asChild>
+              <Link href="/app/notifications">
+                <Bell className="h-4 w-4 mr-2" />
+                <span>Notifications</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/app/settings/team">
+                <Users className="h-4 w-4 mr-2" />
+                <span>Team</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

@@ -1,9 +1,3 @@
-/**
- * Auto-generated types for Supabase database schema
- *
- * Regenerated from Supabase MCP on 2026-03-19 to include admin tables:
- * admin_audit_log, announcements, feature_flags, platform_config
- */
 export type Json =
   | string
   | number
@@ -167,8 +161,60 @@ export type Database = {
           },
         ]
       }
+      comment_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string
+          assigned_to: string
+          comment_id: string
+          id: string
+          unassigned_at: string | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by: string
+          assigned_to: string
+          comment_id: string
+          id?: string
+          unassigned_at?: string | null
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string
+          assigned_to?: string
+          comment_id?: string
+          id?: string
+          unassigned_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comment_assignments_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comment_assignments_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
+          ai_confidence: number | null
+          ai_suggested_response: string | null
+          assigned_to: string | null
           author_id: string | null
           author_name: string
           author_role: string | null
@@ -180,6 +226,7 @@ export type Database = {
           metadata: Json | null
           organization_id: string
           parent_comment_id: string | null
+          parse_job_id: string | null
           permit_id: string
           resolved_at: string | null
           resolved_by: string | null
@@ -187,6 +234,9 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          ai_confidence?: number | null
+          ai_suggested_response?: string | null
+          assigned_to?: string | null
           author_id?: string | null
           author_name: string
           author_role?: string | null
@@ -198,6 +248,7 @@ export type Database = {
           metadata?: Json | null
           organization_id: string
           parent_comment_id?: string | null
+          parse_job_id?: string | null
           permit_id: string
           resolved_at?: string | null
           resolved_by?: string | null
@@ -205,6 +256,9 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          ai_confidence?: number | null
+          ai_suggested_response?: string | null
+          assigned_to?: string | null
           author_id?: string | null
           author_name?: string
           author_role?: string | null
@@ -216,6 +270,7 @@ export type Database = {
           metadata?: Json | null
           organization_id?: string
           parent_comment_id?: string | null
+          parse_job_id?: string | null
           permit_id?: string
           resolved_at?: string | null
           resolved_by?: string | null
@@ -223,6 +278,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "comments_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "comments_author_id_fkey"
             columns: ["author_id"]
@@ -242,6 +304,13 @@ export type Database = {
             columns: ["parent_comment_id"]
             isOneToOne: false
             referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parse_job_id_fkey"
+            columns: ["parse_job_id"]
+            isOneToOne: false
+            referencedRelation: "parse_jobs"
             referencedColumns: ["id"]
           },
           {
@@ -336,6 +405,7 @@ export type Database = {
       }
       documents: {
         Row: {
+          auto_parse: boolean | null
           comment_id: string | null
           created_at: string | null
           description: string | null
@@ -346,6 +416,8 @@ export type Database = {
           id: string
           is_public: boolean | null
           organization_id: string
+          parse_status: Database["public"]["Enums"]["parse_job_status"] | null
+          parsed_at: string | null
           permit_id: string | null
           project_id: string | null
           storage_path: string
@@ -353,6 +425,7 @@ export type Database = {
           version: number | null
         }
         Insert: {
+          auto_parse?: boolean | null
           comment_id?: string | null
           created_at?: string | null
           description?: string | null
@@ -363,6 +436,8 @@ export type Database = {
           id?: string
           is_public?: boolean | null
           organization_id: string
+          parse_status?: Database["public"]["Enums"]["parse_job_status"] | null
+          parsed_at?: string | null
           permit_id?: string | null
           project_id?: string | null
           storage_path: string
@@ -370,6 +445,7 @@ export type Database = {
           version?: number | null
         }
         Update: {
+          auto_parse?: boolean | null
           comment_id?: string | null
           created_at?: string | null
           description?: string | null
@@ -380,6 +456,8 @@ export type Database = {
           id?: string
           is_public?: boolean | null
           organization_id?: string
+          parse_status?: Database["public"]["Enums"]["parse_job_status"] | null
+          parsed_at?: string | null
           permit_id?: string | null
           project_id?: string | null
           storage_path?: string
@@ -420,6 +498,58 @@ export type Database = {
             columns: ["uploaded_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_queue: {
+        Row: {
+          created_at: string | null
+          id: string
+          matched_by: string | null
+          organization_id: string | null
+          permit_id: string | null
+          raw_payload: Json
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          matched_by?: string | null
+          organization_id?: string | null
+          permit_id?: string | null
+          raw_payload: Json
+          status?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          matched_by?: string | null
+          organization_id?: string | null
+          permit_id?: string | null
+          raw_payload?: Json
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_queue_matched_by_fkey"
+            columns: ["matched_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_queue_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_queue_permit_id_fkey"
+            columns: ["permit_id"]
+            isOneToOne: false
+            referencedRelation: "permits"
             referencedColumns: ["id"]
           },
         ]
@@ -553,6 +683,101 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          created_at: string | null
+          email: boolean | null
+          email_digest: boolean | null
+          id: string
+          in_app: boolean | null
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email?: boolean | null
+          email_digest?: boolean | null
+          id?: string
+          in_app?: boolean | null
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: boolean | null
+          email_digest?: boolean | null
+          id?: string
+          in_app?: boolean | null
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          body: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          metadata: Json | null
+          organization_id: string
+          read_at: string | null
+          recipient_id: string
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+        }
+        Insert: {
+          action_url?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          metadata?: Json | null
+          organization_id: string
+          read_at?: string | null
+          recipient_id: string
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+        }
+        Update: {
+          action_url?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          metadata?: Json | null
+          organization_id?: string
+          read_at?: string | null
+          recipient_id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           active_nc_jurisdictions: string[] | null
@@ -591,6 +816,63 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      parse_jobs: {
+        Row: {
+          comments_created: number | null
+          completed_at: string | null
+          created_at: string | null
+          document_id: string
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          organization_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["parse_job_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          comments_created?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          document_id: string
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          organization_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["parse_job_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          comments_created?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          document_id?: string
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          organization_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["parse_job_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parse_jobs_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parse_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       permit_status_history: {
         Row: {
@@ -781,6 +1063,7 @@ export type Database = {
           id: string
           is_super_admin: boolean | null
           job_title: string | null
+          last_seen_at: string | null
           notification_preferences: Json | null
           onboarding_completed: boolean | null
           organization_id: string
@@ -796,6 +1079,7 @@ export type Database = {
           id: string
           is_super_admin?: boolean | null
           job_title?: string | null
+          last_seen_at?: string | null
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           organization_id: string
@@ -811,6 +1095,7 @@ export type Database = {
           id?: string
           is_super_admin?: boolean | null
           job_title?: string | null
+          last_seen_at?: string | null
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           organization_id?: string
@@ -839,7 +1124,9 @@ export type Database = {
           estimated_value: number | null
           id: string
           jurisdiction: string
+          latitude: number | null
           lead_id: string | null
+          longitude: number | null
           metadata: Json | null
           name: string
           organization_id: string
@@ -861,7 +1148,9 @@ export type Database = {
           estimated_value?: number | null
           id?: string
           jurisdiction: string
+          latitude?: number | null
           lead_id?: string | null
+          longitude?: number | null
           metadata?: Json | null
           name: string
           organization_id: string
@@ -883,7 +1172,9 @@ export type Database = {
           estimated_value?: number | null
           id?: string
           jurisdiction?: string
+          latitude?: number | null
           lead_id?: string | null
+          longitude?: number | null
           metadata?: Json | null
           name?: string
           organization_id?: string
@@ -912,6 +1203,115 @@ export type Database = {
           },
         ]
       }
+      team_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          organization_id: string
+          role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["invitation_status"] | null
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          organization_id: string
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["invitation_status"] | null
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          organization_id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["invitation_status"] | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          invited_by: string | null
+          is_active: boolean | null
+          organization_id: string
+          profile_id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invited_by?: string | null
+          is_active?: boolean | null
+          organization_id: string
+          profile_id: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invited_by?: string | null
+          is_active?: boolean | null
+          organization_id?: string
+          profile_id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -932,6 +1332,12 @@ export type Database = {
         | "permit_approved"
         | "permit_denied"
         | "resubmittal_required"
+        | "comment_resolved"
+        | "comment_assigned"
+        | "team_member_invited"
+        | "team_member_joined"
+        | "document_parsed"
+        | "email_ingested"
       comment_category:
         | "parking_access"
         | "stormwater"
@@ -970,6 +1376,18 @@ export type Database = {
         | "approval_letter"
         | "rejection_letter"
         | "other"
+      invitation_status: "pending" | "accepted" | "expired" | "revoked"
+      notification_type:
+        | "comment_assigned"
+        | "comment_resolved"
+        | "permit_status_changed"
+        | "deadline_approaching"
+        | "document_uploaded"
+        | "team_invitation"
+        | "mention"
+        | "ai_parse_complete"
+        | "email_ingested"
+      parse_job_status: "queued" | "processing" | "completed" | "failed"
       permit_status:
         | "draft"
         | "submitted"
@@ -1140,6 +1558,12 @@ export const Constants = {
         "permit_approved",
         "permit_denied",
         "resubmittal_required",
+        "comment_resolved",
+        "comment_assigned",
+        "team_member_invited",
+        "team_member_joined",
+        "document_parsed",
+        "email_ingested",
       ],
       comment_category: [
         "parking_access",
@@ -1183,6 +1607,19 @@ export const Constants = {
         "rejection_letter",
         "other",
       ],
+      invitation_status: ["pending", "accepted", "expired", "revoked"],
+      notification_type: [
+        "comment_assigned",
+        "comment_resolved",
+        "permit_status_changed",
+        "deadline_approaching",
+        "document_uploaded",
+        "team_invitation",
+        "mention",
+        "ai_parse_complete",
+        "email_ingested",
+      ],
+      parse_job_status: ["queued", "processing", "completed", "failed"],
       permit_status: [
         "draft",
         "submitted",
@@ -1221,3 +1658,4 @@ export const Constants = {
     },
   },
 } as const
+

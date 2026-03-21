@@ -47,6 +47,21 @@ export type Priority = 'low' | 'normal' | 'high' | 'urgent';
 
 export type OrgRole = 'owner' | 'admin' | 'member' | 'viewer';
 
+export type NotificationType =
+  | 'comment_assigned'
+  | 'comment_resolved'
+  | 'permit_status_changed'
+  | 'deadline_approaching'
+  | 'document_uploaded'
+  | 'team_invitation'
+  | 'mention'
+  | 'ai_parse_complete'
+  | 'email_ingested';
+
+export type ParseJobStatus = 'queued' | 'processing' | 'completed' | 'failed';
+
+export type InvitationStatus = 'pending' | 'accepted' | 'expired' | 'revoked';
+
 export type CommentSource = 'internal' | 'jurisdiction' | 'imported';
 
 export type CommentCategory = 

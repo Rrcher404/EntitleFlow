@@ -16,8 +16,9 @@ import {
   PROJECT_TYPE_LABELS,
 } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type Organization = Database['public']['Tables']['organizations']['Row'];
@@ -54,6 +55,7 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
@@ -393,8 +395,9 @@ export default function ProjectsPage() {
             return (
               <Card
                 key={project.id}
-                className="p-4"
+                className="p-4 cursor-pointer hover:shadow-md transition-shadow"
                 style={{ backgroundColor: '#FDFBF7', borderColor: '#E8E0D0' }}
+                onClick={() => router.push(`/app/projects/${project.id}`)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

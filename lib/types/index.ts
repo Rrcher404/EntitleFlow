@@ -62,6 +62,27 @@ export type Jurisdiction = Database['public']['Tables']['jurisdictions']['Row'];
 /** Marketing lead capture */
 export type MarketingLead = Database['public']['Tables']['marketing_leads']['Row'];
 
+/** Team member (organization membership) */
+export type TeamMember = Database['public']['Tables']['team_members']['Row'];
+
+/** Team invitation */
+export type TeamInvitation = Database['public']['Tables']['team_invitations']['Row'];
+
+/** Comment assignment */
+export type CommentAssignment = Database['public']['Tables']['comment_assignments']['Row'];
+
+/** User notification */
+export type Notification = Database['public']['Tables']['notifications']['Row'];
+
+/** User notification preferences */
+export type NotificationPreference = Database['public']['Tables']['notification_preferences']['Row'];
+
+/** Document parse job */
+export type ParseJob = Database['public']['Tables']['parse_jobs']['Row'];
+
+/** Ingested email queue entry */
+export type EmailQueueEntry = Database['public']['Tables']['email_queue']['Row'];
+
 // ============================================================================
 // TABLE INSERT TYPE ALIASES
 // ============================================================================
@@ -98,6 +119,21 @@ export type JurisdictionInsert = Database['public']['Tables']['jurisdictions']['
 
 /** Insert payload for marketing leads */
 export type MarketingLeadInsert = Database['public']['Tables']['marketing_leads']['Insert'];
+
+/** Insert payload for team members */
+export type TeamMemberInsert = Database['public']['Tables']['team_members']['Insert'];
+
+/** Insert payload for team invitations */
+export type TeamInvitationInsert = Database['public']['Tables']['team_invitations']['Insert'];
+
+/** Insert payload for comment assignments */
+export type CommentAssignmentInsert = Database['public']['Tables']['comment_assignments']['Insert'];
+
+/** Insert payload for notifications */
+export type NotificationInsert = Database['public']['Tables']['notifications']['Insert'];
+
+/** Insert payload for parse jobs */
+export type ParseJobInsert = Database['public']['Tables']['parse_jobs']['Insert'];
 
 // ============================================================================
 // TABLE UPDATE TYPE ALIASES
