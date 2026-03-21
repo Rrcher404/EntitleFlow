@@ -7,6 +7,7 @@
  */
 
 import { complete as openrouterComplete } from '../openrouter';
+import { ENHANCEMENT_LAYER_ENABLED, getReasoningModel } from '../model-registry';
 import type {
   AgentPersona,
   AgentResponse,
@@ -62,7 +63,7 @@ export async function executeAgent<T>(
   modelOverride?: Partial<ModelConfig>,
   jsonMode: boolean = true,
 ): Promise<AgentResponse<T>> {
-  const model: ModelConfig = {
+  let model: ModelConfig = {
     ...persona.defaultModel,
     ...modelOverride,
   };
@@ -86,16 +87,45 @@ export async function executeAgent<T>(
     usage = result.usage;
     latencyMs = result.latencyMs;
   } else {
-    // Route to Vertex AI (Gemini)
-    const result = await vertexComplete(
-      persona.systemPrompt,
-      userPrompt,
-      model,
-      jsonMode,
-    );
+    // Route to Vertex AI (Gemini) with OpenRouter fallback
+    try {
+      const result = await vertexComplete(
+        persona.systemPrompt,
+        userPrompt,
+        model,
+        jsonMode,
+      );
 
-    content = result.content;
-    latencyMs = result.latencyMs;
+      content = result.content;
+      latencyMs = result.latencyMs;
+    } catch (vertexError) {
+      // If Vertex AI fails (e.g. missing credentials on Vercel), fall back to OpenRouter
+      if (ENHANCEMENT_LAYER_ENABLED) {
+        console.warn(
+          `[AI] Vertex AI failed for agent "${persona.id}", falling back to OpenRouter:`,
+          vertexError instanceof Error ? vertexError.message : vertexError,
+        );
+        const fallbackModel = getReasoningModel({
+          maxTokens: model.maxTokens,
+          temperature: model.temperature,
+        });
+        const result = await openrouterComplete({
+          systemPrompt: persona.systemPrompt,
+          userPrompt,
+          model: fallbackModel,
+          jsonMode,
+        });
+
+        content = result.content;
+        reasoning = result.reasoning;
+        usage = result.usage;
+        latencyMs = result.latencyMs;
+        // Override model info to reflect actual model used
+        model = fallbackModel;
+      } else {
+        throw vertexError;
+      }
+    }
   }
 
   // Parse JSON response

@@ -14,6 +14,7 @@ import {
   MapPin,
   Bell,
   Users,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ const navItems = [
   { label: 'Analytics', href: '/app/analytics', icon: BarChart3 },
   { label: 'Documents', href: '/app/documents', icon: FileText },
   { label: 'Notifications', href: '/app/notifications', icon: Bell },
+  { label: 'FlowE AI', href: '/app/flowe', icon: Sparkles },
 ];
 
 const bottomItems = [

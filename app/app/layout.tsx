@@ -2,17 +2,21 @@
 
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { AppTopbar } from '@/components/app/app-topbar';
-import { FlowEChat } from '@/components/app/flowe-chat';
 import { OnboardingDialog } from '@/components/ui/onboarding-dialog';
 import { SidebarProvider } from '@/components/ui/aceternity-sidebar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
 import { useRouter } from 'next/navigation';
-import { FileText, FolderPlus, Search } from 'lucide-react';
+import { FileText, FolderPlus, Search, Sparkles } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const floatingMenuOptions = [
+    {
+      label: 'Ask FlowE',
+      Icon: <Sparkles className="h-4 w-4" />,
+      onClick: () => router.push('/app/flowe'),
+    },
     {
       label: 'New Project',
       Icon: <FolderPlus className="h-4 w-4" />,
@@ -43,7 +47,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
         <FloatingActionMenu options={floatingMenuOptions} />
-        <FlowEChat />
       </div>
       <OnboardingDialog />
     </SidebarProvider>
