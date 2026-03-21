@@ -57,15 +57,14 @@ export default function SettingsPage() {
             jobTitle: profileData.job_title || '',
           }));
 
-          // Fetch organization
-          const { data: orgData, error: orgError } = await supabase
+          // Fetch organization (non-blocking — don't fail the whole page if org is missing)
+          const { data: orgData } = await supabase
             .from('organizations')
             .select('*')
             .eq('id', profileData.organization_id)
             .single();
 
-          if (orgError) throw orgError;
-          setOrganization(orgData);
+          if (orgData) setOrganization(orgData);
         }
       } catch (error) {
         console.error('Error loading profile:', error);
