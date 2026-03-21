@@ -32,16 +32,20 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  const { data: { session } } = await supabase.auth.getSession()
 
-  // Check if the request is for /admin/* routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    // If not authenticated, redirect to login
-    if (!session?.user) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+  const isAppRoute = request.nextUrl.pathname.startsWith('/app')
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
 
-    // Fetch user profile to check if super_admin
+  // Protected routes: redirect unauthenticated users to /login with redirect param
+  if ((isAppRoute || isAdminRoute) && !session?.user) {
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Admin routes: additionally check for super_admin role
+  if (isAdminRoute && session?.user) {
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('role, is_super_admin')
@@ -49,7 +53,6 @@ export async function middleware(request: NextRequest) {
       .single()
 
     if (profileError || !profile?.is_super_admin) {
-      // Not a super admin, redirect to app dashboard
       return NextResponse.redirect(new URL('/app/dashboard', request.url))
     }
   }

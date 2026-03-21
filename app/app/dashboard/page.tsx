@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { FolderPlus, FileText, Upload, ArrowRight } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -25,6 +28,7 @@ export default function AppDashboard() {
   const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<Deadline[]>([]);
   const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState<string>('');
 
   const supabase = createClient();
 
@@ -49,6 +53,14 @@ export default function AppDashboard() {
 
         if (profileError) throw profileError;
         setProfile(profileData);
+
+        // Resolve display name: profile full_name → auth metadata → email prefix
+        const firstName =
+          profileData?.full_name?.split(' ')[0] ||
+          (user.user_metadata?.full_name as string | undefined)?.split(' ')[0] ||
+          user.email?.split('@')[0] ||
+          '';
+        setDisplayName(firstName);
 
         if (profileData) {
           const orgId = profileData.organization_id;
@@ -159,9 +171,9 @@ export default function AppDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground font-display">
-          Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}!
+          {displayName ? `Welcome back, ${displayName}!` : 'Welcome back!'}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">Here's your approval operations overview.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Here&apos;s your approval operations overview.</p>
       </div>
 
       {/* KPI Cards */}
@@ -186,6 +198,67 @@ export default function AppDashboard() {
           </Card>
         ))}
       </div>
+
+      {/* Onboarding — only shows when the account has no data yet */}
+      {kpis.projects === 0 && kpis.permits === 0 && kpis.documents === 0 && (
+        <Card className="border-2 border-dashed border-primary/30 bg-accent/30 p-6">
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-foreground font-display">
+                Get started with EntitleFlow
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Set up your first project in three steps — it only takes a few minutes.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {[
+                {
+                  step: 1,
+                  icon: FolderPlus,
+                  title: 'Create a project',
+                  desc: 'Add the development site you\'re working on.',
+                  href: '/app/projects',
+                },
+                {
+                  step: 2,
+                  icon: FileText,
+                  title: 'Add a permit',
+                  desc: 'Link a permit application to your project.',
+                  href: '/app/permits',
+                },
+                {
+                  step: 3,
+                  icon: Upload,
+                  title: 'Upload a document',
+                  desc: 'Upload reviewer comments for AI analysis.',
+                  href: '/app/documents',
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.step} href={item.href} className="group">
+                    <div className="rounded-lg border border-border bg-card p-4 transition-all hover:shadow-md hover:border-primary/40">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                          {item.step}
+                        </div>
+                        <div className="space-y-1 min-w-0">
+                          <p className="text-sm font-semibold text-foreground flex items-center gap-1">
+                            {item.title}
+                            <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                          </p>
+                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Recent Activity Section */}
       <Card className="p-6" style={{ backgroundColor: '#FDFBF7', borderColor: '#E8E0D0' }}>
