@@ -13,6 +13,7 @@ import { documentStrategistPersona } from './document-strategist';
 import { complianceAdvisorPersona } from './compliance-advisor';
 import { resubmittalPlannerPersona } from './resubmittal-planner';
 import { projectIntelPersona } from './project-intel';
+import { floweAssistantPersona } from './flowe-assistant';
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -25,6 +26,7 @@ const AGENTS: Record<AgentId, AgentPersona> = {
   'compliance-advisor': complianceAdvisorPersona,
   'resubmittal-planner': resubmittalPlannerPersona,
   'project-intel': projectIntelPersona,
+  'flowe-assistant': floweAssistantPersona,
 };
 
 /**
@@ -78,3 +80,4 @@ export { analyzeDocument } from './document-strategist';
 export { checkCompliance } from './compliance-advisor';
 export { planResubmittal } from './resubmittal-planner';
 export { analyzeProject } from './project-intel';
+export { chatWithFlowE } from './flowe-assistant';

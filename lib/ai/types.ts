@@ -36,7 +36,8 @@ export type AgentId =
   | 'document-strategist'
   | 'compliance-advisor'
   | 'resubmittal-planner'
-  | 'project-intel';
+  | 'project-intel'
+  | 'flowe-assistant';
 
 export interface AgentPersona {
   id: AgentId;
@@ -62,7 +63,8 @@ export type AITaskType =
   | 'resubmittal-plan'
   | 'project-insights'
   | 'batch-classify'
-  | 'draft-response-letter';
+  | 'draft-response-letter'
+  | 'chat';
 
 export interface AITaskRequest {
   taskType: AITaskType;

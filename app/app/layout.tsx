@@ -2,6 +2,7 @@
 
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { AppTopbar } from '@/components/app/app-topbar';
+import { FlowEChat } from '@/components/app/flowe-chat';
 import { OnboardingDialog } from '@/components/ui/onboarding-dialog';
 import { SidebarProvider } from '@/components/ui/aceternity-sidebar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
@@ -42,6 +43,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
         <FloatingActionMenu options={floatingMenuOptions} />
+        <FlowEChat />
       </div>
       <OnboardingDialog />
     </SidebarProvider>
