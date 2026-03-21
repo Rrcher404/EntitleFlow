@@ -25,7 +25,8 @@ export default function SettingsPage() {
     confirmPassword: '',
   });
 
-  const supabase = createClient();
+  // Memoize the client so useEffect doesn't re-run on every render
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,9 +37,14 @@ export default function SettingsPage() {
       }
 
       try {
-        // Get current user
+        // Get current user — getUser() validates the JWT server-side
         const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError || !user) throw new Error('Could not fetch user');
+        if (userError || !user) {
+          console.error('Auth error:', userError?.message || 'No user session');
+          setMessage({ type: 'error', text: 'Session expired — please log in again' });
+          setLoading(false);
+          return;
+        }
 
         // Fetch profile
         const { data: profileData, error: profileError } = await supabase
@@ -47,17 +53,32 @@ export default function SettingsPage() {
           .eq('id', user.id)
           .single();
 
-        if (profileError) throw profileError;
-        if (profileData) {
-          setProfile(profileData);
-          setFormData(prev => ({
-            ...prev,
-            fullName: profileData.full_name || '',
-            phone: profileData.phone || '',
-            jobTitle: profileData.job_title || '',
-          }));
+        if (profileError) {
+          console.error('Profile query error:', profileError.code, profileError.message);
+          // If profile doesn't exist yet, create a skeleton from auth data
+          if (profileError.code === 'PGRST116') {
+            setFormData(prev => ({
+              ...prev,
+              fullName: (user.user_metadata?.full_name as string) || '',
+            }));
+            setMessage({ type: 'error', text: 'Profile not found — save to create one' });
+          } else {
+            setMessage({ type: 'error', text: `Could not load profile: ${profileError.message}` });
+          }
+          setLoading(false);
+          return;
+        }
 
-          // Fetch organization (non-blocking — don't fail the whole page if org is missing)
+        setProfile(profileData);
+        setFormData(prev => ({
+          ...prev,
+          fullName: profileData.full_name || '',
+          phone: profileData.phone || '',
+          jobTitle: profileData.job_title || '',
+        }));
+
+        // Fetch organization (non-blocking — don't fail the whole page if org is missing)
+        if (profileData.organization_id) {
           const { data: orgData } = await supabase
             .from('organizations')
             .select('*')
@@ -68,7 +89,8 @@ export default function SettingsPage() {
         }
       } catch (error) {
         console.error('Error loading profile:', error);
-        setMessage({ type: 'error', text: 'Failed to load profile' });
+        const msg = error instanceof Error ? error.message : 'Unknown error';
+        setMessage({ type: 'error', text: `Failed to load profile: ${msg}` });
       } finally {
         setLoading(false);
       }
