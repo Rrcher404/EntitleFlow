@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
-import { suggestResponse } from '@/lib/gcp/vertex-ai';
+import AIRouter from '@/lib/ai/router';
 
 /**
  * POST /api/comments/[id]/ai-response
- * Generates an AI-suggested response to a comment
- * Body: {}
+ * Generates an AI-suggested response to a specific comment.
+ * Now powered by the Response Drafter agent with enhanced output.
  */
 export async function POST(
   request: NextRequest,
@@ -45,8 +45,8 @@ export async function POST(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    // Call Vertex AI to generate response suggestion
-    const suggestion = await suggestResponse(
+    // Use the Response Drafter agent
+    const agentResponse = await AIRouter.draftResponse(
       comment.body,
       comment.category || 'general',
     );
@@ -59,8 +59,12 @@ export async function POST(
       .update({
         metadata: {
           ...(comment.metadata as any),
-          ai_suggested_response: suggestion,
-          ai_confidence: 0.85,
+          ai_suggested_response: agentResponse.result.response,
+          ai_confidence: agentResponse.result.confidence,
+          ai_tone: agentResponse.result.tone,
+          ai_code_references: agentResponse.result.codeReferences,
+          ai_agent_id: agentResponse.agentId,
+          ai_model: agentResponse.model.model,
           ai_suggestion_generated_at: new Date().toISOString(),
         },
         updated_at: new Date().toISOString(),
@@ -78,8 +82,12 @@ export async function POST(
     }
 
     return NextResponse.json({
-      suggestion,
-      confidence: 0.85,
+      suggestion: agentResponse.result.response,
+      confidence: agentResponse.result.confidence,
+      tone: agentResponse.result.tone,
+      codeReferences: agentResponse.result.codeReferences,
+      agentId: agentResponse.agentId,
+      model: agentResponse.model,
     });
   } catch (error) {
     console.error('Unexpected error in POST /api/comments/[id]/ai-response:', error);

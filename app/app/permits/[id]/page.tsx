@@ -43,7 +43,13 @@ interface CommentWithAuthor extends Comment {
   replies?: CommentWithAuthor[];
   aiSuggestion?: {
     text: string;
+    tone?: string;
+    codeReferences?: string[];
+    confidence?: number;
+    agentId?: string;
+    model?: { provider: string; model: string };
     generatedAt: string;
+    isLoading?: boolean;
   };
 }
 
@@ -321,10 +327,43 @@ function CommentCard({
 
         {showAiSuggestion && comment.aiSuggestion && (
           <div className="ml-6 p-3 bg-purple-50 border border-purple-200 rounded">
-            <div className="text-xs font-semibold text-purple-900 mb-2">
-              🤖 AI Suggested Response
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs font-semibold text-purple-900">
+                🤖 AI Suggested Response
+              </div>
+              {comment.aiSuggestion.agentId && !comment.aiSuggestion.isLoading && (
+                <div className="flex items-center gap-2">
+                  {comment.aiSuggestion.confidence && (
+                    <span className="text-xs text-purple-600">
+                      {Math.round(comment.aiSuggestion.confidence * 100)}% confident
+                    </span>
+                  )}
+                  {comment.aiSuggestion.model && (
+                    <span className="text-xs px-1.5 py-0.5 bg-purple-200 text-purple-800 rounded font-mono">
+                      {comment.aiSuggestion.model.provider === 'openrouter' ? 'MiMo' : 'Gemini'}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-            <p className="text-xs text-purple-800 mb-2">{comment.aiSuggestion.text}</p>
+            {comment.aiSuggestion.isLoading ? (
+              <div className="flex items-center gap-2 text-xs text-purple-600">
+                <div className="w-3 h-3 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                Generating response...
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-purple-800 mb-2">{comment.aiSuggestion.text}</p>
+                {comment.aiSuggestion.codeReferences && comment.aiSuggestion.codeReferences.length > 0 && (
+                  <div className="mb-2">
+                    <span className="text-xs font-medium text-purple-700">References: </span>
+                    <span className="text-xs text-purple-600">
+                      {comment.aiSuggestion.codeReferences.join(', ')}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
             <div className="flex gap-2">
               <button className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium">
                 Copy
@@ -332,7 +371,10 @@ function CommentCard({
               <button className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium">
                 Insert as Reply
               </button>
-              <button className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium">
+              <button
+                onClick={() => onAiSuggest(comment.id)}
+                className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium"
+              >
                 Regenerate
               </button>
               <button
@@ -719,18 +761,63 @@ export default function PermitDetailPage() {
     [comments, supabase]
   );
 
-  // AI suggest handler
+  // AI suggest handler — calls the Response Drafter agent via API
   const handleAiSuggest = useCallback(async (commentId: string) => {
-    const suggestion = {
-      text: 'Thank you for your comment. We have reviewed your feedback and updated our submission accordingly. Please see the attached revised documents for more details.',
-      generatedAt: new Date().toISOString(),
-    };
-
+    // Set loading state
     setComments(
       comments.map((c) =>
-        c.id === commentId ? { ...c, aiSuggestion: suggestion } : c
+        c.id === commentId
+          ? { ...c, aiSuggestion: { text: '', generatedAt: '', isLoading: true } }
+          : c
       )
     );
+
+    try {
+      const res = await fetch(`/api/comments/${commentId}/ai-response`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to generate AI suggestion');
+      }
+
+      const data = await res.json();
+
+      setComments(
+        comments.map((c) =>
+          c.id === commentId
+            ? {
+                ...c,
+                aiSuggestion: {
+                  text: data.suggestion,
+                  tone: data.tone,
+                  codeReferences: data.codeReferences,
+                  confidence: data.confidence,
+                  agentId: data.agentId,
+                  model: data.model,
+                  generatedAt: new Date().toISOString(),
+                },
+              }
+            : c
+        )
+      );
+    } catch (error) {
+      console.error('AI suggest error:', error);
+      setComments(
+        comments.map((c) =>
+          c.id === commentId
+            ? {
+                ...c,
+                aiSuggestion: {
+                  text: 'Failed to generate suggestion. Please try again.',
+                  generatedAt: new Date().toISOString(),
+                },
+              }
+            : c
+        )
+      );
+    }
   }, [comments]);
 
   // Reply comment handler

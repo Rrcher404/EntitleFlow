@@ -1,48 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { summarizeReviewLetter } from '@/lib/gcp/vertex-ai';
+import AIRouter from '@/lib/ai/router';
 import { z } from 'zod';
 
-// Request validation schema
 const requestSchema = z.object({
   text: z.string().min(1, 'Review letter text is required').max(50000, 'Text is too long (max 50KB)'),
+  projectName: z.string().optional(),
+  permitNumber: z.string().optional(),
+  jurisdiction: z.string().optional(),
+  reviewRound: z.number().optional(),
 });
 
 /**
  * POST /api/ai/summarize
- * Summarizes a permit review letter into key sections and action items.
- * Requires authenticated user.
+ * Summarizes a permit review letter with strategic analysis.
+ * Now powered by the Document Strategist agent — adds effort estimates,
+ * approval risk assessment, and resolution timeline prediction.
  *
- * Request body:
+ * Response (backwards-compatible + enhanced):
  * {
- *   "text": "string (1-50000 chars)"
- * }
- *
- * Response:
- * {
- *   "summary": "string",
+ *   "summary": string,
  *   "totalItems": number,
- *   "criticalItems": ["string"],
- *   "actionItems": [
- *     {
- *       "item": "string",
- *       "category": "parking_access" | "stormwater" | "building_code" | ...
- *     }
- *   ],
- *   "categories": {
- *     "parking_access": number,
- *     "stormwater": number,
- *     ...
- *   }
+ *   "criticalItems": string[],
+ *   "actionItems": [{ "item", "category", "severity", "estimatedEffort" }],
+ *   "categories": { ... },
+ *   "approvalRisk": "low" | "medium" | "high",
+ *   "estimatedResolutionDays": number,
+ *   "agentId": "document-strategist",
+ *   "model": { ... }
  * }
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // Verify user is authenticated
     const supabase = await createServerSupabaseClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -51,42 +42,36 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Parse and validate request body
     const body = await request.json();
     const validationResult = requestSchema.safeParse(body);
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          error: 'Invalid request',
-          details: validationResult.error.issues,
-        },
+        { error: 'Invalid request', details: validationResult.error.issues },
         { status: 400 },
       );
     }
 
-    const { text } = validationResult.data;
+    const { text, projectName, permitNumber, jurisdiction, reviewRound } = validationResult.data;
 
-    // Call Vertex AI to summarize the review letter
-    const result = await summarizeReviewLetter(text);
+    const agentResponse = await AIRouter.analyzeDocument(text, {
+      projectName,
+      permitNumber,
+      jurisdiction,
+      reviewRound,
+    });
 
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json({
+      ...agentResponse.result,
+      agentId: agentResponse.agentId,
+      model: agentResponse.model,
+      reasoning: agentResponse.reasoning,
+      usage: agentResponse.usage,
+      latencyMs: agentResponse.latencyMs,
+    });
   } catch (error) {
     console.error('Error in /api/ai/summarize:', error);
-
-    if (error instanceof Error) {
-      // Check for specific error types
-      if (error.message.includes('Unauthorized')) {
-        return NextResponse.json({ error: error.message }, { status: 401 });
-      }
-
-      if (error.message.includes('Invalid')) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
-      }
-
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: 'Unexpected error during summarization' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unexpected error during summarization';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

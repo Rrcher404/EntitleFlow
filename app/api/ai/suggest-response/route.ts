@@ -1,40 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { suggestResponse } from '@/lib/gcp/vertex-ai';
+import AIRouter from '@/lib/ai/router';
 import { z } from 'zod';
 
-// Request validation schema
 const requestSchema = z.object({
-  commentText: z
-    .string()
-    .min(1, 'Comment text is required')
-    .max(5000, 'Comment text is too long'),
+  commentText: z.string().min(1, 'Comment text is required').max(5000, 'Comment text is too long'),
   category: z.string().min(1, 'Category is required').max(50, 'Category is too long'),
+  tone: z.enum(['formal', 'technical', 'collaborative']).optional(),
+  jurisdiction: z.string().optional(),
+  projectContext: z.string().optional(),
 });
 
 /**
  * POST /api/ai/suggest-response
- * Generates a professional response suggestion for a given review comment.
- * Requires authenticated user.
+ * Generates a professional response to a review comment.
+ * Now powered by the Response Drafter agent — adds code references,
+ * tone control, and confidence scoring.
  *
- * Request body:
+ * Response (backwards-compatible + enhanced):
  * {
- *   "commentText": "string (1-5000 chars)",
- *   "category": "string"
- * }
- *
- * Response:
- * {
- *   "response": "string"
+ *   "response": string,
+ *   "tone": "formal" | "technical" | "collaborative",
+ *   "codeReferences": string[],
+ *   "confidence": number,
+ *   "agentId": "response-drafter",
+ *   "model": { ... }
  * }
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // Verify user is authenticated
     const supabase = await createServerSupabaseClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -43,45 +39,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Parse and validate request body
     const body = await request.json();
     const validationResult = requestSchema.safeParse(body);
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          error: 'Invalid request',
-          details: validationResult.error.issues,
-        },
+        { error: 'Invalid request', details: validationResult.error.issues },
         { status: 400 },
       );
     }
 
-    const { commentText, category } = validationResult.data;
+    const { commentText, category, tone, jurisdiction, projectContext } = validationResult.data;
 
-    // Call Vertex AI to generate response suggestion
-    const response = await suggestResponse(commentText, category);
+    const agentResponse = await AIRouter.draftResponse(commentText, category, {
+      tone,
+      jurisdiction,
+      projectContext,
+    });
 
-    return NextResponse.json({ response }, { status: 200 });
+    return NextResponse.json({
+      ...agentResponse.result,
+      agentId: agentResponse.agentId,
+      model: agentResponse.model,
+      reasoning: agentResponse.reasoning,
+      usage: agentResponse.usage,
+      latencyMs: agentResponse.latencyMs,
+    });
   } catch (error) {
     console.error('Error in /api/ai/suggest-response:', error);
-
-    if (error instanceof Error) {
-      // Check for specific error types
-      if (error.message.includes('Unauthorized')) {
-        return NextResponse.json({ error: error.message }, { status: 401 });
-      }
-
-      if (error.message.includes('Invalid')) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
-      }
-
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json(
-      { error: 'Unexpected error generating response suggestion' },
-      { status: 500 },
-    );
+    const message = error instanceof Error ? error.message : 'Unexpected error generating response suggestion';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
