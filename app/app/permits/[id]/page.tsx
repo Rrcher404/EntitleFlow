@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PermitProgressBar } from '@/components/app/permit-progress-bar';
 import {
   Permit,
   Project,
@@ -30,6 +31,8 @@ import {
   Search,
   Filter,
   Check,
+  Mail,
+  Sparkles,
 } from 'lucide-react';
 
 // ============================================================================
@@ -219,8 +222,32 @@ function CommentCard({
   const [isResolving, setIsResolving] = useState(false);
   const [showAiSuggestion, setShowAiSuggestion] = useState(!!comment.aiSuggestion);
 
+  // Priority color mapping
+  const getPriorityColor = (priority?: string) => {
+    switch (priority?.toLowerCase()) {
+      case 'critical':
+        return 'bg-red-100 text-red-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'low':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const resolvedBgColor = comment.is_resolved ? 'bg-green-50' : 'bg-white';
+
   return (
-    <Card className="border-l-4" style={{ borderLeftColor: comment.is_resolved ? '#22c55e' : '#f97316' }}>
+    <Card
+      className={cn(
+        'border-l-4 transition-colors',
+        comment.is_resolved && 'bg-green-50'
+      )}
+      style={{ borderLeftColor: comment.is_resolved ? '#22c55e' : '#f97316' }}
+    >
       <div className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           <input
@@ -231,10 +258,29 @@ function CommentCard({
           />
 
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+            {/* Badges row */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              {/* Category badge */}
               <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded font-medium">
                 {comment.category || 'General'}
               </span>
+
+              {/* Email source badge */}
+              {(comment.source as string) === 'email' && (
+                <span className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded font-medium">
+                  <Mail size={12} />
+                  From Email
+                </span>
+              )}
+
+              {/* Priority indicator */}
+              {(comment as any).priority && (
+                <span className={cn('px-2 py-1 text-xs rounded font-medium', getPriorityColor((comment as any).priority))}>
+                  {(comment as any).priority.charAt(0).toUpperCase() + (comment as any).priority.slice(1)}
+                </span>
+              )}
+
+              {/* Status badge */}
               <span
                 className={`px-2 py-1 text-xs rounded font-medium ${
                   comment.is_resolved
@@ -246,28 +292,38 @@ function CommentCard({
               </span>
             </div>
 
-            <p className="text-sm text-gray-700 mb-2">{comment.body}</p>
+            {/* Comment content - larger text */}
+            <p className="text-base text-gray-900 mb-3 font-medium">{comment.body}</p>
 
-            <div className="flex items-center gap-2 text-xs text-gray-600 mb-3">
-              <span className="font-medium">👤 {comment.author_name}</span>
-              {comment.source && <span>|</span>}
-              {comment.source && <span className="capitalize">{comment.source}</span>}
+            {/* Metadata row - smaller, lighter text */}
+            <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+              <span className="font-medium text-gray-600">{comment.author_name}</span>
+              {comment.source && (comment.source as string) !== 'email' && (
+                <>
+                  <span>•</span>
+                  <span className="capitalize">{comment.source}</span>
+                </>
+              )}
               {comment.created_at && (
                 <>
-                  <span>|</span>
+                  <span>•</span>
                   <span>{formatDate(comment.created_at)}</span>
                 </>
               )}
             </div>
 
+            {/* Assigned to info */}
             {(comment as any).metadata?.assigned_to && (
-              <div className="text-xs text-gray-600 mb-3">
+              <div className="text-xs text-gray-500 mb-3">
                 Assigned to:{' '}
-                {allProfiles.find((p) => p.id === (comment as any).metadata?.assigned_to)?.full_name ||
-                  'Unknown'}
+                <span className="font-medium text-gray-700">
+                  {allProfiles.find((p) => p.id === (comment as any).metadata?.assigned_to)?.full_name ||
+                    'Unknown'}
+                </span>
               </div>
             )}
 
+            {/* Action buttons */}
             <div className="flex gap-2 flex-wrap">
               <button
                 disabled={isResolving}
@@ -319,44 +375,54 @@ function CommentCard({
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 flex-shrink-0"
           >
             <ChevronDown size={18} />
           </button>
         </div>
 
+        {/* AI Suggestion Panel - Enhanced styling */}
         {showAiSuggestion && comment.aiSuggestion && (
-          <div className="ml-6 p-3 bg-purple-50 border border-purple-200 rounded">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold text-purple-900">
-                🤖 AI Suggested Response
+          <div
+            className="ml-6 p-4 rounded-lg border border-purple-200"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%)',
+            }}
+          >
+            {/* Header with icon and confidence */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-purple-600" />
+                <div className="text-sm font-semibold text-purple-900">AI Suggested Response</div>
               </div>
               {comment.aiSuggestion.agentId && !comment.aiSuggestion.isLoading && (
                 <div className="flex items-center gap-2">
                   {comment.aiSuggestion.confidence && (
-                    <span className="text-xs text-purple-600">
+                    <span className="text-sm font-bold text-purple-700">
                       {Math.round(comment.aiSuggestion.confidence * 100)}% confident
                     </span>
                   )}
                   {comment.aiSuggestion.model && (
-                    <span className="text-xs px-1.5 py-0.5 bg-purple-200 text-purple-800 rounded font-mono">
-                      {comment.aiSuggestion.model.provider === 'openrouter' ? 'MiMo' : 'Gemini'}
+                    <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: '#dff2ef', color: '#0f3c35' }}>
+                      {comment.aiSuggestion.model.provider === 'openrouter' ? 'MiMo-v2' : 'Gemini'}
                     </span>
                   )}
                 </div>
               )}
             </div>
+
+            {/* Loading or content */}
             {comment.aiSuggestion.isLoading ? (
-              <div className="flex items-center gap-2 text-xs text-purple-600">
+              <div className="flex items-center gap-2 text-sm text-purple-600">
                 <div className="w-3 h-3 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
                 Generating response...
               </div>
             ) : (
               <>
-                <p className="text-xs text-purple-800 mb-2">{comment.aiSuggestion.text}</p>
+                <p className="text-sm text-purple-900 mb-3 leading-relaxed">{comment.aiSuggestion.text}</p>
                 {comment.aiSuggestion.codeReferences && comment.aiSuggestion.codeReferences.length > 0 && (
-                  <div className="mb-2">
-                    <span className="text-xs font-medium text-purple-700">References: </span>
+                  <div className="mb-3 p-2 bg-white/50 rounded">
+                    <span className="text-xs font-semibold text-purple-700">Code References: </span>
                     <span className="text-xs text-purple-600">
                       {comment.aiSuggestion.codeReferences.join(', ')}
                     </span>
@@ -364,37 +430,41 @@ function CommentCard({
                 )}
               </>
             )}
-            <div className="flex gap-2">
-              <button className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium">
-                Copy
+
+            {/* Action buttons */}
+            <div className="flex gap-2 pt-3 border-t border-purple-200">
+              <button className="text-xs px-3 py-1.5 rounded font-medium transition-colors" style={{ backgroundColor: '#dff2ef', color: '#0f3c35' }}>
+                ✓ Approve
               </button>
-              <button className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium">
-                Insert as Reply
+              <button className="text-xs px-3 py-1.5 rounded font-medium transition-colors" style={{ backgroundColor: '#dff2ef', color: '#0f3c35' }}>
+                ✎ Edit & Post
               </button>
               <button
                 onClick={() => onAiSuggest(comment.id)}
-                className="text-xs px-2 py-1 bg-purple-200 text-purple-900 rounded hover:bg-purple-300 font-medium"
+                className="text-xs px-3 py-1.5 rounded font-medium transition-colors"
+                style={{ backgroundColor: '#dff2ef', color: '#0f3c35' }}
               >
-                Regenerate
+                🔄 Regenerate
               </button>
               <button
                 onClick={() => setShowAiSuggestion(false)}
-                className="text-xs px-2 py-1 bg-gray-200 text-gray-900 rounded hover:bg-gray-300 font-medium ml-auto"
+                className="text-xs px-3 py-1.5 rounded font-medium ml-auto text-gray-600 hover:text-gray-800"
               >
-                Dismiss
+                ✕ Dismiss
               </button>
             </div>
           </div>
         )}
 
+        {/* Replies section */}
         {comment.replies && comment.replies.length > 0 && (
-          <div className="ml-6 space-y-2 pt-2 border-t border-gray-200">
+          <div className="ml-6 space-y-2 pt-3 border-t border-gray-200">
             {comment.replies.map((reply) => (
-              <div key={reply.id} className="text-sm bg-gray-50 p-2 rounded">
+              <div key={reply.id} className="text-sm bg-gray-50 p-3 rounded">
                 <div className="font-medium text-xs text-gray-700 mb-1">
                   {reply.author_name}
                 </div>
-                <div className="text-xs text-gray-600">{reply.body}</div>
+                <div className="text-sm text-gray-600">{reply.body}</div>
               </div>
             ))}
           </div>
@@ -918,6 +988,11 @@ export default function PermitDetailPage() {
       <Card className="p-6 mb-6" style={{ backgroundColor: '#FDFBF7' }}>
         <StatusTimeline permit={permit} onStatusChange={handleStatusChange} />
       </Card>
+
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <PermitProgressBar comments={comments} />
+      </div>
 
       {/* Tabs Navigation */}
       <div className="mb-6">

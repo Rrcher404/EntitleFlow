@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { FolderPlus, FileText, Upload, ArrowRight } from 'lucide-react';
+import { FolderPlus, FileText, Upload, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -21,12 +21,23 @@ interface KPIData {
   documents: number;
 }
 
+interface TeamMemberWorkload {
+  id: string;
+  name: string;
+  assignedCount: number;
+  overdueCount: number;
+  resolvedCount: number;
+}
+
 export default function AppDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [kpis, setKpis] = useState<KPIData>({ projects: 0, permits: 0, pendingReviews: 0, documents: 0 });
   const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<Deadline[]>([]);
+  const [myTasksCount, setMyTasksCount] = useState(0);
+  const [overdueTasksCount, setOverdueTasksCount] = useState(0);
+  const [teamWorkload, setTeamWorkload] = useState<TeamMemberWorkload[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState<string>('');
 
@@ -123,6 +134,108 @@ export default function AppDashboard() {
             .limit(5);
 
           if (!deadlineError) setUpcomingDeadlines(deadlineData || []);
+
+          // Fetch current user's assigned open comments (My Tasks)
+          if (user.id) {
+            const { count: myTasks } = await supabase
+              .from('comments')
+              .select('id', { count: 'exact', head: true })
+              .eq('organization_id', orgId)
+              .eq('assigned_to', user.id)
+              .eq('is_resolved', false);
+            setMyTasksCount(myTasks || 0);
+
+            // Fetch overdue tasks (assigned to current user with overdue deadlines)
+            const { data: myComments } = await supabase
+              .from('comments')
+              .select('id, permit_id')
+              .eq('organization_id', orgId)
+              .eq('assigned_to', user.id)
+              .eq('is_resolved', false);
+
+            if (myComments && myComments.length > 0) {
+              const permitIds = (myComments as any[]).map(c => c.permit_id);
+              const { count: overdue } = await supabase
+                .from('deadlines')
+                .select('id', { count: 'exact', head: true })
+                .in('permit_id', permitIds)
+                .lt('due_date', new Date().toISOString())
+                .eq('status', 'upcoming');
+              setOverdueTasksCount(overdue || 0);
+            }
+          }
+
+          // Fetch team workload data
+          try {
+            const { data: commentsData } = await supabase
+              .from('comments')
+              .select('id, assigned_to, is_resolved, permit_id')
+              .eq('organization_id', orgId);
+
+            if (commentsData && commentsData.length > 0) {
+              // Get all profiles in the organization
+              const { data: profilesData } = await supabase
+                .from('profiles')
+                .select('id, full_name')
+                .eq('organization_id', orgId);
+
+              const profiles = profilesData || [];
+              const workloadMap: Record<string, TeamMemberWorkload> = {};
+
+              // Initialize all team members
+              profiles.forEach(profile => {
+                workloadMap[profile.id] = {
+                  id: profile.id,
+                  name: profile.full_name || 'Unknown',
+                  assignedCount: 0,
+                  overdueCount: 0,
+                  resolvedCount: 0,
+                };
+              });
+
+              // Count comments by assignee
+              commentsData.forEach(comment => {
+                if (comment.assigned_to && workloadMap[comment.assigned_to]) {
+                  if (comment.is_resolved) {
+                    workloadMap[comment.assigned_to].resolvedCount++;
+                  } else {
+                    workloadMap[comment.assigned_to].assignedCount++;
+                  }
+                }
+              });
+
+              // Get overdue count per assignee (comments assigned to someone with overdue deadlines)
+              const { data: overdueDeadlines } = await supabase
+                .from('deadlines')
+                .select('permit_id')
+                .eq('organization_id', orgId)
+                .lt('due_date', new Date().toISOString())
+                .eq('status', 'upcoming');
+
+              if (overdueDeadlines && overdueDeadlines.length > 0) {
+                const overduePermitIds = overdueDeadlines.map(d => d.permit_id);
+                commentsData.forEach(comment => {
+                  if (
+                    comment.assigned_to &&
+                    workloadMap[comment.assigned_to] &&
+                    !comment.is_resolved &&
+                    overduePermitIds.includes(comment.permit_id)
+                  ) {
+                    workloadMap[comment.assigned_to].overdueCount++;
+                  }
+                });
+              }
+
+              // Convert map to array and sort by assigned count descending
+              const workload = Object.values(workloadMap).sort(
+                (a, b) => b.assignedCount - a.assignedCount
+              );
+              setTeamWorkload(workload);
+            }
+          } catch (error) {
+            console.error('Error loading team workload:', error);
+            setTeamWorkload([]);
+          }
         }
       } catch (error) {
         console.error('Error loading dashboard:', error);
@@ -259,6 +372,84 @@ export default function AppDashboard() {
           </div>
         </Card>
       )}
+
+      {/* My Tasks and Overdue Tasks Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Link href="/app/tasks">
+          <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+            <div className="space-y-3">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">My Tasks</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Assigned to you</p>
+                </div>
+                <CheckCircle className="h-5 w-5 text-primary" style={{ color: '#0f3c35' }} />
+              </div>
+              <div className="text-3xl font-bold text-foreground">{myTasksCount}</div>
+            </div>
+          </Card>
+        </Link>
+
+        <Card className="p-6">
+          <div className="space-y-3">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Overdue Tasks</h3>
+                <p className="text-xs text-muted-foreground mt-1">Past due</p>
+              </div>
+              <AlertCircle className="h-5 w-5 text-red-500" />
+            </div>
+            <div className="text-3xl font-bold text-red-600">{overdueTasksCount}</div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Team Workload Section */}
+      <Card className="p-6" style={{ backgroundColor: '#FDFBF7', borderColor: '#E8E0D0' }}>
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">Team Workload</h2>
+            <p className="text-sm text-muted-foreground">Team member task distribution.</p>
+          </div>
+
+          {teamWorkload.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 px-3 font-semibold text-foreground">Name</th>
+                    <th className="text-right py-2 px-3 font-semibold text-foreground">Assigned</th>
+                    <th className="text-right py-2 px-3 font-semibold text-foreground">Overdue</th>
+                    <th className="text-right py-2 px-3 font-semibold text-foreground">Resolved</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teamWorkload.map((member) => (
+                    <tr key={member.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-3 text-foreground font-medium">{member.name}</td>
+                      <td className="py-3 px-3 text-right text-foreground font-semibold">
+                        {member.assignedCount}
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        {member.overdueCount > 0 ? (
+                          <span className="text-red-600 font-semibold">{member.overdueCount}</span>
+                        ) : (
+                          <span className="text-muted-foreground">0</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <span className="text-green-600 font-semibold">{member.resolvedCount}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No team members with assigned comments yet.</p>
+          )}
+        </div>
+      </Card>
 
       {/* Recent Activity Section */}
       <Card className="p-6" style={{ backgroundColor: '#FDFBF7', borderColor: '#E8E0D0' }}>
