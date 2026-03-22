@@ -75,8 +75,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         )
       `, { count: 'exact' })
       .eq('organization_id', profile.organization_id)
-      .eq('comment_assignments.assigned_to', user.id)
-      .is('comment_assignments.unassigned_at', null); // Only active assignments
+      .eq('assignments.assigned_to', user.id)
+      .is('assignments.unassigned_at', null); // Only active assignments
 
     // Filter by resolution status
     if (status === 'open') {
@@ -144,23 +144,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deadlines = deadlineData || [];
     }
 
-    // Summary stats for the header cards
-    // Mirror the main query pattern: start from comments, join comment_assignments
-    const { count: openCount } = await supabase
-      .from('comments')
-      .select('id, comment_assignments!inner(id)', { count: 'exact', head: true })
-      .eq('organization_id', profile.organization_id)
-      .eq('is_resolved', false)
-      .eq('comment_assignments.assigned_to', user.id)
-      .is('comment_assignments.unassigned_at', null);
+    // Summary stats for the header cards (non-blocking — don't crash if these fail)
+    let openCount = 0;
+    let resolvedCount = 0;
+    try {
+      const openResult = await supabase
+        .from('comments')
+        .select('id, ca:comment_assignments!inner(id)', { count: 'exact', head: true })
+        .eq('organization_id', profile.organization_id)
+        .eq('is_resolved', false)
+        .eq('ca.assigned_to', user.id)
+        .is('ca.unassigned_at', null);
+      openCount = openResult.count || 0;
 
-    const { count: resolvedCount } = await supabase
-      .from('comments')
-      .select('id, comment_assignments!inner(id)', { count: 'exact', head: true })
-      .eq('organization_id', profile.organization_id)
-      .eq('is_resolved', true)
-      .eq('comment_assignments.assigned_to', user.id)
-      .is('comment_assignments.unassigned_at', null);
+      const resolvedResult = await supabase
+        .from('comments')
+        .select('id, ca:comment_assignments!inner(id)', { count: 'exact', head: true })
+        .eq('organization_id', profile.organization_id)
+        .eq('is_resolved', true)
+        .eq('ca.assigned_to', user.id)
+        .is('ca.unassigned_at', null);
+      resolvedCount = resolvedResult.count || 0;
+    } catch (statsError) {
+      console.error('Non-fatal: summary stats failed:', statsError);
+    }
 
     return NextResponse.json({
       data: tasks || [],
