@@ -36,7 +36,9 @@ const tokens = {
 } as const;
 
 // ─── Icon mark (48×48 viewBox) ────────────────────────────────────────────────
-function IconMark({ t }: { t: typeof tokens.light }) {
+type ThemeTokens = (typeof tokens)[keyof typeof tokens];
+
+function IconMark({ t }: { t: ThemeTokens }) {
   return (
     <>
       {/* Rounded-rect container */}
