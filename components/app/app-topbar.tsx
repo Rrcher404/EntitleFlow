@@ -78,9 +78,11 @@ export function AppTopbar() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="h-4 w-4 mr-2" />
-              <span>Profile</span>
+            <DropdownMenuItem asChild>
+              <Link href="/app/settings/profile">
+                <User className="h-4 w-4 mr-2" />
+                <span>Profile</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/app/settings">
