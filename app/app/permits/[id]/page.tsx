@@ -802,11 +802,7 @@ export default function PermitDetailPage() {
       try {
         const { error } = await supabase
           .from('comments')
-          .update({
-            metadata: {
-              assigned_to: profileId,
-            },
-          })
+          .update({ assigned_to: profileId } as any)
           .eq('id', commentId);
 
         if (error) throw error;
@@ -816,6 +812,7 @@ export default function PermitDetailPage() {
             c.id === commentId
               ? {
                   ...c,
+                  assigned_to: profileId,
                   metadata: {
                     ...(typeof c.metadata === 'object' && c.metadata !== null ? c.metadata : {}),
                     assigned_to: profileId,
