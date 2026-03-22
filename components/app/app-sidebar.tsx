@@ -28,6 +28,7 @@ import {
   MobileSidebar,
   useSidebar,
 } from '@/components/ui/aceternity-sidebar';
+import Link from 'next/link';
 
 const navItems = [
   { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
@@ -92,9 +93,10 @@ export function AppSidebar() {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden',
                     isActive
@@ -111,7 +113,7 @@ export function AppSidebar() {
                   >
                     {item.label}
                   </motion.span>
-                </a>
+                </Link>
               );
             })}
           </SidebarBody>
@@ -122,9 +124,10 @@ export function AppSidebar() {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden',
                     isActive
@@ -141,7 +144,7 @@ export function AppSidebar() {
                   >
                     {item.label}
                   </motion.span>
-                </a>
+                </Link>
               );
             })}
 
@@ -184,7 +187,7 @@ export function AppSidebar() {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={handleMobileNavClick}
@@ -197,7 +200,7 @@ export function AppSidebar() {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
-                </a>
+                </Link>
               );
             })}
           </SidebarBody>
@@ -208,7 +211,7 @@ export function AppSidebar() {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={handleMobileNavClick}
@@ -221,7 +224,7 @@ export function AppSidebar() {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
-                </a>
+                </Link>
               );
             })}
 
