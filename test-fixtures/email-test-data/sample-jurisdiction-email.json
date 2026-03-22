@@ -1,0 +1,62 @@
+{
+  "webhook_event": "email.received",
+  "timestamp": "2026-03-18T10:15:22Z",
+  "email": {
+    "messageId": "1234567890abcdef@greensboro-nc.gov",
+    "from": {
+      "email": "rchen@greensboro-nc.gov",
+      "name": "Robert J. Chen, AICP"
+    },
+    "to": [
+      {
+        "email": "permitting@riversidedev.com",
+        "name": "Riverside Development"
+      }
+    ],
+    "subject": "RE: Riverside Mixed-Use Development - TRC Response Review",
+    "inReplyTo": "CADc-_xZq+5kL9m2p3q@mail.gmail.com",
+    "references": "CADc-_xZq+5kL9m2p3q@mail.gmail.com",
+    "body": {
+      "text": "Mr. Thompson / Riverside Development Team,\n\nThank you for submitting your response to the Technical Review Committee comments dated March 15, 2026.\n\nWe have reviewed your resubmittal and have the following updates:\n\nCOMMENT T-1 (DRIVEWAY SPACING) - PARTIAL RESOLUTION\nYour response proposes relocating the driveway to 330 feet from the intersection, with enhanced sight distance improvements. While this does not meet the standard 350-foot requirement per NCGS § 136-66, the improved sight triangles and enhanced left-turn lane configuration partially address the underlying transportation safety concerns.\n\nThe Traffic Division supports your alternative proposal IF the following conditions are met:\n1. Left-turn lane is extended to 120 feet (revised from 100 feet) to provide adequate storage for peak-hour traffic\n2. Sight distance is verified by professional engineer to AASHTO standards (minimum 250 feet)\n3. A spacing variance application is submitted to Planning Director within 10 days of this letter\n4. Variance includes transportation impact study demonstrating safety equivalence to 350-foot spacing\n\nWe will not formally approve Comment T-1 resolution until variance is submitted and Planning Director acts on it.\n\nCOMMENT T-2 (SIGHT TRIANGLE) - RESOLVED\nYour revised plan shows clear sight triangle and utility box relocation. This comment is RESOLVED pending final construction inspection.\n\nCOMMENT S-1 (STORMWATER BMP) - REQUEST FOR CLARIFICATION\nYour response references revised bioretention basin (2.4 acres) and includes calculations per NC DWI Manual (2022). Stormwater Division has requested clarification on one item:\n- The basin outlet structure design references \"multi-stage orifice\" but detailed designs are not included in submitted documentation. Please provide outlet structure detail (cross-section, orifice sizing calculations) within 5 business days.\n\nOnce outlet detail is received and reviewed, this comment will be RESOLVED.\n\nREQUEST FOR EXTENSION\nGiven the additional items needed (T-1 variance, S-1 outlet detail), we recommend you request an extension on your resubmittal timeline. The City can grant a 15-day extension (to April 15, 2026) for submission of these remaining items. Please confirm by email if you wish to request this extension.\n\nNEXT STEPS\n1. Submit spacing variance application for T-1 (if proceeding with 330-foot alternative)\n2. Submit outlet structure details for Comment S-1\n3. Confirm extension request status\n4. TRC will reconvene to review revised submissions on April 12, 2026 (pending extension grant)\n\nPlease contact me if you have questions or if you'd like to discuss any of the above items.\n\nRegards,\nRobert J. Chen, AICP\nTransportation Engineer\nCity of Greensboro Planning Department\nPhone: (336) 574-4092\nEmail: rchen@greensboro-nc.gov",
+      "html": "<div dir=\"ltr\"><p>Mr. Thompson / Riverside Development Team,</p><p>Thank you for submitting your response to the Technical Review Committee comments dated March 15, 2026.</p><p>We have reviewed your resubmittal and have the following updates:</p><p><strong>COMMENT T-1 (DRIVEWAY SPACING) - PARTIAL RESOLUTION</strong></p><p>Your response proposes relocating the driveway to 330 feet from the intersection, with enhanced sight distance improvements. While this does not meet the standard 350-foot requirement per NCGS § 136-66, the improved sight triangles and enhanced left-turn lane configuration partially address the underlying transportation safety concerns.</p><p>The Traffic Division supports your alternative proposal IF the following conditions are met:</p><ol><li>Left-turn lane is extended to 120 feet (revised from 100 feet) to provide adequate storage for peak-hour traffic</li><li>Sight distance is verified by professional engineer to AASHTO standards (minimum 250 feet)</li><li>A spacing variance application is submitted to Planning Director within 10 days of this letter</li><li>Variance includes transportation impact study demonstrating safety equivalence to 350-foot spacing</li></ol><p>We will not formally approve Comment T-1 resolution until variance is submitted and Planning Director acts on it.</p><p><strong>COMMENT T-2 (SIGHT TRIANGLE) - RESOLVED</strong></p><p>Your revised plan shows clear sight triangle and utility box relocation. This comment is RESOLVED pending final construction inspection.</p><p><strong>COMMENT S-1 (STORMWATER BMP) - REQUEST FOR CLARIFICATION</strong></p><p>Your response references revised bioretention basin (2.4 acres) and includes calculations per NC DWI Manual (2022). Stormwater Division has requested clarification on one item:</p><ul><li>The basin outlet structure design references \"multi-stage orifice\" but detailed designs are not included in submitted documentation. Please provide outlet structure detail (cross-section, orifice sizing calculations) within 5 business days.</li></ul><p>Once outlet detail is received and reviewed, this comment will be RESOLVED.</p><p><strong>REQUEST FOR EXTENSION</strong></p><p>Given the additional items needed (T-1 variance, S-1 outlet detail), we recommend you request an extension on your resubmittal timeline. The City can grant a 15-day extension (to April 15, 2026) for submission of these remaining items. Please confirm by email if you wish to request this extension.</p><p><strong>NEXT STEPS</strong></p><ol><li>Submit spacing variance application for T-1 (if proceeding with 330-foot alternative)</li><li>Submit outlet structure details for Comment S-1</li><li>Confirm extension request status</li><li>TRC will reconvene to review revised submissions on April 12, 2026 (pending extension grant)</li></ol><p>Please contact me if you have questions or if you'd like to discuss any of the above items.</p><p>Regards,<br>Robert J. Chen, AICP<br>Transportation Engineer<br>City of Greensboro Planning Department<br>Phone: (336) 574-4092<br>Email: rchen@greensboro-nc.gov</p></div>"
+    },
+    "attachments": [],
+    "threadId": "1234567890abcdef",
+    "labels": ["INBOX", "IMPORTANT"],
+    "headers": {
+      "Date": "Tue, 18 Mar 2026 10:15:22 -0400",
+      "In-Reply-To": "<CADc-_xZq+5kL9m2p3q@mail.gmail.com>",
+      "User-Agent": "Mozilla Thunderbird 91.0"
+    }
+  },
+  "project_context": {
+    "project_id": "PRJ-2026-0001",
+    "project_name": "Riverside Mixed-Use Development",
+    "permit_number": "SP-2026-0142",
+    "location": "1234 Riverside Drive, Greensboro, NC 27401",
+    "relevant_comments": ["T-1", "T-2", "S-1"],
+    "auto_detection_confidence": 0.98,
+    "suggested_actions": [
+      "update_comment_T-1_status_to_conditional_approved",
+      "update_comment_T-2_status_to_resolved",
+      "update_comment_S-1_status_to_pending_clarification",
+      "flag_variance_requirement_for_T-1",
+      "flag_extension_request_needed"
+    ]
+  },
+  "processing": {
+    "processed_at": "2026-03-18T10:15:30Z",
+    "status": "success",
+    "priority": "HIGH",
+    "actions_taken": [
+      "email_linked_to_comments_T-1_T-2_S-1",
+      "comment_status_updates_flagged_for_review",
+      "notification_sent_to_pm",
+      "task_created_for_variance_application",
+      "task_created_for_outlet_structure_detail"
+    ],
+    "notification_sent_to": "dchen@riversidedevelopment.com",
+    "flagged_for_immediate_review": true,
+    "deadline_alert": "Variance application due: 2026-03-28 (10 days from email date)"
+  }
+}

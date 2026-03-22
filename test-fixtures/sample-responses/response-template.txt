@@ -1,0 +1,222 @@
+[LETTERHEAD - APPLICANT/DEVELOPER]
+
+[PROJECT NAME RESPONSE LETTER TO CITY COMMENTS]
+[Date]
+
+[City Name] Planning Department
+[Address]
+[City, State ZIP]
+
+Re: Technical Review Committee Response Letter
+    Project: [Project Name]
+    Location: [Address]
+    Permit #: [Permit Number]
+    Date of TRC Comments: [Date]
+
+Dear [City Planner Name/Planning Director]:
+
+Please find below the applicant's responses to the Technical Review Committee comments
+dated [Date] regarding the subject project. Each comment is addressed point-by-point
+with proposed solutions and/or clarifications.
+
+========================================================================
+TRANSPORTATION COMMENTS
+========================================================================
+
+Comment T-1: [Reviewer's original comment text]
+
+Response: The applicant has revised the site plan to relocate the primary retail
+entrance driveway to 365 feet from the Riverside Drive intersection, exceeding the
+minimum 350-foot spacing requirement per NCGS § 136-66. Revised Plan Sheet C-1
+includes spacing calculations and measurement confirmation. A copy of the revised
+sheet is attached.
+
+[If comment partially resolved:]
+The applicant acknowledges this concern. [Explain proposed alternative or request
+variance if needed.] A traffic impact study is attached showing [specific analysis
+or justification].
+
+--------
+
+Comment T-2: [Original comment]
+
+Response: Service entrance driveway sight triangle has been cleared of all
+landscaping and street furniture. Sight distance now exceeds AASHTO standards
+(minimum 250 feet along Riverside Drive, 25 feet perpendicular). Revised Plan Sheet
+C-2 includes sight distance diagram with measurements verified by the project civil
+engineer. The utility box on Holden Road has been relocated outside the sight
+triangle.
+
+--------
+
+Comment T-3: [Original comment]
+
+Response: A dedicated 100-foot left-turn lane has been added to the southbound
+Riverside Drive approach with 6-foot standard taper per NCGS § 136-66 specifications.
+This improvement was coordinated with NCDOT (see attached NCDOT Concurrence Letter
+dated [date]). Left-turn lane design is shown on revised Traffic Plan Sheet T-2.
+
+========================================================================
+STORMWATER COMMENTS
+========================================================================
+
+Comment S-1: [Original comment]
+
+Response: The applicant engaged [Stormwater Engineering Firm] to recalculate the
+bioretention basin sizing per the NC DWI Stormwater BMP Manual (2022 Update). The
+basin has been enlarged to 2.4 acres (from 1.8 acres) to accommodate the 25-year
+storm event (81.3 inches annual rainfall per NCAC T15A.02D). Detailed calculations
+are attached (Appendix A). The revised basin is shown on Stormwater Plan Sheet S-1.
+
+--------
+
+Comment S-2: [Original comment]
+
+Response: The outfall at the northeast corner has been stabilized per NC DWI
+specifications. An 8-foot x 15-foot riprap apron with geotextile underdrain has
+been designed and is shown on Stormwater Plan Sheet S-3. A vegetated buffer strip
+(25-foot minimum) has been established downstream per riparian buffer protection
+requirements.
+
+--------
+
+Comment S-3: [Original comment]
+
+Response: The detention basin outlet structure has been redesigned with a multi-stage
+outlet orifice system that restricts discharge to pre-development rate (0.08 cfs/acre
+for 2-year storm event). Outlet structure details are shown on Sheet S-4 with
+structural calculations by [Engineer Name, PE]. The basin will now provide both
+quality and quantity control.
+
+========================================================================
+ZONING AND PLANNING COMMENTS
+========================================================================
+
+Comment Z-1: [Original comment]
+
+Response: The applicant acknowledges the 4-foot encroachment into the 50-foot
+riparian buffer. A variance application has been prepared and is being submitted
+separately to the Planning Director per NCGS § 160D-701. The variance submission
+includes stream restoration design prepared by [Environmental Consultant] as
+compensatory mitigation. The restoration plan (0.25 acres, 150 native plants) is
+shown on Environmental Plan Sheet ENV-2.
+
+[Alternative language if proceeding with variance pending:]
+The applicant will submit variance application within 5 business days. Riparian
+restoration remains committed as condition of approval regardless of variance outcome.
+
+--------
+
+Comment Z-2: [Original comment]
+
+Response: The applicant has reduced parking from 450 to 210 spaces per the City's
+1.75 spaces/unit standard for mixed-income housing. A parking demand study is
+attached (Appendix B) showing that the project will achieve sustainability goals
+through on-street parking in the mixed-use corridor and planned Phase 2 transit
+connections. Revised Parking Plan is shown on Sheet P-1.
+
+--------
+
+Comment Z-3: [Original comment]
+
+Response: The monument sign has been reduced to 8 feet height to comply with Zoning
+Ordinance Section 8.3.4. The sign face area remains within 50 square foot limit.
+Revised sign elevation is shown on Architectural Plan Sheet A-5.
+
+========================================================================
+FIRE AND LIFE SAFETY COMMENTS
+========================================================================
+
+Comment F-1: [Original comment]
+
+Response: A second emergency access drive has been added from Holden Road per NFPA
+101 Life Safety Code Section 7.5.1.2. The drive is 22 feet wide paved surface
+extending to all building exits. Secondary access provides circulation around the
+entire structure and connects to the primary Riverside Drive access for continuous
+egress. Emergency Access Plan is shown on Sheet ES-1.
+
+--------
+
+Comment F-2: [Original comment]
+
+Response: Fire hydrant spacing has been revised per NFPA 14 spacing requirements.
+Six (6) hydrants are now provided (one per 5,000 sq ft of building area for the
+85,000 sq ft structure). Water Department has confirmed capacity for six hydrants
+on the proposed 8-inch main extension. Hydrant locations are shown on Site Plan
+Sheet SP-2 and coordinated with Water Department letter (attached).
+
+========================================================================
+LANDSCAPE AND ENVIRONMENTAL COMMENTS
+========================================================================
+
+Comment L-1: [Original comment]
+
+Response: The existing tree cluster (8 oaks, 65 DBH average) in the northeast corner
+has been incorporated into the site design and will be preserved. A Tree Preservation
+Plan prepared by [ISA Certified Arborist Name] is attached with protective fencing
+during construction and post-construction maintenance specifications. The trees will
+remain in place as a native canopy feature and will be integrated into the riparian
+restoration area (Comment ENV-4).
+
+--------
+
+Comment ENV-4: [Original comment]
+
+Response: Riparian buffer restoration design is being prepared by [Environmental
+Consultant] and will be submitted with the variance application (Comment Z-1). The
+0.25-acre restoration area will include:
+  - 50 native understory trees (2-3 inch caliper)
+  - 100 native shrubs (appropriate for riparian zone)
+  - Erosion control during planting phase
+  - 3-year monitoring and maintenance plan with annual reports
+
+Restoration plan details will be shown on Environmental Plan Sheet ENV-3.
+
+========================================================================
+GENERAL NOTES
+========================================================================
+
+The applicant is committed to addressing all Technical Review Committee comments
+before final site plan approval. A revised site plan incorporating all responses above
+will be submitted within [15] days. The applicant requests a follow-up TRC meeting
+to confirm resolution of all concerns.
+
+Key commitments from this response:
+1. All MAJOR comments addressed with engineering solutions
+2. Variance application for riparian buffer encroachment to be submitted [date]
+3. Riparian restoration plan committed as condition of approval
+4. All utility coordination letters attached (Water, Sewer, Power)
+5. All revised plan sheets attached with engineer certifications
+
+If any comments require clarification or if the City has additional questions,
+please contact the applicant's Project Manager:
+
+[Project Manager Name]
+[Title]
+[Company]
+[Phone]
+[Email]
+
+Respectfully submitted,
+
+[Applicant Name/Representative]
+[Title]
+[Company]
+[Date]
+
+[Signature]
+
+Attachments:
+- Revised Site Plan Sheets (C-1, C-2, T-2, S-1, S-3, S-4, SP-2)
+- Environmental Plans (ENV-2, ENV-3)
+- Traffic Impact Study
+- Parking Demand Study
+- Stormwater Calculations (Appendix A)
+- Tree Preservation Plan (ISA Certified Arborist report)
+- Riparian Restoration Design Plan
+- Water Department Capacity Letter
+- Sewer Department Concurrence Letter
+- NCDOT Spacing Variance Concurrence Letter
+- Variance Application (submitted separately)
+
+========================================================================

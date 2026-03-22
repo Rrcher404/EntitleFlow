@@ -71,11 +71,11 @@ export async function POST(
 
     const adminClient = getSupabaseAdminClient();
 
-    // Update comment with assigned_to
-    // Note: This assumes assigned_to field exists on comments table
+    // 1. Update comment's assigned_to column
     const { data: updatedComment, error: updateError } = await (adminClient as any)
       .from('comments')
       .update({
+        assigned_to: assigned_to,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -87,7 +87,70 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to assign comment' }, { status: 500 });
     }
 
-    // Log activity with assignment
+    // 2. Upsert comment_assignments record
+    //    First, unassign any previous assignee
+    try {
+      await (adminClient as any)
+        .from('comment_assignments')
+        .update({ unassigned_at: new Date().toISOString() })
+        .eq('comment_id', id)
+        .is('unassigned_at', null);
+    } catch (unassignError) {
+      console.error('Failed to clear previous assignment:', unassignError);
+    }
+
+    //    Then create new assignment
+    try {
+      await (adminClient as any)
+        .from('comment_assignments')
+        .insert({
+          comment_id: id,
+          assigned_to: assigned_to,
+          assigned_by: user.id,
+        });
+    } catch (assignError) {
+      console.error('Failed to create assignment record:', assignError);
+      // Non-fatal — the comment.assigned_to column is already set
+    }
+
+    // 3. Create notification for the assignee (unless self-assigning)
+    if (assigned_to !== user.id) {
+      try {
+        // Fetch permit context for the notification
+        const { data: permit } = await supabase
+          .from('permits')
+          .select('permit_number, title')
+          .eq('id', comment.permit_id)
+          .single();
+
+        const permitLabel = permit
+          ? `${permit.permit_number} — ${permit.title}`
+          : 'a permit';
+
+        await (adminClient as any)
+          .from('notifications')
+          .insert({
+            recipient_id: assigned_to,
+            organization_id: profile.organization_id,
+            type: 'comment_assigned',
+            title: 'New comment assigned to you',
+            body: `${profile.full_name || 'A team member'} assigned you a ${comment.category || 'general'} comment on ${permitLabel}`,
+            action_url: `/app/permits/${comment.permit_id}?comment=${id}`,
+            metadata: {
+              comment_id: id,
+              permit_id: comment.permit_id,
+              assigned_by: user.id,
+              assigned_by_name: profile.full_name,
+              category: comment.category,
+            },
+          });
+      } catch (notifError) {
+        console.error('Failed to create notification:', notifError);
+        // Non-fatal — assignment still succeeded
+      }
+    }
+
+    // 4. Log activity
     try {
       await (adminClient as any)
         .from('activity_log')

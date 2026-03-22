@@ -1,0 +1,132 @@
+CITY OF CHARLOTTE, NORTH CAROLINA
+PLANNING & ZONING DEPARTMENT
+SUBDIVISION REVIEW COMMENTS
+
+=====================================================================
+PROJECT INFORMATION
+=====================================================================
+Subdivision Name: Brookside Subdivision
+Location: 2840 Old Concord Road, Charlotte, NC 28209
+Applicant: Brookside Homes Development LLC
+Owner's Agent: Samantha K. Wells, PE (swells@brooksidedev.com)
+Plat Reference: 2026-SUB-1247
+Date of Review: March 10, 2026
+Total Acreage: 12.3 acres
+Lot Count: 8 residential lots (average 1.25 acres each)
+Access: Single road (Brookside Lane)
+
+=====================================================================
+MAJOR ISSUES REQUIRING RESOLUTION
+=====================================================================
+
+ISSUE 1: Road Access - Single Point of Access
+The subdivision provides only one road access point (Brookside Lane) to Old Concord
+Road. Per Charlotte Zoning Code § 27-3.3.3 and NCGS § 160D-908, subdivisions with
+8+ lots must provide secondary emergency access. Alternative: (a) Provide secondary
+road connection to adjacent property (with recorded cross-easement), or (b) Reduce
+lot count to 7 lots.
+
+ISSUE 2: Lot 4 Frontage Deficiency
+Lot 4 has only 92 feet of frontage on Brookside Lane. Minimum required is 100 feet
+per zoning code § 27-4.2.1.1. Reconfigure to provide 100+ feet frontage or reduce
+lot count to 7 lots.
+
+ISSUE 3: Stormwater Management Plan - Missing TRC Approval
+Subdivision plat requires approval stamp from Charlotte-Mecklenburg Stormwater
+Services indicating compliance with NCAC T15A.02D and local standards. Currently
+missing. Submit to Stormwater Services with revised grading plan showing detention
+basin routing for 25-year storm event.
+
+ISSUE 4: HOA/Common Area - Maintenance Responsibility
+Eight lots are served by common road (Brookside Lane) and common stormwater detention
+basin. Plat must include: (a) HOA formation documents showing maintenance responsibility,
+(b) Recorded plat note requiring homeowner assessment for road/basin maintenance,
+(c) Trail covenant if equestrian easement is shown on plat.
+
+=====================================================================
+STANDARD COMMENTS REQUIRING RESOLUTION
+=====================================================================
+
+5. ROAD SECTION AND CONSTRUCTION STANDARDS
+   Brookside Lane cross-section shows 18-foot paved surface (two 9-foot lanes).
+   Charlotte minimum is 20 feet for subdivision roads per Charlotte Design Manual
+   Section 2.1.1. Revise to 20-foot width or provide truck turning radius analysis
+   showing 16-foot width is adequate for emergency vehicles.
+
+6. SIDEWALK REQUIREMENT
+   No sidewalk shown along Brookside Lane. Subdivision roads serving 5+ lots must
+   have 5-foot sidewalk per CZC § 27-3.3.4. Add sidewalk on one side (east side
+   preferred for sun exposure minimization) or provide variance justification.
+
+7. UTILITY EASEMENT WIDTH
+   Water and sanitary sewer easements shown as 10 feet width. Standard is 15 feet
+   minimum for joint utilities. Revise easement boundaries on revised plat.
+
+8. DETENTION BASIN - DESIGN DETAILS MISSING
+   Stormwater detention basin is shown as polygon on plat but lacks cross-section,
+   outlet design, maintenance access, and emergency spillway details. Submit detailed
+   stormwater design plan per Charlotte-Mecklenburg BMP Manual.
+
+9. TREE PRESERVATION AREA
+   Site has 6-acre undisturbed wooded area on south boundary (wetland adjacent).
+   Clarify tree preservation on this area: will it be dedicated to city, remain in
+   private ownership, or be subject to conservation easement?
+
+10. BOUNDARY SURVEY CERTIFICATION
+    Plat shows bearings and distances but is not signed by North Carolina licensed
+    surveyor. Plat must bear certification stamp and signature of NC PLS per NCGS
+    § 47E-1.
+
+=====================================================================
+MINOR COMMENTS - RECOMMENDATIONS
+=====================================================================
+
+11. LIGHTING PLAN FOR SUBDIVISION ROADS
+    Brookside Lane lacks street lighting design. While not required for subdivision roads,
+    provide option for owner to install street lights if desired. Include utility
+    coordination for power source.
+
+12. RIPARIAN BUFFER CALCULATION
+    Wetland is shown on south boundary. Verify 50-foot riparian buffer from wetland
+    edge is maintained per NCGS § 143-214.7 and CZC § 27-3.5. Current buffer appears
+    marginal (approximately 48 feet at closest point).
+
+13. SLOPE STABILITY
+    Lot 6 has hillside topography (40% slope). Recommend geotechnical assessment for
+    hillside development per NC Building Code. Grading plan should be prepared by
+    licensed professional engineer.
+
+14. UTILITIES COORDINATION
+    Duke Energy and Verizon easements are not shown on plat. Confirm with utilities
+    that service can be extended along Brookside Lane or if overhead/underground service
+    is required.
+
+15. PHASING PLAN
+    If development is phased, submit phasing plan showing timing and sequencing of
+    infrastructure. Specify which lots can be developed independently versus clusters.
+
+=====================================================================
+REQUIRED SUBMITTALS FOR RESUBMITTAL
+=====================================================================
+
+1. Revised subdivision plat addressing Issues 1, 2, 3, 4 above
+2. Stormwater management plan with TRC approval (to Charlotte-Mecklenburg Stormwater)
+3. HOA formation documents and maintenance covenant
+4. Revised road section and sidewalk plan addressing Items 5-7
+5. Detailed detention basin design with outlet structure and maintenance access
+6. Surveyor certification on plat
+7. Optional: Geotechnical assessment for hillside lots
+
+RESUBMITTAL DEADLINE: 30 days from this letter
+
+Contact for Technical Questions:
+Subdivision Reviewer: Michael P. Caldwell, AICP
+Planning & Zoning Department
+City of Charlotte
+Phone: (704) 336-3901
+Email: mcaldwell@charlottenc.gov
+
+Address for Submission:
+Planning & Zoning Department, 600 East 4th Street, Charlotte, NC 28202
+
+=====================================================================

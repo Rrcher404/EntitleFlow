@@ -15,6 +15,7 @@ import {
   Bell,
   Users,
   Sparkles,
+  ClipboardCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ import {
 
 const navItems = [
   { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
+  { label: 'My Tasks', href: '/app/tasks', icon: ClipboardCheck },
   { label: 'Projects', href: '/app/projects', icon: FolderKanban },
   { label: 'Permits', href: '/app/permits', icon: FileCheck2 },
   { label: 'Map View', href: '/app/projects/map', icon: MapPin },

@@ -73,6 +73,52 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to resolve comment' }, { status: 500 });
     }
 
+    // Notify the assigner (if someone else assigned this comment to the resolver)
+    // This closes the feedback loop: "The comment you assigned has been resolved"
+    if (comment.assigned_to === user.id && comment.assigned_to !== null) {
+      try {
+        // Find who assigned this comment
+        const { data: assignment } = await (adminClient as any)
+          .from('comment_assignments')
+          .select('assigned_by')
+          .eq('comment_id', id)
+          .is('unassigned_at', null)
+          .single();
+
+        if (assignment?.assigned_by && assignment.assigned_by !== user.id) {
+          const { data: permit } = await supabase
+            .from('permits')
+            .select('permit_number, title')
+            .eq('id', comment.permit_id)
+            .single();
+
+          const permitLabel = permit
+            ? `${permit.permit_number} — ${permit.title}`
+            : 'a permit';
+
+          await (adminClient as any)
+            .from('notifications')
+            .insert({
+              recipient_id: assignment.assigned_by,
+              organization_id: profile.organization_id,
+              type: 'comment_resolved',
+              title: 'Comment resolved',
+              body: `${profile.full_name || 'A team member'} resolved a ${comment.category || 'general'} comment on ${permitLabel}`,
+              action_url: `/app/permits/${comment.permit_id}?comment=${id}`,
+              metadata: {
+                comment_id: id,
+                permit_id: comment.permit_id,
+                resolved_by: user.id,
+                resolved_by_name: profile.full_name,
+                category: comment.category,
+              },
+            });
+        }
+      } catch (notifError) {
+        console.error('Failed to create resolution notification:', notifError);
+      }
+    }
+
     // Log activity
     try {
       await (adminClient as any)
