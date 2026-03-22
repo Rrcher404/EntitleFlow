@@ -63,10 +63,10 @@ export default function ProfilePage() {
             full_name: pd?.full_name || authUser.email?.split('@')[0] || 'User',
             email: authUser.email,
             avatar_url: pd?.avatar_url || null,
-            company_name: pd?.company_name || pd?.metadata?.company_name || '',
+            company_name: pd?.company_name || '',
             job_title: pd?.job_title || '',
             role: pd?.role || 'member',
-            bio: pd?.bio || pd?.metadata?.bio || '',
+            bio: pd?.bio || '',
             is_active: pd?.is_active !== false,
           });
         }
@@ -146,12 +146,12 @@ export default function ProfilePage() {
       const filePath = `avatars/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('public')
+        .from('avatars')
         .upload(filePath, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from('public').getPublicUrl(filePath);
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const avatarUrl = data?.publicUrl;
 
       const { error: updateError } = await supabase
@@ -178,10 +178,9 @@ export default function ProfilePage() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) return;
 
-      // Store bio in metadata JSONB since column may not exist directly
       const { error } = await supabase
         .from('profiles')
-        .update({ metadata: { bio } } as any)
+        .update({ bio } as any)
         .eq('id', authUser.id);
 
       if (error) throw error;
@@ -205,7 +204,7 @@ export default function ProfilePage() {
 
       const { error } = await supabase
         .from('profiles')
-        .update({ metadata: { is_active: isActive } } as any)
+        .update({ is_active: isActive } as any)
         .eq('id', authUser.id);
 
       if (error) throw error;
@@ -272,6 +271,7 @@ export default function ProfilePage() {
               user={user}
               stats={stats}
               recentActivity={recentActivity}
+              isEditable={isEditable}
               onAvatarUpload={handleAvatarUpload}
               onBioUpdate={handleBioUpdate}
               onStatusToggle={handleStatusToggle}
