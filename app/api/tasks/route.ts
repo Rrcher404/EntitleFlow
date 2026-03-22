@@ -88,7 +88,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Filter by category
     if (category) {
-      query = query.eq('category', category);
+      query = query.eq('category', category as any);
     }
 
     // Sorting

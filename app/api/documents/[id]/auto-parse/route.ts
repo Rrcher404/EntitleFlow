@@ -1,20 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
 import { getSignedUrl } from '@/lib/gcp/storage';
+import { createNotification } from '@/lib/notifications';
 import type { Database } from '@/lib/database.types';
 
 type CommentInsert = Database['public']['Tables']['comments']['Insert'];
-
-interface ParseJobRecord {
-  id: string;
-  document_id: string;
-  organization_id: string;
-  status: 'processing' | 'completed' | 'failed';
-  started_at: string;
-  completed_at?: string;
-  error_message?: string;
-  comments_created: number;
-}
 
 /**
  * POST /api/documents/[id]/auto-parse
@@ -78,19 +68,33 @@ export async function POST(
       );
     }
 
-    // Create parse_job record (status: processing)
-    const parseJobRecord: ParseJobRecord = {
-      id: crypto.randomUUID(),
-      document_id: documentId,
-      organization_id: profile.organization_id,
-      status: 'processing',
-      started_at: new Date().toISOString(),
-      comments_created: 0,
-    };
+    // Update document parse_status to 'processing' immediately for UI feedback
+    try {
+      await (adminClient as any)
+        .from('documents')
+        .update({ parse_status: 'processing', updated_at: new Date().toISOString() })
+        .eq('id', documentId);
+    } catch (statusError) {
+      console.warn('Failed to set processing status:', statusError);
+    }
 
-    // Store job record in metadata or a temporary in-memory cache
-    // Since parse_jobs table doesn't exist yet, we'll simulate with a note
-    console.log('Parse job started:', parseJobRecord);
+    // Create parse_job record in the database
+    const parseJobId = crypto.randomUUID();
+    try {
+      await (adminClient as any)
+        .from('parse_jobs')
+        .insert({
+          id: parseJobId,
+          document_id: documentId,
+          organization_id: profile.organization_id,
+          status: 'processing',
+          started_at: new Date().toISOString(),
+          comments_created: 0,
+        });
+    } catch (jobError) {
+      console.warn('Failed to create parse_job record:', jobError);
+      // Non-fatal — continue parsing even if job tracking fails
+    }
 
     // Download file from GCS
     let fileData: Buffer;
@@ -103,11 +107,16 @@ export async function POST(
       fileData = Buffer.from(await response.arrayBuffer());
     } catch (downloadError) {
       console.error('File download error:', downloadError);
+      // Mark parse as failed
+      try {
+        await (adminClient as any).from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
+        await (adminClient as any).from('parse_jobs').update({ status: 'failed', error_message: 'Failed to download document', completed_at: new Date().toISOString() }).eq('id', parseJobId);
+      } catch (_) { /* non-fatal */ }
       return NextResponse.json(
         {
           success: false,
           error: 'Failed to download document',
-          parse_job_id: parseJobRecord.id,
+          parse_job_id: parseJobId,
         },
         { status: 500 },
       );
@@ -152,13 +161,17 @@ export async function POST(
       }
     } catch (parseError) {
       console.error('Document AI parsing error:', parseError);
-      // Update parse_job to failed status
+      // Update parse_job and document to failed status
       const failureMsg = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+      try {
+        await (adminClient as any).from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
+        await (adminClient as any).from('parse_jobs').update({ status: 'failed', error_message: failureMsg, completed_at: new Date().toISOString() }).eq('id', parseJobId);
+      } catch (_) { /* non-fatal */ }
       return NextResponse.json(
         {
           success: false,
           error: 'Document parsing failed',
-          parse_job_id: parseJobRecord.id,
+          parse_job_id: parseJobId,
           details: failureMsg,
         },
         { status: 500 },
@@ -231,19 +244,33 @@ export async function POST(
       }
     }
 
-    // Update document parse_status if the column exists
+    // Update document parse_status to 'completed' and record parsed_at
     try {
-      const updatePayload: any = {
-        updated_at: new Date().toISOString(),
-      };
-      // Add parse_status if column exists in schema (for future compatibility)
       await (adminClient as any)
         .from('documents')
-        .update(updatePayload)
+        .update({
+          parse_status: 'completed',
+          parsed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', documentId);
     } catch (updateError) {
-      console.error('Failed to update document:', updateError);
-      // Non-fatal
+      console.error('Failed to update document status:', updateError);
+    }
+
+    // Update parse_job record to completed
+    try {
+      await (adminClient as any)
+        .from('parse_jobs')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          comments_created: commentsCreated,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', parseJobId);
+    } catch (jobError) {
+      console.warn('Failed to update parse_job:', jobError);
     }
 
     // Log activity
@@ -258,13 +285,31 @@ export async function POST(
         });
     } catch (logError) {
       console.error('Failed to log activity:', logError);
-      // Non-fatal
+    }
+
+    // Notify the uploader that parsing is complete
+    try {
+      await createNotification({
+        recipientId: user.id,
+        organizationId: profile.organization_id,
+        type: 'ai_parse_complete',
+        title: 'AI parsing complete',
+        body: `${commentsCreated} comment${commentsCreated === 1 ? '' : 's'} extracted from "${document.file_name}" and ready for review.`,
+        actionUrl: document.permit_id ? `/app/permits/${document.permit_id}` : `/app/documents`,
+        metadata: {
+          document_id: documentId,
+          file_name: document.file_name,
+          comments_created: commentsCreated,
+        },
+      });
+    } catch (notifError) {
+      console.error('Failed to send parse notification:', notifError);
     }
 
     return NextResponse.json(
       {
         success: true,
-        parse_job_id: parseJobRecord.id,
+        parse_job_id: parseJobId,
         comments_created: commentsCreated,
         extracted_comments: extractedComments.length,
       },

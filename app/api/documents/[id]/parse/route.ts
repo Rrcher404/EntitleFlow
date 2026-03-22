@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { getSupabaseAdminClient } from '@/lib/supabase/server';
 import { parsePermitDocument } from '@/lib/gcp/document-ai';
 import { getBucket } from '@/lib/gcp/storage';
+import { createNotification } from '@/lib/notifications';
 
 /**
  * POST /api/documents/[id]/parse
@@ -142,7 +143,7 @@ export async function POST(
     try {
       await (adminClient as any).from('activity_log').insert({
         organization_id: profile.organization_id,
-        action: 'document_uploaded',
+        action: 'document_parsed',
         description: `Document "${document.file_name}" parsed with Document AI. Extracted ${createdComments.length} comments.`,
         actor_id: user.id,
         permit_id: document.permit_id,
@@ -150,7 +151,26 @@ export async function POST(
       });
     } catch (logError) {
       console.error('Failed to log activity:', logError);
-      // Non-fatal - continue
+    }
+
+    // Notify the uploader that parsing is complete
+    try {
+      await createNotification({
+        recipientId: user.id,
+        organizationId: profile.organization_id,
+        type: 'ai_parse_complete',
+        title: 'Document parsing complete',
+        body: `"${document.file_name}" has been parsed. ${createdComments.length} comment${createdComments.length === 1 ? '' : 's'} extracted and ready for review.`,
+        actionUrl: document.permit_id ? `/app/permits/${document.permit_id}` : `/app/documents`,
+        metadata: {
+          document_id: documentId,
+          file_name: document.file_name,
+          comments_created: createdComments.length,
+          permit_id: document.permit_id,
+        },
+      });
+    } catch (notifError) {
+      console.error('Failed to send parse notification:', notifError);
     }
 
     return NextResponse.json(

@@ -17,6 +17,7 @@
 import { getFastModel, getReasoningModel } from '../model-registry';
 import type { AgentPersona, ModelConfig } from '../types';
 import { executeAgent } from './base';
+import { retrieveKnowledge } from '../knowledge-retriever';
 
 // ---------------------------------------------------------------------------
 // FlowE persona
@@ -55,12 +56,30 @@ WHAT YOU CAN DO:
    - Summary cards at top show open count, resolved count, total assigned
 
    NOTIFICATION SYSTEM:
+   - Real-time notifications via Supabase Realtime — instant toast pop-ups + bell icon updates
    - Users receive in-app notifications when comments are assigned to them
    - Notifications fire when someone else assigns a comment to you (not on self-assignment)
    - Resolution notifications go to the person who assigned the comment when it gets resolved
    - Notification types: comment_assigned, comment_resolved, permit_status_changed, deadline_approaching, document_uploaded, team_invitation, mention, ai_parse_complete, email_ingested
+   - Toast notifications slide in from the right (max 3 visible, auto-dismiss after 5s)
    - Users can view notifications via the bell icon in the top bar or at /app/notifications
    - Notification preferences can be managed in Settings
+
+   RESUBMITTAL PACKAGE (/app/permits/[id]/resubmittal):
+   - Three-tab interface: Plan, Responses, Letter
+   - Plan tab: AI generates a prioritized resubmittal plan with work packages and timeline estimates
+   - Responses tab: Per-comment response editor — users can write responses or click "AI Suggest" to generate one
+   - Letter tab: AI generates a formal response letter addressed to the reviewer, with all comment responses included
+   - Stats dashboard showing open/resolved/AI-ready counts and estimated days to completion
+   - Access via the permit detail page or direct link
+
+   DOCUMENT AI PARSING:
+   - After uploading a document, AI automatically parses it to extract review comments
+   - Parse status is visible inline on each document card: Queued → Processing → Completed/Failed
+   - Real-time status updates via Supabase Realtime — no manual refresh needed
+   - If parsing fails, users can retry with one click
+   - Parsed comments are automatically categorized and inserted into the permit's comment list
+   - Parse progress also triggers toast notifications when complete
 
 2. PROJECT & PERMIT DATA
    - When provided with database context, answer questions about specific projects and permits
@@ -90,11 +109,12 @@ WHAT YOU CAN DO:
 5. WORKFLOW GUIDANCE
    - Full review cycle: Upload document → AI parses comments → Assign to team → Track resolution → Generate response letter → Resubmit
    - Upload: Go to /app/documents or the permit detail page to upload review letters (PDF)
-   - Parsing: After upload, AI automatically extracts and classifies comments from the review letter
+   - Parsing: After upload, AI automatically extracts and classifies comments — watch the inline parse status badge on your document
    - Assignment: On the permit detail page, assign individual comments to team members by discipline
    - Resolution: Team members see assigned tasks at /app/tasks and resolve them with notes
-   - Response: Use the AI Response Drafter to generate professional responses, or the full Response Letter generator for the complete package
-   - Resubmittal: Use the Resubmittal Planner to create a prioritized plan with timeline estimates
+   - Response: Use the AI Response Drafter on individual comments, or go to the Resubmittal Package (/app/permits/[id]/resubmittal) for bulk AI responses
+   - Letter: Generate a formal response letter in the Resubmittal Package → Letter tab
+   - Resubmittal: Use the Resubmittal Package to create a prioritized plan with work packages, timeline estimates, and team assignments
 
 RESPONSE GUIDELINES:
 - Keep responses concise — 2-4 sentences for simple questions, more for complex ones
@@ -216,6 +236,32 @@ export async function chatWithFlowE(
       userPrompt += `${prefix}: ${msg.content}\n`;
     }
     userPrompt += '--- END HISTORY ---\n\n';
+  }
+
+  // Dynamic knowledge injection — retrieve relevant domain knowledge,
+  // few-shot examples, and corrections from the knowledge base.
+  // This is how FlowE "learns" without model fine-tuning.
+  try {
+    const retrieved = await retrieveKnowledge(message, {
+      organizationId: context?.projectId ? undefined : undefined, // TODO: pass org ID from session
+      maxEntries: 3,
+      maxFewShot: 2,
+    });
+
+    if (retrieved.totalEntries > 0) {
+      if (retrieved.corrections) {
+        userPrompt += retrieved.corrections + '\n\n';
+      }
+      if (retrieved.knowledgeBlocks) {
+        userPrompt += retrieved.knowledgeBlocks + '\n\n';
+      }
+      if (retrieved.fewShotExamples) {
+        userPrompt += retrieved.fewShotExamples + '\n\n';
+      }
+    }
+  } catch (knowledgeError) {
+    // Knowledge retrieval is non-fatal — FlowE works fine without it
+    console.warn('[FlowE] Knowledge retrieval failed:', knowledgeError);
   }
 
   userPrompt += `User: ${message}`;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { getSupabaseAdminClient } from '@/lib/supabase/server';
 import { uploadFile, getSignedUrl } from '@/lib/gcp/storage';
+import { createOrganizationNotification } from '@/lib/notifications';
 import type { Database } from '@/lib/database.types';
 
 type DocumentInsert = Database['public']['Tables']['documents']['Insert'];
@@ -137,7 +138,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         });
     } catch (logError) {
       console.error('Failed to log activity:', logError);
-      // Non-fatal - continue
+    }
+
+    // Notify team members about the upload
+    try {
+      await createOrganizationNotification({
+        organizationId: profile.organization_id,
+        type: 'document_uploaded',
+        title: 'New document uploaded',
+        body: `${fileName} was uploaded${permitId ? ' to a permit' : ''}`,
+        actionUrl: permitId ? `/app/permits/${permitId}` : `/app/documents`,
+        metadata: {
+          document_id: insertedDoc.id,
+          file_name: fileName,
+          permit_id: permitId,
+        },
+        excludeUserId: user.id,
+      });
+    } catch (notifError) {
+      console.error('Failed to send upload notification:', notifError);
     }
 
     return NextResponse.json(

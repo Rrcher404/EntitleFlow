@@ -13,10 +13,12 @@ import {
   ChevronDown,
   X,
   Loader2,
+  Zap,
 } from 'lucide-react';
 import type { Document } from '@/lib/types/index';
 import { DOCUMENT_TYPE_LABELS } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
+import { DocumentParseStatus } from '@/components/app/document-parse-status';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -197,6 +199,16 @@ export default function DocumentsPage() {
           actor_id: userId,
         });
 
+      // Get the inserted document ID for auto-parse trigger
+      const { data: latestDoc } = await supabase
+        .from('documents')
+        .select('id')
+        .eq('organization_id', profile.organization_id)
+        .eq('file_name', formData.name)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
       // Reset form and reload
       setFormData({
         file: null,
@@ -207,6 +219,13 @@ export default function DocumentsPage() {
       });
       setShowUploadForm(false);
       await loadDocuments();
+
+      // Trigger auto-parse in background (non-blocking)
+      if (latestDoc?.id) {
+        fetch(`/api/documents/${latestDoc.id}/auto-parse`, { method: 'POST' }).catch(() => {
+          // Non-fatal — user can manually parse later
+        });
+      }
     } catch (error) {
       console.error('Error uploading document:', error);
       alert('Failed to upload document');
@@ -432,6 +451,12 @@ export default function DocumentsPage() {
                         >
                           {docTypeLabel}
                         </span>
+                        <DocumentParseStatus
+                          documentId={doc.id}
+                          initialStatus={doc.parse_status as any}
+                          variant="badge"
+                          onParseComplete={() => loadDocuments()}
+                        />
                       </div>
 
                       <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">

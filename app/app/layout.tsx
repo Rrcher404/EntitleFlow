@@ -2,6 +2,7 @@
 
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { AppTopbar } from '@/components/app/app-topbar';
+import { NotificationToastContainer } from '@/components/app/notification-toast';
 import { OnboardingDialog } from '@/components/ui/onboarding-dialog';
 import { SidebarProvider } from '@/components/ui/aceternity-sidebar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
@@ -49,6 +50,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <FloatingActionMenu options={floatingMenuOptions} />
       </div>
       <OnboardingDialog />
+      <NotificationToastContainer />
     </SidebarProvider>
   );
 }
