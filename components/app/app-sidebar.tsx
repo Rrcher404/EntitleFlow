@@ -10,13 +10,13 @@ import {
   FileText,
   Settings,
   LogOut,
-  Building2,
   MapPin,
   Bell,
   Users,
   Sparkles,
   ClipboardCheck,
 } from 'lucide-react';
+import { Logo } from '@/components/site/Logo';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
@@ -73,16 +73,16 @@ export function AppSidebar() {
       <DesktopSidebar>
         <Sidebar>
           {/* Logo */}
-          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5 overflow-hidden whitespace-nowrap">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Building2 className="h-4 w-4" />
-            </div>
+          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-4 overflow-hidden">
+            <Logo variant="icon" height={32} theme="light" className="flex-shrink-0" />
             <motion.div
-              className="flex flex-col min-w-0"
+              className="overflow-hidden"
               animate={{ opacity: open ? 1 : 0, width: open ? 'auto' : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-sm font-semibold tracking-tight text-foreground truncate">EntitleFlow</div>
+              <div className="text-sm font-semibold tracking-tight whitespace-nowrap" style={{ color: '#102034' }}>
+                Entitle<span style={{ color: '#25a18e' }}>Flow</span>
+              </div>
               <div className="text-[10px] text-muted-foreground whitespace-nowrap">Approval Ops</div>
             </motion.div>
           </div>
@@ -171,14 +171,8 @@ export function AppSidebar() {
       <MobileSidebar>
         <Sidebar className="md:hidden">
           {/* Logo */}
-          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-5 mt-12">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Building2 className="h-4 w-4" />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <div className="text-sm font-semibold tracking-tight text-foreground truncate">EntitleFlow</div>
-              <div className="text-[10px] text-muted-foreground whitespace-nowrap">Approval Ops</div>
-            </div>
+          <div className="flex h-16 flex-shrink-0 items-center gap-2.5 border-b border-border px-4 mt-12">
+            <Logo height={32} theme="light" />
           </div>
 
           {/* Nav */}

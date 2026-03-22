@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, Building2 } from "lucide-react";
+import { Menu } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { primaryNav } from "@/data/site";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TrackedLink } from "@/components/site/tracked-link";
 import { TrackedLinkButton } from "@/components/site/tracked-link-button";
+import { Logo } from "@/components/site/Logo";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -36,14 +37,8 @@ export function SiteHeader() {
     >
       <div className="container-shell flex h-16 items-center justify-between gap-6">
         {/* Logo */}
-        <Link className="flex shrink-0 items-center gap-2.5" href="/">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="h-4 w-4" />
-          </div>
-          <div className="hidden space-y-0 sm:block">
-            <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow NC</div>
-            <div className="text-[11px] text-muted-foreground">Approval operations</div>
-          </div>
+        <Link className="flex shrink-0 items-center" href="/">
+          <Logo height={34} theme="light" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -98,8 +93,8 @@ export function SiteHeader() {
                     transition={{ duration: 0.2 }}
                     className="space-y-8 p-6"
                   >
-                    <div className="space-y-1">
-                      <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow NC</div>
+                    <div className="space-y-2">
+                      <Logo height={32} theme="light" />
                       <p className="text-sm leading-6 text-muted-foreground">
                         Development approval operations software for North Carolina teams.
                       </p>

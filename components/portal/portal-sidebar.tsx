@@ -8,12 +8,12 @@ import {
   FolderKanban,
   FileCheck2,
   BarChart3,
-  Building2,
   LogOut,
   Menu,
   X,
   Settings,
 } from 'lucide-react';
+import { Logo } from '@/components/site/Logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -58,26 +58,15 @@ export function PortalSidebar() {
       )}
     >
       {/* Logo / Header */}
-      <div className="flex h-16 items-center justify-between border-b border-border px-5">
-        {!isCollapsed && (
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Building2 className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow</div>
-              <div className="text-[10px] text-muted-foreground">Demo Portal</div>
-            </div>
-          </div>
-        )}
-        {isCollapsed && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="h-4 w-4" />
-          </div>
+      <div className="flex h-16 items-center justify-between border-b border-border px-4 gap-2">
+        {isCollapsed ? (
+          <Logo variant="icon" height={32} theme="light" />
+        ) : (
+          <Logo height={30} theme="light" />
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="rounded-lg p-1.5 hover:bg-secondary transition-colors"
+          className="rounded-lg p-1.5 hover:bg-secondary transition-colors flex-shrink-0"
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}

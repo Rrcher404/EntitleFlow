@@ -7,6 +7,7 @@ import { Linkedin, Twitter, Mail } from "lucide-react";
 import { footerNav } from "@/data/site";
 import { siteConfig } from "@/lib/site-config";
 import { TrackedLink } from "@/components/site/tracked-link";
+import { Logo } from "@/components/site/Logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -42,8 +43,8 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-12">
           {/* Brand column */}
           <div className="space-y-6 md:col-span-4">
-            <div className="space-y-2">
-              <div className="text-sm font-semibold tracking-tight text-foreground">EntitleFlow NC</div>
+            <div className="space-y-3">
+              <Logo height={30} theme="light" />
               <p className="text-sm leading-7 text-muted-foreground">
                 Development approval operations software for North Carolina teams managing reviewer comments, resubmittals, and workflow visibility.
               </p>
