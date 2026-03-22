@@ -118,7 +118,7 @@ export default function TeamSettingsPage() {
       setTeamMembers(
         (membersData || []).map(member => ({
           ...member,
-          role: (member as any).org_role as OrgRole,
+          role: ((member as any).role || 'member') as OrgRole,
         }))
       );
 
@@ -259,7 +259,7 @@ export default function TeamSettingsPage() {
 
   const canManageTeam =
     profile &&
-    (((profile as any).org_role === 'owner' || (profile as any).org_role === 'admin'));
+    (((profile as any).role === 'owner' || (profile as any).role === 'admin'));
 
   if (loading) {
     return (

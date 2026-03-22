@@ -67,7 +67,7 @@ export async function DELETE(
     }
 
     const { error: activityError } = await (adminClient as any)
-      .from('activity_logs')
+      .from('activity_log')
       .insert({
         organization_id: profile.organization_id,
         user_id: user.id,

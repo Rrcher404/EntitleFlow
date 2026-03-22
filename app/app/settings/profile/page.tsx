@@ -219,17 +219,6 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: '#0f3c35' }} />
-          <p className="text-muted-foreground font-sans">Loading your profile...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full">
       {/* Toast notification */}
@@ -264,8 +253,15 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        {/* Profile Card */}
-        {user && (
+        {/* Profile Card — inline loading state prevents blank card flash */}
+        {loading ? (
+          <div className="mb-8 flex items-center justify-center py-24">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: '#0f3c35' }} />
+              <p className="text-muted-foreground font-sans">Loading your profile...</p>
+            </div>
+          </div>
+        ) : user ? (
           <div className="mb-8">
             <UserProfileCard
               user={user}
@@ -276,6 +272,11 @@ export default function ProfilePage() {
               onBioUpdate={handleBioUpdate}
               onStatusToggle={handleStatusToggle}
             />
+          </div>
+        ) : (
+          <div className="mb-8 rounded-xl border border-border bg-card p-8 text-center">
+            <AlertCircle className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+            <p className="text-muted-foreground">Failed to load profile. Please refresh the page.</p>
           </div>
         )}
 

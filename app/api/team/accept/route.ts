@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { error: activityError } = await (adminClient as any)
-      .from('activity_logs')
+      .from('activity_log')
       .insert({
         organization_id: invitation.organization_id,
         user_id: user.id,

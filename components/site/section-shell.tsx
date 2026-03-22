@@ -35,7 +35,8 @@ export function SectionShell({ id, className, animate = true, children }: Sectio
       id={id}
       className={cn("py-14 sm:py-16", className)}
       initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
       transition={{
         duration: 0.6,
         ease: [0.23, 1, 0.82, 1],

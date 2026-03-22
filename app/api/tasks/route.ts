@@ -145,19 +145,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     // Summary stats for the header cards
-    const allOpenQuery = await supabase
-      .from('comments')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', profile.organization_id)
-      .eq('is_resolved', false)
-      .eq('assigned_to', user.id);
+    // Query via comment_assignments (not the deprecated comments.assigned_to column)
+    const { count: openCount } = await supabase
+      .from('comment_assignments')
+      .select('id, comments!inner(id)', { count: 'exact', head: true })
+      .eq('assigned_to', user.id)
+      .is('unassigned_at', null)
+      .eq('comments.is_resolved', false)
+      .eq('comments.organization_id', profile.organization_id);
 
-    const allResolvedQuery = await supabase
-      .from('comments')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', profile.organization_id)
-      .eq('is_resolved', true)
-      .eq('assigned_to', user.id);
+    const { count: resolvedCount } = await supabase
+      .from('comment_assignments')
+      .select('id, comments!inner(id)', { count: 'exact', head: true })
+      .eq('assigned_to', user.id)
+      .is('unassigned_at', null)
+      .eq('comments.is_resolved', true)
+      .eq('comments.organization_id', profile.organization_id);
 
     return NextResponse.json({
       data: tasks || [],
@@ -169,9 +172,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         pages: Math.ceil((count || 0) / limit),
       },
       summary: {
-        open: allOpenQuery.count || 0,
-        resolved: allResolvedQuery.count || 0,
-        total: (allOpenQuery.count || 0) + (allResolvedQuery.count || 0),
+        open: openCount || 0,
+        resolved: resolvedCount || 0,
+        total: (openCount || 0) + (resolvedCount || 0),
       },
     });
   } catch (error) {
