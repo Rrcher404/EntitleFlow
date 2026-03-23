@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EntitleFlow — Logo Concepts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #f6f5f0;
+      --primary:  #0f3c35;
+      --teal:     #25a18e;
+      --accent:   #dff2ef;
+      --navy:     #102034;
+      --muted:    #5a6676;
+      --border:   #e2e5e5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      padding: 48px 32px;
+    }
+
+    h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .page-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 48px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      box-shadow: 0 1px 4px rgba(16,32,52,0.05);
+    }
+
+    .concept-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 24px;
+    }
+
+    .logo-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 36px 24px;
+      margin-bottom: 20px;
+      min-height: 140px;
+    }
+
+    .logo-stage.dark {
+      background: var(--primary);
+    }
+
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .wordmark {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .wordmark .entitle {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+    }
+
+    .wordmark .flow {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--teal);
+    }
+
+    .wordmark-dark .entitle {
+      color: #f8fafc;
+    }
+
+    .wordmark-dark .flow {
+      color: #6ee7d8;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0;
+      margin-top: 16px;
+    }
+
+    .toggle-btn {
+      font-family: 'Manrope', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .toggle-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    /* ── icon-only display ── */
+    .icon-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .icon-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-swatch span {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .swatch-bg-light {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .swatch-bg-dark {
+      background: var(--primary);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .swatch-bg-white {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>EntitleFlow</h1>
+  <p class="page-title">Logo Concepts</p>
+  <p class="page-sub">Three directions — light and dark stage previews with icon swatches</p>
+
+  <div class="grid">
+
+    <!-- ─────────────────────────────
+         CONCEPT 1: Permit Stamp / Seal
+    ───────────────────────────────── -->
+    <div class="card">
+      <div class="concept-label">Concept 1 — Approval Seal</div>
+
+      <!-- Light stage -->
+      <div class="logo-stage" id="c1-stage">
+        <div class="logo-lockup">
+          <!-- Hexagon seal with check -->
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" fill="#0f3c35" />
+            <polygon points="24,7 38.5,15.25 38.5,31.75 24,40 9.5,31.75 9.5,15.25" fill="none" stroke="#25a18e" stroke-width="1.5" opacity="0.5"/>
+            <!-- checkmark -->
+            <polyline points="15,24.5 21,31 33,17" stroke="#dff2ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="wordmark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark stage -->
+      <div class="logo-stage dark">
+        <div class="logo-lockup">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" fill="#25a18e" />
+            <polygon points="24,7 38.5,15.25 38.5,31.75 24,40 9.5,31.75 9.5,15.25" fill="none" stroke="#dff2ef" stroke-width="1.5" opacity="0.4"/>
+            <polyline points="15,24.5 21,31 33,17" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="wordmark wordmark-dark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Icon-only swatches -->
+      <div class="icon-row">
+        <div class="icon-swatch">
+          <div class="swatch-bg-light">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" fill="#0f3c35"/><polygon points="24,7 38.5,15.25 38.5,31.75 24,40 9.5,31.75 9.5,15.25" fill="none" stroke="#25a18e" stroke-width="1.5" opacity="0.5"/><polyline points="15,24.5 21,31 33,17" stroke="#dff2ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span>Light</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-dark">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" fill="#25a18e"/><polygon points="24,7 38.5,15.25 38.5,31.75 24,40 9.5,31.75 9.5,15.25" fill="none" stroke="#dff2ef" stroke-width="1.5" opacity="0.4"/><polyline points="15,24.5 21,31 33,17" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-white">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" fill="#0f3c35"/><polygon points="24,7 38.5,15.25 38.5,31.75 24,40 9.5,31.75 9.5,15.25" fill="none" stroke="#25a18e" stroke-width="1.5" opacity="0.5"/><polyline points="15,24.5 21,31 33,17" stroke="#dff2ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span>White</span>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <p class="card-title">Permit Stamp / Approval Seal</p>
+      <p class="card-desc">Hexagonal seal with a checkmark — directly maps to the approval moment that drives EntitleFlow's entire value prop. The inner ring adds depth without complexity. Authoritative, trustworthy, domain-specific.</p>
+    </div>
+
+
+    <!-- ─────────────────────────────
+         CONCEPT 2: Flow Lines / Site Plan
+    ───────────────────────────────── -->
+    <div class="card">
+      <div class="concept-label">Concept 2 — Flow Lines</div>
+
+      <div class="logo-stage">
+        <div class="logo-lockup">
+          <!-- Three lines that taper/flow right -->
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- outer rounded rect as container feel -->
+            <rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/>
+            <!-- line 1: straight -->
+            <line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- line 2: bends into arrow path -->
+            <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <!-- line 3: horizontal with dot end -->
+            <line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+            <!-- flow dot -->
+            <circle cx="38" cy="33" r="3" fill="#25a18e"/>
+          </svg>
+          <div class="wordmark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logo-stage dark">
+        <div class="logo-lockup">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="1" y="1" width="46" height="46" rx="12" fill="#25a18e"/>
+            <line x1="10" y1="15" x2="38" y2="15" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <line x1="10" y1="33" x2="24" y2="33" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="38" cy="33" r="3" fill="#fff"/>
+          </svg>
+          <div class="wordmark wordmark-dark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-swatch">
+          <div class="swatch-bg-light">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+          </div>
+          <span>Light</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-dark">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#25a18e"/><line x1="10" y1="15" x2="38" y2="15" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#fff"/></svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-white">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+          </div>
+          <span>White</span>
+        </div>
+      </div>
+
+      <hr class="divider"/>
+      <p class="card-title">Flow Lines / Site Plan</p>
+      <p class="card-desc">Abstracted parcel lines that fork and route — nods to both site plans and workflow branching. The curved line breaking from the grid suggests a permit moving through a review process. Modern, SaaS-forward feel.</p>
+    </div>
+
+
+    <!-- ─────────────────────────────
+         CONCEPT 5: Survey Stake / Pin
+    ───────────────────────────────── -->
+    <div class="card">
+      <div class="concept-label">Concept 5 — Survey Stake</div>
+
+      <div class="logo-stage">
+        <div class="logo-lockup">
+          <!-- Abstracted survey stake / corner marker -->
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- circle base -->
+            <circle cx="24" cy="24" r="22" fill="#0f3c35"/>
+            <!-- crosshair / survey grid lines subtle -->
+            <line x1="24" y1="7" x2="24" y2="41" stroke="#25a18e" stroke-width="1" opacity="0.25"/>
+            <line x1="7" y1="24" x2="41" y2="24" stroke="#25a18e" stroke-width="1" opacity="0.25"/>
+            <!-- corner marks (survey bracket style) -->
+            <path d="M14 20 L14 14 L20 14" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M28 14 L34 14 L34 20" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M14 28 L14 34 L20 34" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M28 34 L34 34 L34 28" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- center pin dot -->
+            <circle cx="24" cy="24" r="4" fill="#dff2ef"/>
+            <circle cx="24" cy="24" r="2" fill="#25a18e"/>
+          </svg>
+          <div class="wordmark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logo-stage dark">
+        <div class="logo-lockup">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" fill="#25a18e"/>
+            <line x1="24" y1="7" x2="24" y2="41" stroke="#fff" stroke-width="1" opacity="0.2"/>
+            <line x1="7" y1="24" x2="41" y2="24" stroke="#fff" stroke-width="1" opacity="0.2"/>
+            <path d="M14 20 L14 14 L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M28 14 L34 14 L34 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M14 28 L14 34 L20 34" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M28 34 L34 34 L34 28" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="24" cy="24" r="4" fill="#dff2ef"/>
+            <circle cx="24" cy="24" r="2" fill="#0f3c35"/>
+          </svg>
+          <div class="wordmark wordmark-dark">
+            <span class="entitle">Entitle</span>
+            <span class="flow">Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="icon-row">
+        <div class="icon-swatch">
+          <div class="swatch-bg-light">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#0f3c35"/><line x1="24" y1="7" x2="24" y2="41" stroke="#25a18e" stroke-width="1" opacity="0.25"/><line x1="7" y1="24" x2="41" y2="24" stroke="#25a18e" stroke-width="1" opacity="0.25"/><path d="M14 20 L14 14 L20 14" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 14 L34 14 L34 20" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M14 28 L14 34 L20 34" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 34 L34 34 L34 28" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="24" cy="24" r="4" fill="#dff2ef"/><circle cx="24" cy="24" r="2" fill="#25a18e"/></svg>
+          </div>
+          <span>Light</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-dark">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#25a18e"/><line x1="24" y1="7" x2="24" y2="41" stroke="#fff" stroke-width="1" opacity="0.2"/><line x1="7" y1="24" x2="41" y2="24" stroke="#fff" stroke-width="1" opacity="0.2"/><path d="M14 20 L14 14 L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 14 L34 14 L34 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M14 28 L14 34 L20 34" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 34 L34 34 L34 28" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="24" cy="24" r="4" fill="#dff2ef"/><circle cx="24" cy="24" r="2" fill="#0f3c35"/></svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-swatch">
+          <div class="swatch-bg-white">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#0f3c35"/><line x1="24" y1="7" x2="24" y2="41" stroke="#25a18e" stroke-width="1" opacity="0.25"/><line x1="7" y1="24" x2="41" y2="24" stroke="#25a18e" stroke-width="1" opacity="0.25"/><path d="M14 20 L14 14 L20 14" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 14 L34 14 L34 20" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M14 28 L14 34 L20 34" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M28 34 L34 34 L34 28" stroke="#25a18e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="24" cy="24" r="4" fill="#dff2ef"/><circle cx="24" cy="24" r="2" fill="#25a18e"/></svg>
+          </div>
+          <span>White</span>
+        </div>
+      </div>
+
+      <hr class="divider"/>
+      <p class="card-title">Survey Stake / Corner Marker</p>
+      <p class="card-desc">A surveyor's corner bracket pattern with a precision center pin — instantly speaks "land" to anyone in development and planning. The crosshair subtly echoes the document review process: pinpointing issues, marking comments, locating parcels.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

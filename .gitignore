@@ -44,6 +44,7 @@ coverage/
 
 # Internal planning docs (do not publish)
 *.docx
+*.pptx
 permitpilot_nc_product_page.jsx
 entitleflow_nc_product_page.jsx
 .vercel
