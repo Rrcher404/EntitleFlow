@@ -217,6 +217,7 @@ export function HomePageClient() {
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
                   <TrackedLinkButton
+                    className="bg-white text-foreground hover:bg-white/90"
                     eventName="guide_card_click"
                     eventProps={{ title: 'Greensboro guide' }}
                     href="/nc-jurisdictions/greensboro"
@@ -225,6 +226,7 @@ export function HomePageClient() {
                     View Greensboro
                   </TrackedLinkButton>
                   <TrackedLinkButton
+                    className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
                     eventName="guide_card_click"
                     eventProps={{ title: 'Raleigh guide' }}
                     href="/nc-jurisdictions/raleigh"
