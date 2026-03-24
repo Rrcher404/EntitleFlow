@@ -47,13 +47,13 @@ export async function GET() {
       .eq('status', 'active');
 
     // Format activity logs with user emails
-    const formattedActivityLogs = (activityLogs || []).map((log: any) => ({
+    const formattedActivityLogs = (activityLogs || []).map((log) => ({
       id: log.id,
       actor_id: log.actor_id,
       action: log.action,
       description: log.description,
       created_at: log.created_at,
-      user_email: log.profiles?.email,
+      user_email: (log as Record<string, unknown> & { profiles?: { email?: string } }).profiles?.email,
     }));
 
     return NextResponse.json({

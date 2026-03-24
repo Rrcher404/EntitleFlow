@@ -124,15 +124,15 @@ export async function getUserPermissionContext(): Promise<UserPermissionContext 
     // Fetch any user-specific permission overrides
     const { data: overrides, error: overridesError } = await adminClient
       .from('user_permission_overrides')
-      .select('permission_action, granted')
-      .eq('user_id', user.id);
+      .select('permission, granted')
+      .eq('profile_id', user.id);
 
     if (!overridesError && overrides && overrides.length > 0) {
       for (const override of overrides) {
         if (override.granted) {
-          permissions.add(override.permission_action as PermissionAction);
+          permissions.add(override.permission as PermissionAction);
         } else {
-          permissions.delete(override.permission_action as PermissionAction);
+          permissions.delete(override.permission as PermissionAction);
         }
       }
     }

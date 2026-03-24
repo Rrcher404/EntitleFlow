@@ -15,62 +15,45 @@ export async function GET() {
       )
     }
 
-    // Fetch all licenses
-    const { data: licenses } = await serviceClient
-      .from('licenses')
-      .select('id, type, price, description, features')
+    // Fetch license definitions
+    const { data: definitions } = await serviceClient
+      .from('license_definitions')
+      .select('*')
+      .order('price_monthly_cents', { ascending: true })
 
-    // Fetch license assignments
-    const { data: assignments } = await serviceClient
-      .from('user_licenses')
-      .select('license_type, count(*)')
-      .order('license_type')
+    // Count users by license_type from profiles
+    const { data: profiles } = await serviceClient
+      .from('profiles')
+      .select('license_type')
 
-    // Calculate stats
     const total_by_type: Record<string, number> = {}
     let total_active_licenses = 0
-    let revenue_projection = 0
 
-    if (assignments) {
-      for (const assignment of assignments) {
-        const count = (assignment as any).count || 0
-        total_by_type[assignment.license_type] = count
-        total_active_licenses += count
-
-        const license = licenses?.find((l: any) => l.type === assignment.license_type)
-        if (license) {
-          revenue_projection += count * license.price * 12 // Annual projection
-        }
+    if (profiles) {
+      for (const profile of profiles) {
+        const lt = profile.license_type || 'standard'
+        total_by_type[lt] = (total_by_type[lt] || 0) + 1
+        total_active_licenses += 1
       }
     }
 
-    // Fetch assignment trends (last 30 days)
-    const { data: trends } = await serviceClient
-      .from('license_assignment_log')
-      .select('assigned_date, count')
-      .gte('assigned_date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-      .order('assigned_date', { ascending: true })
-
     // Format license definitions
-    const license_definitions = (licenses || []).map((lic: any) => ({
-      type: lic.type,
-      price: lic.price || 0,
+    const license_definitions = (definitions || []).map((lic) => ({
+      type: lic.license_type,
+      display_name: lic.display_name,
+      price: lic.price_monthly_cents / 100,
       description: lic.description || '',
-      features: lic.features || [],
-    }))
-
-    // Format trends
-    const assignment_trends = (trends || []).map((trend: any) => ({
-      date: new Date(trend.assigned_date).toLocaleDateString(),
-      count: trend.count || 0,
+      max_projects: lic.max_projects,
+      max_permits_per_project: lic.max_permits_per_project,
+      is_active: lic.is_active,
     }))
 
     return NextResponse.json({
       total_by_type,
       total_active_licenses,
-      revenue_projection,
+      revenue_projection: 0,
       license_definitions,
-      assignment_trends,
+      assignment_trends: [],
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

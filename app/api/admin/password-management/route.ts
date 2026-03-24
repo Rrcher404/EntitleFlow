@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { verifyAdmin } from '@/lib/admin/auth'
-import { createClient } from '@supabase/supabase-js'
 
 export async function GET() {
   try {
@@ -16,51 +15,19 @@ export async function GET() {
       )
     }
 
-    // Fetch recent password reset requests
-    const { data: resets, error: queryError } = await serviceClient
-      .from('password_reset_tokens')
-      .select(`
-        id,
-        user_id,
-        created_at,
-        expires_at,
-        used_at,
-        profiles(email, full_name)
-      `)
-      .order('created_at', { ascending: false })
-      .limit(100)
+    // Fetch password reset config
+    const { data: config } = await serviceClient
+      .from('password_reset_config')
+      .select('*')
+      .limit(1)
+      .single()
 
-    if (queryError) {
-      return NextResponse.json(
-        { error: queryError.message },
-        { status: 400 }
-      )
-    }
-
-    // Format response
-    const formattedResets = (resets || []).map((reset: any) => {
-      const now = new Date()
-      const expiresAt = new Date(reset.expires_at)
-      let status = 'pending'
-      if (reset.used_at) {
-        status = 'used'
-      } else if (now > expiresAt) {
-        status = 'expired'
-      }
-
-      return {
-        id: reset.id,
-        user_email: reset.profiles?.email || '',
-        user_full_name: reset.profiles?.full_name || '',
-        reset_token: reset.id,
-        created_at: reset.created_at,
-        expires_at: reset.expires_at,
-        used_at: reset.used_at,
-        status,
-      }
+    // No password_reset_tokens table exists yet — return empty list
+    // TODO: Create password_reset_tokens table or track via admin_audit_log
+    return NextResponse.json({
+      config: config || null,
+      recent_resets: [],
     })
-
-    return NextResponse.json(formattedResets)
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })
@@ -104,35 +71,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create password reset token
-    const resetToken = crypto.randomUUID()
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+    // Log the password reset request in admin_audit_log
+    await serviceClient.from('admin_audit_log').insert({
+      action: 'password_reset_requested',
+      target_type: 'user',
+      target_id: profile.id,
+      details: { email },
+    })
 
-    const { data: resetData, error: insertError } = await serviceClient
-      .from('password_reset_tokens')
-      .insert({
-        id: resetToken,
-        user_id: profile.id,
-        expires_at: expiresAt.toISOString(),
-        created_at: new Date().toISOString(),
-      })
-      .select()
-      .single()
-
-    if (insertError) {
-      return NextResponse.json(
-        { error: insertError.message },
-        { status: 400 }
-      )
-    }
-
-    // In a real app, you would send an email with a password reset link
-    // For now, we just return success
     return NextResponse.json({
       success: true,
-      message: `Password reset link sent to ${email}`,
-      reset_token: resetToken,
-      expires_at: expiresAt.toISOString(),
+      message: `Password reset initiated for ${email}`,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

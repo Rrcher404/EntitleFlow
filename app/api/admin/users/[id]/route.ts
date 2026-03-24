@@ -44,28 +44,29 @@ export async function GET(
       )
     }
 
-    // Fetch user's organizations
+    // Fetch user's organizations via team_members
     const { data: orgMemberships } = await serviceClient
-      .from('organization_members')
+      .from('team_members')
       .select('organization_id, role, organizations(id, name)')
-      .eq('user_id', userId)
+      .eq('profile_id', userId)
       .limit(1)
 
-    const organization = orgMemberships?.[0]?.organizations || { id: '', name: 'Not assigned' }
+    const orgData = orgMemberships?.[0]?.organizations as unknown as { id: string; name: string } | null
+    const organization = orgData || { id: '', name: 'Not assigned' }
 
-    // Fetch activity logs
+    // Fetch activity logs from admin_audit_log
     const { data: activity } = await serviceClient
-      .from('audit_logs')
-      .select('id, action, resource_type, timestamp')
-      .eq('user_id', userId)
-      .order('timestamp', { ascending: false })
+      .from('admin_audit_log')
+      .select('id, action, created_at')
+      .eq('admin_id', userId)
+      .order('created_at', { ascending: false })
       .limit(100)
 
     // Get last login from activity
     const lastLoginLog = activity?.find(
-      (log: any) => log.action === 'login' || log.action === 'sign_in'
+      (log) => log.action === 'login' || log.action === 'sign_in'
     )
-    const lastLogin = lastLoginLog?.timestamp || null
+    const lastLogin = lastLoginLog?.created_at || null
 
     return NextResponse.json({
       id: profile.id,
@@ -88,11 +89,10 @@ export async function GET(
           'manage_settings',
         ]
         : ['manage_organization', 'manage_projects'],
-      activity: (activity || []).map((a: any) => ({
+      activity: (activity || []).map((a) => ({
         id: a.id,
         action: a.action,
-        resource_type: a.resource_type,
-        timestamp: a.timestamp,
+        timestamp: a.created_at,
       })),
     })
   } catch (err) {

@@ -29,7 +29,7 @@ export async function createServerSupabaseClient() {
 }
 
 // Admin client (service role, no cookies, for server-only operations)
-let cachedAdminClient: ReturnType<typeof createJsClient> | null = null;
+let cachedAdminClient: ReturnType<typeof createJsClient<Database>> | null = null;
 
 export function getSupabaseAdminClient() {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -40,7 +40,7 @@ export function getSupabaseAdminClient() {
   }
 
   if (!cachedAdminClient) {
-    cachedAdminClient = createJsClient(url, key, {
+    cachedAdminClient = createJsClient<Database>(url, key, {
       auth: {
         autoRefreshToken: false,
         persistSession: false,

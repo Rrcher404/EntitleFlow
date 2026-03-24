@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
+import type { Database } from '@/lib/database.types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
       .select('license_type, permission');
 
     if (licenseType) {
-      defaultQuery = defaultQuery.eq('license_type', licenseType);
+      defaultQuery = defaultQuery.eq('license_type', licenseType as Database['public']['Enums']['license_type']);
     }
 
     const [

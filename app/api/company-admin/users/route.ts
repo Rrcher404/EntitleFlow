@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
+import type { Database } from '@/lib/database.types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,11 +30,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (licenseType) {
-      query = query.eq('license_type', licenseType);
+      query = query.eq('license_type', licenseType as Database['public']['Enums']['license_type']);
     }
 
     if (role) {
-      query = query.eq('role', role);
+      query = query.eq('role', role as Database['public']['Enums']['user_role']);
     }
 
     const { data: users, error: usersError, count } = await query.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
