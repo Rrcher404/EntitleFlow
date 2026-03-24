@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { Users, FolderOpen, HardDrive, License, Plus, Key, BarChart3, Download } from 'lucide-react';
+import { Users, FolderOpen, HardDrive, ScrollText, Plus, Key, BarChart3, Download } from 'lucide-react';
 
 interface DashboardStats {
   totalUsers: number;
@@ -144,7 +144,7 @@ export default function DashboardPage() {
         <StatCard
           title="Active Licenses"
           value={stats.totalUsers}
-          icon={License}
+          icon={ScrollText}
           subtext="All in use"
         />
       </div>
