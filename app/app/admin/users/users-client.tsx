@@ -1,8 +1,14 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, MoreHorizontal, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface User {
   id: string;
@@ -57,6 +63,7 @@ const LoadingSkeleton = () => (
 
 export default function UsersPageClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const roleFilter = searchParams.get('role');
 
   const [users, setUsers] = useState<User[]>([]);
@@ -192,9 +199,24 @@ export default function UsersPageClient() {
                       <StatusBadge status={user.status} />
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <button className="p-2 hover:bg-gray-100 rounded transition-colors">
-                        <MoreHorizontal className="w-4 h-4 text-gray-600" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-2 hover:bg-gray-100 rounded transition-colors">
+                            <MoreHorizontal className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => router.push('/app/settings/profile')}>
+                            View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => alert('Change Role - Coming soon')}>
+                            Change Role
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => alert('Deactivate - Coming soon')}>
+                            Deactivate
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </td>
                   </tr>
                 ))}

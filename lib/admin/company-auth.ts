@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
 import type { Database } from '../database.types';
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 
@@ -17,10 +15,13 @@ export async function GET(request: NextRequest) {
     const search = request.nextUrl.searchParams.get('search');
     const licenseType = request.nextUrl.searchParams.get('license_type');
     const role = request.nextUrl.searchParams.get('role');
+    const page = parseInt(request.nextUrl.searchParams.get('page') || '1', 10);
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '25', 10);
+    const offset = (page - 1) * limit;
 
     let query = serviceClient
       .from('profiles')
-      .select('id, email, full_name, role, license_type, is_active, last_seen_at, created_at')
+      .select('id, email, full_name, role, license_type, is_active, last_seen_at, created_at', { count: 'exact' })
       .eq('organization_id', admin.organization_id);
 
     if (search) {
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
       query = query.eq('role', role);
     }
 
-    const { data: users, error: usersError } = await query.order('created_at', { ascending: false });
+    const { data: users, error: usersError, count } = await query.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
 
     if (usersError) {
       return NextResponse.json(
@@ -45,8 +46,12 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      data: users || [],
-      count: users?.length || 0,
+      users: users || [],
+      pagination: {
+        page,
+        limit,
+        total: count || 0,
+      },
     });
   } catch (err) {
     console.error('Error fetching company users:', err);

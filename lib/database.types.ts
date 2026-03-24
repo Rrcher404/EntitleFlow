@@ -86,6 +86,8 @@ export type Database = {
           created_at: string | null
           details: Json | null
           id: string
+          ip_address: string | null
+          organization_id: string | null
           target_id: string | null
           target_type: string | null
         }
@@ -95,6 +97,8 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
+          ip_address?: string | null
+          organization_id?: string | null
           target_id?: string | null
           target_type?: string | null
         }
@@ -104,6 +108,8 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
+          ip_address?: string | null
+          organization_id?: string | null
           target_id?: string | null
           target_type?: string | null
         }
@@ -113,6 +119,13 @@ export type Database = {
             columns: ["admin_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -325,6 +338,87 @@ export type Database = {
             columns: ["resolved_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_group_members: {
+        Row: {
+          created_at: string | null
+          group_id: string
+          id: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          group_id: string
+          id?: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "company_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_group_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_groups: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          parent_group_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          parent_group_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          parent_group_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_groups_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_groups_parent_group_id_fkey"
+            columns: ["parent_group_id"]
+            isOneToOne: false
+            referencedRelation: "company_groups"
             referencedColumns: ["id"]
           },
         ]
@@ -584,6 +678,143 @@ export type Database = {
         }
         Relationships: []
       }
+      flowe_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      flowe_knowledge: {
+        Row: {
+          category: string
+          confidence: number | null
+          content: string
+          created_at: string | null
+          created_by: string | null
+          embedding: string | null
+          example_question: string | null
+          example_response: string | null
+          id: string
+          is_active: boolean | null
+          keywords: string[]
+          organization_id: string | null
+          source: string | null
+          source_url: string | null
+          tags: string[]
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          confidence?: number | null
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          embedding?: string | null
+          example_question?: string | null
+          example_response?: string | null
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[]
+          organization_id?: string | null
+          source?: string | null
+          source_url?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          confidence?: number | null
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          embedding?: string | null
+          example_question?: string | null
+          example_response?: string | null
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[]
+          organization_id?: string | null
+          source?: string | null
+          source_url?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flowe_knowledge_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flowe_knowledge_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flowe_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flowe_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "flowe_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jurisdictions: {
         Row: {
           avg_review_days: number | null
@@ -622,6 +853,75 @@ export type Database = {
           notes?: string | null
           portal_url?: string | null
           state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      license_definitions: {
+        Row: {
+          can_access_admin_panel: boolean | null
+          can_create_projects: boolean | null
+          can_create_subprojects: boolean | null
+          can_delete_files: boolean | null
+          can_download: boolean | null
+          can_export_data: boolean | null
+          can_manage_team: boolean | null
+          can_reset_passwords: boolean | null
+          can_upload: boolean | null
+          created_at: string | null
+          description: string | null
+          display_name: string
+          id: string
+          is_active: boolean | null
+          license_type: Database["public"]["Enums"]["license_type"]
+          max_permits_per_project: number | null
+          max_projects: number | null
+          price_annual_cents: number
+          price_monthly_cents: number
+          updated_at: string | null
+        }
+        Insert: {
+          can_access_admin_panel?: boolean | null
+          can_create_projects?: boolean | null
+          can_create_subprojects?: boolean | null
+          can_delete_files?: boolean | null
+          can_download?: boolean | null
+          can_export_data?: boolean | null
+          can_manage_team?: boolean | null
+          can_reset_passwords?: boolean | null
+          can_upload?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean | null
+          license_type: Database["public"]["Enums"]["license_type"]
+          max_permits_per_project?: number | null
+          max_projects?: number | null
+          price_annual_cents?: number
+          price_monthly_cents?: number
+          updated_at?: string | null
+        }
+        Update: {
+          can_access_admin_panel?: boolean | null
+          can_create_projects?: boolean | null
+          can_create_subprojects?: boolean | null
+          can_delete_files?: boolean | null
+          can_download?: boolean | null
+          can_export_data?: boolean | null
+          can_manage_team?: boolean | null
+          can_reset_passwords?: boolean | null
+          can_upload?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean | null
+          license_type?: Database["public"]["Enums"]["license_type"]
+          max_permits_per_project?: number | null
+          max_projects?: number | null
+          price_annual_cents?: number
+          price_monthly_cents?: number
           updated_at?: string | null
         }
         Relationships: []
@@ -781,38 +1081,59 @@ export type Database = {
       organizations: {
         Row: {
           active_nc_jurisdictions: string[] | null
+          billing_email: string | null
           company_type: Database["public"]["Enums"]["company_type"] | null
           created_at: string | null
           id: string
+          is_active: boolean | null
           logo_url: string | null
+          max_file_size_bytes: number | null
+          max_users: number | null
           name: string
           primary_jurisdiction: string | null
           settings: Json | null
           slug: string
+          storage_limit_bytes: number | null
+          storage_used_bytes: number | null
+          subscription_tier: string | null
           updated_at: string | null
         }
         Insert: {
           active_nc_jurisdictions?: string[] | null
+          billing_email?: string | null
           company_type?: Database["public"]["Enums"]["company_type"] | null
           created_at?: string | null
           id?: string
+          is_active?: boolean | null
           logo_url?: string | null
+          max_file_size_bytes?: number | null
+          max_users?: number | null
           name: string
           primary_jurisdiction?: string | null
           settings?: Json | null
           slug: string
+          storage_limit_bytes?: number | null
+          storage_used_bytes?: number | null
+          subscription_tier?: string | null
           updated_at?: string | null
         }
         Update: {
           active_nc_jurisdictions?: string[] | null
+          billing_email?: string | null
           company_type?: Database["public"]["Enums"]["company_type"] | null
           created_at?: string | null
           id?: string
+          is_active?: boolean | null
           logo_url?: string | null
+          max_file_size_bytes?: number | null
+          max_users?: number | null
           name?: string
           primary_jurisdiction?: string | null
           settings?: Json | null
           slug?: string
+          storage_limit_bytes?: number | null
+          storage_used_bytes?: number | null
+          subscription_tier?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -869,6 +1190,56 @@ export type Database = {
             foreignKeyName: "parse_jobs_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      password_reset_config: {
+        Row: {
+          created_at: string | null
+          force_reset_schedule_days: number | null
+          id: string
+          last_force_reset_at: string | null
+          min_password_length: number | null
+          organization_id: string
+          require_number: boolean | null
+          require_special_char: boolean | null
+          require_uppercase: boolean | null
+          reset_link_duration_hours: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          force_reset_schedule_days?: number | null
+          id?: string
+          last_force_reset_at?: string | null
+          min_password_length?: number | null
+          organization_id: string
+          require_number?: boolean | null
+          require_special_char?: boolean | null
+          require_uppercase?: boolean | null
+          reset_link_duration_hours?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          force_reset_schedule_days?: number | null
+          id?: string
+          last_force_reset_at?: string | null
+          min_password_length?: number | null
+          organization_id?: string
+          require_number?: boolean | null
+          require_special_char?: boolean | null
+          require_uppercase?: boolean | null
+          reset_link_duration_hours?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "password_reset_config_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -1057,13 +1428,19 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          company_name: string | null
           created_at: string | null
           email: string
           full_name: string
           id: string
+          is_active: boolean | null
           is_super_admin: boolean | null
           job_title: string | null
           last_seen_at: string | null
+          license_expires_at: string | null
+          license_type: Database["public"]["Enums"]["license_type"] | null
+          licensed_at: string | null
           notification_preferences: Json | null
           onboarding_completed: boolean | null
           organization_id: string
@@ -1073,13 +1450,19 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          company_name?: string | null
           created_at?: string | null
           email: string
           full_name: string
           id: string
+          is_active?: boolean | null
           is_super_admin?: boolean | null
           job_title?: string | null
           last_seen_at?: string | null
+          license_expires_at?: string | null
+          license_type?: Database["public"]["Enums"]["license_type"] | null
+          licensed_at?: string | null
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           organization_id: string
@@ -1089,13 +1472,19 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          company_name?: string | null
           created_at?: string | null
           email?: string
           full_name?: string
           id?: string
+          is_active?: boolean | null
           is_super_admin?: boolean | null
           job_title?: string | null
           last_seen_at?: string | null
+          license_expires_at?: string | null
+          license_type?: Database["public"]["Enums"]["license_type"] | null
+          licensed_at?: string | null
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           organization_id?: string
@@ -1202,6 +1591,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      role_permissions: {
+        Row: {
+          id: string
+          license_type: Database["public"]["Enums"]["license_type"]
+          permission: Database["public"]["Enums"]["permission_action"]
+        }
+        Insert: {
+          id?: string
+          license_type: Database["public"]["Enums"]["license_type"]
+          permission: Database["public"]["Enums"]["permission_action"]
+        }
+        Update: {
+          id?: string
+          license_type?: Database["public"]["Enums"]["license_type"]
+          permission?: Database["public"]["Enums"]["permission_action"]
+        }
+        Relationships: []
       }
       team_invitations: {
         Row: {
@@ -1312,13 +1719,155 @@ export type Database = {
           },
         ]
       }
+      user_activity_tracking: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          organization_id: string
+          profile_id: string
+          resource_id: string | null
+          resource_name: string | null
+          resource_type: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          organization_id: string
+          profile_id: string
+          resource_id?: string | null
+          resource_name?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          organization_id?: string
+          profile_id?: string
+          resource_id?: string | null
+          resource_name?: string | null
+          resource_type?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_activity_tracking_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activity_tracking_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_permission_overrides: {
+        Row: {
+          created_at: string | null
+          granted: boolean
+          granted_by: string | null
+          id: string
+          organization_id: string
+          permission: Database["public"]["Enums"]["permission_action"]
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          granted: boolean
+          granted_by?: string | null
+          id?: string
+          organization_id: string
+          permission: Database["public"]["Enums"]["permission_action"]
+          profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          granted?: boolean
+          granted_by?: string | null
+          id?: string
+          organization_id?: string
+          permission?: Database["public"]["Enums"]["permission_action"]
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_permission_overrides_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_permission_overrides_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_permission_overrides_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_user_permission: {
+        Args: {
+          p_permission: Database["public"]["Enums"]["permission_action"]
+          p_user_id: string
+        }
+        Returns: boolean
+      }
       generate_permit_number: { Args: never; Returns: string }
       generate_project_number: { Args: never; Returns: string }
+      is_org_admin: {
+        Args: { p_org_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      match_flowe_knowledge: {
+        Args: {
+          filter_category?: string
+          filter_org_id?: string
+          match_count?: number
+          match_threshold?: number
+          query_embedding: string
+        }
+        Returns: {
+          category: string
+          confidence: number
+          content: string
+          example_question: string
+          example_response: string
+          id: string
+          keywords: string[]
+          similarity: number
+          source: string
+          tags: string[]
+          title: string
+        }[]
+      }
     }
     Enums: {
       activity_action:
@@ -1338,6 +1887,23 @@ export type Database = {
         | "team_member_joined"
         | "document_parsed"
         | "email_ingested"
+        | "user_login"
+        | "user_logout"
+        | "password_reset"
+        | "password_changed"
+        | "license_assigned"
+        | "license_changed"
+        | "permission_changed"
+        | "file_downloaded"
+        | "data_exported"
+        | "admin_panel_accessed"
+        | "settings_changed"
+        | "group_created"
+        | "group_updated"
+        | "team_member_removed"
+        | "team_member_role_changed"
+        | "team_invitation_sent"
+        | "team_invitation_accepted"
       comment_category:
         | "parking_access"
         | "stormwater"
@@ -1377,6 +1943,7 @@ export type Database = {
         | "rejection_letter"
         | "other"
       invitation_status: "pending" | "accepted" | "expired" | "revoked"
+      license_type: "admin" | "project_manager" | "contributor" | "guest_viewer"
       notification_type:
         | "comment_assigned"
         | "comment_resolved"
@@ -1388,6 +1955,38 @@ export type Database = {
         | "ai_parse_complete"
         | "email_ingested"
       parse_job_status: "queued" | "processing" | "completed" | "failed"
+      permission_action:
+        | "project.create"
+        | "project.read"
+        | "project.update"
+        | "project.delete"
+        | "subproject.create"
+        | "subproject.read"
+        | "subproject.update"
+        | "subproject.delete"
+        | "permit.create"
+        | "permit.read"
+        | "permit.update"
+        | "permit.delete"
+        | "document.upload"
+        | "document.download"
+        | "document.delete"
+        | "document.read"
+        | "comment.create"
+        | "comment.read"
+        | "comment.update"
+        | "comment.delete"
+        | "comment.resolve"
+        | "team.invite"
+        | "team.remove"
+        | "team.update_role"
+        | "admin.access"
+        | "admin.manage_users"
+        | "admin.manage_settings"
+        | "admin.view_audit"
+        | "analytics.view"
+        | "analytics.export"
+        | "password.reset_others"
       permit_status:
         | "draft"
         | "submitted"
@@ -1564,6 +2163,23 @@ export const Constants = {
         "team_member_joined",
         "document_parsed",
         "email_ingested",
+        "user_login",
+        "user_logout",
+        "password_reset",
+        "password_changed",
+        "license_assigned",
+        "license_changed",
+        "permission_changed",
+        "file_downloaded",
+        "data_exported",
+        "admin_panel_accessed",
+        "settings_changed",
+        "group_created",
+        "group_updated",
+        "team_member_removed",
+        "team_member_role_changed",
+        "team_invitation_sent",
+        "team_invitation_accepted",
       ],
       comment_category: [
         "parking_access",
@@ -1608,6 +2224,7 @@ export const Constants = {
         "other",
       ],
       invitation_status: ["pending", "accepted", "expired", "revoked"],
+      license_type: ["admin", "project_manager", "contributor", "guest_viewer"],
       notification_type: [
         "comment_assigned",
         "comment_resolved",
@@ -1620,6 +2237,39 @@ export const Constants = {
         "email_ingested",
       ],
       parse_job_status: ["queued", "processing", "completed", "failed"],
+      permission_action: [
+        "project.create",
+        "project.read",
+        "project.update",
+        "project.delete",
+        "subproject.create",
+        "subproject.read",
+        "subproject.update",
+        "subproject.delete",
+        "permit.create",
+        "permit.read",
+        "permit.update",
+        "permit.delete",
+        "document.upload",
+        "document.download",
+        "document.delete",
+        "document.read",
+        "comment.create",
+        "comment.read",
+        "comment.update",
+        "comment.delete",
+        "comment.resolve",
+        "team.invite",
+        "team.remove",
+        "team.update_role",
+        "admin.access",
+        "admin.manage_users",
+        "admin.manage_settings",
+        "admin.view_audit",
+        "analytics.view",
+        "analytics.export",
+        "password.reset_others",
+      ],
       permit_status: [
         "draft",
         "submitted",
