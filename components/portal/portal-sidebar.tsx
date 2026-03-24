@@ -12,15 +12,21 @@ import {
   Menu,
   X,
   Settings,
+  ClipboardCheck,
+  FileText,
+  Bell,
 } from 'lucide-react';
 import { Logo } from '@/components/site/Logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { label: 'Dashboard', href: '/demo/dashboard', icon: LayoutDashboard },
+  { label: 'Tasks', href: '/demo/tasks', icon: ClipboardCheck },
   { label: 'Projects', href: '/demo/projects', icon: FolderKanban },
   { label: 'Permits', href: '/demo/permits', icon: FileCheck2 },
+  { label: 'Documents', href: '/demo/documents', icon: FileText },
   { label: 'Analytics', href: '/demo/analytics', icon: BarChart3 },
+  { label: 'Notifications', href: '/demo/notifications', icon: Bell },
 ];
 
 // Mock data to calculate notification badges
@@ -117,16 +123,18 @@ export function PortalSidebar() {
 
       {/* Bottom */}
       <div className="border-t border-border px-3 py-3 space-y-1">
-        <button
+        <Link
+          href="/demo/settings"
           className={cn(
             'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground w-full',
-            isCollapsed && 'justify-center'
+            isCollapsed && 'justify-center',
+            pathname === '/demo/settings' && 'bg-accent text-foreground font-medium'
           )}
           title={isCollapsed ? 'Settings' : undefined}
         >
           <Settings className="h-4 w-4 flex-shrink-0" />
           {!isCollapsed && <span>Settings</span>}
-        </button>
+        </Link>
         <Link
           href="/"
           className={cn(

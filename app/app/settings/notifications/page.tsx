@@ -10,15 +10,17 @@ import type { Database } from '@/lib/database.types';
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
 // Define notification types with human-readable labels
+// Keys must match the notification_type enum in the database exactly
 const NOTIFICATION_TYPES = [
-  { key: 'comment_assigned', label: 'Comment Assigned to Me' },
+  { key: 'comment_assigned', label: 'Comment Assigned' },
   { key: 'comment_resolved', label: 'Comment Resolved' },
-  { key: 'ai_response_generated', label: 'AI Response Generated' },
-  { key: 'deadline_approaching', label: 'Deadline Approaching (24h)' },
-  { key: 'document_parsing_complete', label: 'Document Parsing Complete' },
-  { key: 'team_member_invited', label: 'Team Member Invited' },
   { key: 'permit_status_changed', label: 'Permit Status Changed' },
+  { key: 'deadline_approaching', label: 'Deadline Approaching' },
+  { key: 'document_uploaded', label: 'Document Uploaded' },
+  { key: 'team_invitation', label: 'Team Invitation' },
+  { key: 'ai_parse_complete', label: 'AI Parse Complete' },
   { key: 'email_ingested', label: 'Email Ingested' },
+  { key: 'mention', label: 'Mentions' },
 ];
 
 interface NotificationPreference {
@@ -166,31 +168,23 @@ export default function NotificationPreferencesPage() {
     setMessage(null);
 
     try {
-      // Save each preference type
-      const promises = Object.entries(preferences).map(
-        ([notificationType, prefs]) =>
-          supabase
-            .from('notification_preferences')
-            .upsert(
-              {
-                profile_id: profile.id,
-                notification_type: notificationType as any,
-                in_app: prefs.in_app,
-                email: prefs.email,
-                email_digest: prefs.email_digest,
-              },
-              {
-                onConflict: 'profile_id,notification_type',
-              }
-            )
-      );
+      // Save each preference via API route (uses admin client to bypass RLS)
+      const entries = Object.entries(preferences);
+      for (const [notificationType, prefs] of entries) {
+        const res = await fetch('/api/notifications/preferences', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            notification_type: notificationType,
+            in_app: prefs.in_app,
+            email: prefs.email,
+            email_digest: prefs.email_digest,
+          }),
+        });
 
-      const results = await Promise.all(promises);
-
-      // Check for any errors
-      for (const result of results) {
-        if (result.error) {
-          throw result.error;
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Failed to save preference');
         }
       }
 

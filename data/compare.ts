@@ -27,7 +27,7 @@ export const compareRows: ComparisonRow[] = [
   },
   {
     label: "Speed to useful adoption",
-    entitleFlow: "Starts with founder-led onboarding and a narrow operational wedge.",
+    entitleFlow: "Starts with founder-led onboarding and a focused operational starting point.",
     manual: "No real adoption work, but no durable operating layer either.",
     generic: "Often requires more process change before the team sees value.",
   },

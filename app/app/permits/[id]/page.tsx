@@ -169,7 +169,7 @@ function StatusTimeline({ permit, onStatusChange }: { permit: Permit; onStatusCh
         )}
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div className="flex items-center gap-2 overflow-x-auto py-2">
         {PERMIT_STATUS_FLOW.map((status, idx) => (
           <div key={status} className="flex items-center gap-2 flex-shrink-0">
             <div
@@ -177,7 +177,7 @@ function StatusTimeline({ permit, onStatusChange }: { permit: Permit; onStatusCh
                 idx < currentStatusIndex
                   ? 'bg-green-500 text-white'
                   : idx === currentStatusIndex
-                    ? 'bg-blue-600 text-white ring-2 ring-blue-300'
+                    ? 'bg-blue-600 text-white ring-2 ring-blue-300 ring-offset-1'
                     : 'bg-gray-200 text-gray-600'
               }`}
             >

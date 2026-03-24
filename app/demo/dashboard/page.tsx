@@ -12,6 +12,11 @@ import {
   Clock,
   ArrowUpRight,
   ArrowDownRight,
+  ClipboardCheck,
+  FileText,
+  BarChart3,
+  Bell,
+  Settings,
 } from 'lucide-react';
 
 type TimeRange = 'today' | '7d' | '30d' | '90d';
@@ -218,6 +223,48 @@ export default function DashboardPage() {
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Quick Navigation */}
+      <div>
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+          Platform Sections
+        </h2>
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {[
+            { label: 'Tasks', href: '/demo/tasks', icon: ClipboardCheck, desc: 'Track comment responses' },
+            { label: 'Projects', href: '/demo/projects', icon: FolderKanban, desc: 'Manage development sites' },
+            { label: 'Permits', href: '/demo/permits', icon: FileCheck2, desc: 'Track permit applications' },
+            { label: 'Documents', href: '/demo/documents', icon: FileText, desc: 'Upload & review files' },
+            { label: 'Analytics', href: '/demo/analytics', icon: BarChart3, desc: 'Approval cycle insights' },
+            { label: 'Notifications', href: '/demo/notifications', icon: Bell, desc: 'Activity & alerts' },
+            { label: 'Settings', href: '/demo/settings', icon: Settings, desc: 'Account & preferences' },
+          ].map((item, idx) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.04 }}
+            >
+              <Card
+                className="cursor-pointer hover:shadow-md transition-all hover:border-primary/40"
+                onClick={() => router.push(item.href)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
+                      <item.icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{item.label}</p>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

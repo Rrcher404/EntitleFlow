@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,10 @@ import {
   X,
   Loader2,
   Zap,
+  Trash2,
+  FolderPlus,
+  Eye,
+  MoreVertical,
 } from 'lucide-react';
 import type { Document } from '@/lib/types/index';
 import { DOCUMENT_TYPE_LABELS } from '@/lib/types/index';
@@ -55,6 +59,183 @@ const formatDate = (dateString: string | null | undefined): string => {
     year: 'numeric',
   });
 };
+
+/** Document actions dropdown component */
+function DocumentActions({
+  doc,
+  projects,
+  permits,
+  onUpdate,
+  profile,
+}: {
+  doc: DocumentWithProject;
+  projects: ProjectRef[];
+  permits: PermitRef[];
+  onUpdate: () => Promise<void>;
+  profile: Profile | null;
+}) {
+  const [open, setOpen] = useState(false);
+  const [showAssignProject, setShowAssignProject] = useState(false);
+  const [showAssignPermit, setShowAssignPermit] = useState(false);
+  const supabase = createClient();
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        setShowAssignProject(false);
+        setShowAssignPermit(false);
+      }
+    };
+    if (open) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open]);
+
+  const handleDelete = async () => {
+    if (!supabase || !confirm('Are you sure you want to delete this document?')) return;
+    try {
+      const { error } = await supabase.from('documents').delete().eq('id', doc.id);
+      if (error) throw error;
+      await onUpdate();
+    } catch (err) {
+      console.error('Error deleting document:', err);
+      alert('Failed to delete document');
+    }
+  };
+
+  const handleAssignProject = async (projectId: string) => {
+    if (!supabase) return;
+    try {
+      const { error } = await supabase
+        .from('documents')
+        .update({ project_id: projectId || null })
+        .eq('id', doc.id);
+      if (error) throw error;
+      setShowAssignProject(false);
+      setOpen(false);
+      await onUpdate();
+    } catch (err) {
+      console.error('Error assigning project:', err);
+      alert('Failed to assign project');
+    }
+  };
+
+  const handleAssignPermit = async (permitId: string) => {
+    if (!supabase) return;
+    try {
+      const { error } = await supabase
+        .from('documents')
+        .update({ permit_id: permitId || null })
+        .eq('id', doc.id);
+      if (error) throw error;
+      setShowAssignPermit(false);
+      setOpen(false);
+      await onUpdate();
+    } catch (err) {
+      console.error('Error assigning permit:', err);
+      alert('Failed to assign permit');
+    }
+  };
+
+  const handleView = () => {
+    // Open document viewer — for now, open the storage path in a new tab
+    if (doc.storage_path) {
+      window.open(`/api/documents/${doc.id}/view`, '_blank');
+    }
+    setOpen(false);
+  };
+
+  const role = profile?.role;
+  const canDelete = role === 'owner' || role === 'admin';
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setOpen(!open)}
+        className="hover:bg-gray-100"
+      >
+        <MoreVertical className="w-4 h-4" />
+      </Button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <div className="py-1">
+            <button
+              onClick={handleView}
+              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+              View Document
+            </button>
+
+            <button
+              onClick={() => { setShowAssignProject(!showAssignProject); setShowAssignPermit(false); }}
+              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <FolderPlus className="w-4 h-4" />
+              {doc.project_id ? 'Change Project' : 'Add to Project'}
+            </button>
+
+            {showAssignProject && (
+              <div className="px-4 py-2 bg-gray-50 border-t border-b border-gray-100">
+                <select
+                  className="w-full text-sm px-2 py-1 border border-gray-300 rounded bg-white"
+                  defaultValue={doc.project_id || ''}
+                  onChange={(e) => handleAssignProject(e.target.value)}
+                >
+                  <option value="">No project</option>
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <button
+              onClick={() => { setShowAssignPermit(!showAssignPermit); setShowAssignProject(false); }}
+              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              {doc.permit_id ? 'Change Permit' : 'Add to Permit'}
+            </button>
+
+            {showAssignPermit && (
+              <div className="px-4 py-2 bg-gray-50 border-t border-b border-gray-100">
+                <select
+                  className="w-full text-sm px-2 py-1 border border-gray-300 rounded bg-white"
+                  defaultValue={doc.permit_id || ''}
+                  onChange={(e) => handleAssignPermit(e.target.value)}
+                >
+                  <option value="">No permit</option>
+                  {permits.map((p) => (
+                    <option key={p.id} value={p.id}>{p.permit_type}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {canDelete && (
+              <>
+                <div className="border-t border-gray-100 my-1" />
+                <button
+                  onClick={handleDelete}
+                  className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete Document
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DocumentsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -153,7 +334,13 @@ export default function DocumentsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, file }));
+      // Auto-populate document name from file name (strip extension)
+      const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
+      setFormData(prev => ({
+        ...prev,
+        file,
+        name: prev.name || nameWithoutExt,
+      }));
     }
   };
 
@@ -469,9 +656,13 @@ export default function DocumentsPage() {
                     </div>
                   </div>
 
-                  <Button variant="ghost" size="sm" disabled>
-                    <ChevronDown className="w-4 h-4" />
-                  </Button>
+                  <DocumentActions
+                    doc={doc}
+                    projects={projects}
+                    permits={permits}
+                    onUpdate={loadDocuments}
+                    profile={profile}
+                  />
                 </div>
               </Card>
             );

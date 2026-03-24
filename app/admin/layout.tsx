@@ -14,6 +14,9 @@ import {
   Bell,
   LogOut,
   ArrowLeft,
+  Key,
+  ActivitySquare,
+  Database,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -24,11 +27,14 @@ const navItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: BarChart3 },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Organizations', href: '/admin/organizations', icon: Building2 },
+  { name: 'Licenses', href: '/admin/licenses', icon: Key },
   { name: 'Leads', href: '/admin/leads', icon: Zap },
   { name: 'Permits', href: '/admin/permits', icon: FileText },
   { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp },
+  { name: 'Diagnostics', href: '/admin/diagnostics', icon: Database },
   { name: 'Announcements', href: '/admin/announcements', icon: Bell },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
+  { name: 'Password Mgmt', href: '/admin/password-management', icon: ActivitySquare },
 ]
 
 interface User {

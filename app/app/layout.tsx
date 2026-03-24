@@ -21,12 +21,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     {
       label: 'New Project',
       Icon: <FolderPlus className="h-4 w-4" />,
-      onClick: () => router.push('/app/projects'),
+      onClick: () => router.push('/app/projects?new=true'),
     },
     {
       label: 'New Permit',
       Icon: <FileText className="h-4 w-4" />,
-      onClick: () => router.push('/app/permits'),
+      onClick: () => router.push('/app/permits?new=true'),
     },
     {
       label: 'Quick Search',

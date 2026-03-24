@@ -26,7 +26,9 @@ export const pricingTiers: PricingTier[] = [
     featured: true,
     highlights: [
       "Founder-led onboarding",
+      "Up to 5 seats (Admin, PM, and Contributor licenses included)",
       "Comments and resubmittal workflow setup",
+      "10 GB document storage with 150 MB per-file uploads",
       "North Carolina-first process structure",
     ],
   },
@@ -39,8 +41,10 @@ export const pricingTiers: PricingTier[] = [
     ctaHref: "/walkthrough?focus=growth",
     eventName: "pricing_cta_click",
     highlights: [
+      "Up to 15 seats across all license types",
       "Expanded workflow coverage across active projects",
-      "Broader internal visibility and process alignment",
+      "Company admin dashboard with audit trail and user management",
+      "Guest Viewer access for external stakeholders",
       "Higher-touch rollout support for repeat approvals",
     ],
   },
@@ -53,9 +57,69 @@ export const pricingTiers: PricingTier[] = [
     ctaHref: "/walkthrough?focus=custom",
     eventName: "pricing_cta_click",
     highlights: [
+      "Unlimited seats and custom license allocation",
       "Custom onboarding plan",
-      "Expanded workflow review",
+      "Expanded storage limits and file management",
+      "Dedicated admin portal with advanced permissions",
       "Tailored rollout and reporting alignment",
+    ],
+  },
+];
+
+/**
+ * License types and what each seat includes.
+ * Displayed on the pricing page alongside tiers.
+ */
+export const licenseTypes = [
+  {
+    name: "Admin",
+    price: "Included with plan",
+    description:
+      "Full platform access with organization-wide settings, user management, permissions, audit trail, and storage controls.",
+    capabilities: [
+      "Organization and user management",
+      "Permission configuration and overrides",
+      "Company admin dashboard and diagnostics",
+      "Password policy and security controls",
+      "Audit trail and activity export",
+      "All Project Manager capabilities",
+    ],
+  },
+  {
+    name: "Project Manager",
+    price: "Included with plan",
+    description:
+      "Manages projects, permits, comments, and team assignments. The primary workflow operator for day-to-day entitlement tracking.",
+    capabilities: [
+      "Create and manage projects and permits",
+      "Upload documents and trigger AI parsing",
+      "Assign and resolve reviewer comments",
+      "View analytics and generate reports",
+      "Manage deadlines and resubmittals",
+    ],
+  },
+  {
+    name: "Contributor",
+    price: "Included with plan",
+    description:
+      "Responds to assigned comments, uploads documents, and tracks their own tasks within assigned projects.",
+    capabilities: [
+      "View assigned projects and permits",
+      "Respond to and resolve assigned comments",
+      "Upload documents to assigned projects",
+      "Track personal task list and deadlines",
+    ],
+  },
+  {
+    name: "Guest Viewer",
+    price: "Free (Growth+ plans)",
+    description:
+      "Read-only access for external stakeholders, clients, or reviewers who need visibility into project status without editing rights.",
+    capabilities: [
+      "View project and permit status",
+      "View documents (no upload or download)",
+      "View comment threads (read-only)",
+      "Access shared analytics dashboards",
     ],
   },
 ];
@@ -70,6 +134,16 @@ export const pricingFaqs = [
     question: "Do I need to be based only in North Carolina?",
     answer:
       "No, but the launch site and initial workflow depth are intentionally North Carolina-first. The strongest fit today is a team doing repeat work in NC jurisdictions.",
+  },
+  {
+    question: "What license types are available?",
+    answer:
+      "Each plan includes Admin, Project Manager, and Contributor seat types. Growth and above plans also include Guest Viewer access for clients and external stakeholders. Each license type has its own permission set that can be customized per user.",
+  },
+  {
+    question: "What are the file upload and storage limits?",
+    answer:
+      "All plans include 150 MB per-file upload limits. Starter plans include 10 GB of total document storage. Growth and Custom plans include expanded or unlimited storage.",
   },
   {
     question: "Can I book a walkthrough before I know which tier fits?",
