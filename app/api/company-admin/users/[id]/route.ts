@@ -5,7 +5,7 @@ import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, admin, serviceClient } = await verifyCompanyAdmin();
@@ -17,7 +17,8 @@ export async function GET(
       );
     }
 
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Get user profile
     const { data: profile, error: profileError } = await serviceClient

@@ -5,7 +5,7 @@ import { verifyAdmin } from '@/lib/admin/auth'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, serviceClient } = await verifyAdmin()
@@ -20,7 +20,8 @@ export async function GET(
       )
     }
 
-    const userId = params.id
+    const { id } = await params
+    const userId = id
 
     // Fetch user profile
     const { data: profile, error: profileError } = await serviceClient
@@ -104,7 +105,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, serviceClient } = await verifyAdmin()
@@ -119,7 +120,8 @@ export async function PATCH(
       )
     }
 
-    const userId = params.id
+    const { id } = await params
+    const userId = id
     const { is_super_admin, license_type, is_active } = await request.json()
 
     const updateData: Record<string, any> = {}

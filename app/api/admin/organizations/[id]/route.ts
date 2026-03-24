@@ -5,7 +5,7 @@ import { verifyAdmin } from '@/lib/admin/auth'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, serviceClient } = await verifyAdmin()
@@ -20,7 +20,8 @@ export async function GET(
       )
     }
 
-    const orgId = params.id
+    const { id } = await params
+    const orgId = id
 
     // Fetch organization details
     const { data: org, error: orgError } = await serviceClient
@@ -104,7 +105,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, serviceClient } = await verifyAdmin()
@@ -119,7 +120,8 @@ export async function PATCH(
       )
     }
 
-    const orgId = params.id
+    const { id } = await params
+    const orgId = id
     const { storage_limit, max_users, subscription_tier, is_active } = await request.json()
 
     const updateData: Record<string, any> = {}

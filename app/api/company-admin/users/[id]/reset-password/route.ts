@@ -5,7 +5,7 @@ import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error, admin, serviceClient } = await verifyCompanyAdmin();
@@ -17,7 +17,8 @@ export async function POST(
       );
     }
 
-    const userId = params.id;
+    const { id } = await params;
+    const userId = id;
 
     // Verify user exists and belongs to organization
     const { data: user, error: userError } = await serviceClient
