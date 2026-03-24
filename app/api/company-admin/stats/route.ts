@@ -40,7 +40,8 @@ export async function GET() {
       
       serviceClient
         .from('permits')
-        .select('*', { count: 'exact', head: true }),
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', admin.organization_id),
       
       serviceClient
         .from('organizations')
@@ -70,14 +71,21 @@ export async function GET() {
     };
 
     if (licenseBreakdown) {
-      licenseBreakdown.forEach((user: any) => {
+      licenseBreakdown.forEach((user: { license_type: string | null }) => {
         const lt = user.license_type || 'contributor';
         licenseCounts[lt] = (licenseCounts[lt] || 0) + 1;
       });
     }
 
     // Format recent activity
-    const formattedActivity = (recentActivity || []).map((activity: any) => ({
+    const formattedActivity = (recentActivity || []).map((activity: {
+      id: string;
+      profiles: { full_name: string | null; email: string } | null;
+      action: string;
+      resource_type: string | null;
+      resource_name: string | null;
+      created_at: string | null;
+    }) => ({
       id: activity.id,
       user_name: activity.profiles?.full_name,
       user_email: activity.profiles?.email,
