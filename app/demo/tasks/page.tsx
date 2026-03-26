@@ -174,7 +174,7 @@ export default function TasksPage() {
           <h1 className="font-display text-4xl font-bold text-gray-900 mb-2">
             Tasks
           </h1>
-          <p className="text-gray-600">
+          <p className="text-foreground">
             Track and manage your assigned comment responses.
           </p>
         </div>
@@ -188,7 +188,7 @@ export default function TasksPage() {
               className={`px-4 py-3 font-medium transition-all ${
                 activeFilter === tab.value
                   ? 'text-[#0f3c35] border-b-2 border-[#0f3c35]'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {tab.label}
@@ -233,14 +233,14 @@ export default function TasksPage() {
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600 mb-1">Assigned to</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="text-muted-foreground mb-1">Assigned to</p>
+                          <p className="font-medium text-foreground">
                             {task.assignedTo}
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-600 mb-1">Due date</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="text-muted-foreground mb-1">Due date</p>
+                          <p className="font-medium text-foreground">
                             {new Date(task.dueDate).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -248,7 +248,7 @@ export default function TasksPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-600 mb-1">Priority</p>
+                          <p className="text-muted-foreground mb-1">Priority</p>
                           <Badge
                             style={{
                               backgroundColor: getPriorityColor(task.priority),
@@ -259,7 +259,7 @@ export default function TasksPage() {
                           </Badge>
                         </div>
                         <div>
-                          <p className="text-gray-600 mb-1">Status</p>
+                          <p className="text-muted-foreground mb-1">Status</p>
                           <Badge
                             style={getStatusBadgeStyle(task.status)}
                             className="flex items-center gap-1.5 w-fit"
@@ -285,7 +285,7 @@ export default function TasksPage() {
                 size={48}
                 className="mx-auto text-gray-300 mb-4"
               />
-              <p className="text-gray-600">No tasks found in this filter.</p>
+              <p className="text-foreground">No tasks found in this filter.</p>
             </motion.div>
           )}
         </div>

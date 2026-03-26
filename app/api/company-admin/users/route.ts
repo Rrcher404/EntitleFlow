@@ -46,14 +46,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      users: users || [],
-      pagination: {
-        page,
-        limit,
-        total: count || 0,
-      },
-    });
+    return NextResponse.json(users || []);
   } catch (err) {
     console.error('Error fetching company users:', err);
     return NextResponse.json(

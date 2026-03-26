@@ -40,10 +40,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      data: leads || [],
-      error: null,
-    });
+    return NextResponse.json(leads || []);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(

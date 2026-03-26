@@ -63,11 +63,12 @@ export async function GET() {
     ]);
 
     // Calculate license breakdown
-    const licenseCounts: Record<string, number> = {
-      admin: 0,
-      project_manager: 0,
-      contributor: 0,
-      guest_viewer: 0,
+    const licenseCounts: Record<string, number> = {};
+    const licenseColors: Record<string, string> = {
+      admin: '#ef4444',
+      project_manager: '#f59e0b',
+      contributor: '#3b82f6',
+      guest_viewer: '#6b7280',
     };
 
     if (licenseBreakdown) {
@@ -76,6 +77,13 @@ export async function GET() {
         licenseCounts[lt] = (licenseCounts[lt] || 0) + 1;
       });
     }
+
+    // Convert to array format for frontend
+    const licenseDistribution = Object.entries(licenseCounts).map(([name, count]) => ({
+      name: name.replace(/_/g, ' '),
+      count,
+      color: licenseColors[name] || '#9ca3af',
+    }));
 
     // Format recent activity
     const formattedActivity = (recentActivity || []).map((activity: {
@@ -87,23 +95,19 @@ export async function GET() {
       created_at: string | null;
     }) => ({
       id: activity.id,
-      user_name: activity.profiles?.full_name,
-      user_email: activity.profiles?.email,
+      timestamp: activity.created_at,
+      user: activity.profiles?.full_name || activity.profiles?.email || 'Unknown',
       action: activity.action,
-      resource_type: activity.resource_type,
-      resource_name: activity.resource_name,
-      created_at: activity.created_at,
     }));
 
     return NextResponse.json({
-      total_users: totalUsers || 0,
-      active_users: activeUsers || 0,
-      total_projects: totalProjects || 0,
-      total_permits: totalPermits || 0,
-      storage_used_bytes: organization?.storage_used_bytes || 0,
-      storage_limit_bytes: organization?.storage_limit_bytes || 10737418240,
-      license_breakdown: licenseCounts,
-      recent_activity: formattedActivity,
+      totalUsers: totalUsers || 0,
+      activeUsers: activeUsers || 0,
+      totalProjects: totalProjects || 0,
+      storageUsed: organization?.storage_used_bytes || 0,
+      storageTotal: organization?.storage_limit_bytes || 10737418240,
+      licenseDistribution,
+      recentActivity: formattedActivity,
     });
   } catch (err) {
     console.error('Error fetching company admin stats:', err);

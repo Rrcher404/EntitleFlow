@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
         created_at,
         updated_at,
         is_super_admin,
-        organization_members(organization_id),
-        organizations!organization_members(id, name)
+        team_members(organization_id),
+        organizations!team_members(id, name)
       `
       )
       .order('created_at', { ascending: false });
@@ -48,10 +48,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      data: users || [],
-      error: null,
-    });
+    return NextResponse.json(users || []);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(

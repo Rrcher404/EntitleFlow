@@ -315,7 +315,14 @@ export default function ProjectDetailPage() {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!project || !editFormData || !profile) return;
+    if (!project || !editFormData) {
+      setEditError('Project data not loaded. Please refresh the page.');
+      return;
+    }
+    if (!profile) {
+      setEditError('User profile not loaded. Please refresh the page.');
+      return;
+    }
 
     setSubmitting(true);
     setEditError(null);

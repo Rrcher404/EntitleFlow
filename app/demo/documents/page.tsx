@@ -176,7 +176,7 @@ export default function DocumentsPage() {
           >
             Documents
           </h1>
-          <p className="text-gray-600">
+          <p className="text-foreground">
             View and manage all uploaded project documents.
           </p>
         </motion.div>
@@ -267,16 +267,16 @@ export default function DocumentsPage() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-display font-semibold text-gray-900 mb-1 truncate">
+                        <h3 className="font-display font-semibold text-foreground mb-1 truncate">
                           {doc.name}
                         </h3>
 
                         <div className="flex flex-wrap gap-3 mb-2 text-sm">
-                          <span className="text-gray-600">{doc.type}</span>
-                          <span className="text-gray-600">•</span>
-                          <span className="text-gray-600">{doc.fileSize}</span>
-                          <span className="text-gray-600">•</span>
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-muted-foreground">{doc.type}</span>
+                          <span className="text-muted-foreground">•</span>
+                          <span className="text-muted-foreground">{doc.fileSize}</span>
+                          <span className="text-muted-foreground">•</span>
+                          <span className="text-muted-foreground text-xs">
                             {formatDate(doc.uploadDate)}
                           </span>
                         </div>
@@ -339,8 +339,8 @@ export default function DocumentsPage() {
           ) : (
             <motion.div variants={itemVariants} className="text-center py-12">
               <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 font-medium">No documents found</p>
-              <p className="text-gray-500 text-sm">
+              <p className="text-foreground font-medium">No documents found</p>
+              <p className="text-muted-foreground text-sm">
                 Try adjusting your search or filter criteria
               </p>
             </motion.div>
@@ -353,7 +353,7 @@ export default function DocumentsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-6 text-sm text-gray-600"
+            className="mt-6 text-sm text-muted-foreground"
           >
             Showing {filteredDocuments.length} of {MOCK_DOCUMENTS.length} documents
           </motion.div>

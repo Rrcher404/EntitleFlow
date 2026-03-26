@@ -41,7 +41,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(config);
+    return NextResponse.json({
+      resetLinkDuration: config?.reset_link_duration_hours || 24,
+      forceResetSchedule: config?.force_reset_schedule_days || null,
+      minPasswordLength: config?.min_password_length || 8,
+      requireUppercase: config?.require_uppercase || true,
+      requireNumber: config?.require_number || true,
+      requireSpecialChar: config?.require_special_char || false,
+    });
   } catch (err) {
     console.error('Error fetching security config:', err);
     return NextResponse.json(
@@ -133,7 +140,14 @@ export async function PATCH(request: NextRequest) {
       metadata: updateData,
     });
 
-    return NextResponse.json(updatedConfig);
+    return NextResponse.json({
+      resetLinkDuration: updatedConfig?.reset_link_duration_hours || 24,
+      forceResetSchedule: updatedConfig?.force_reset_schedule_days || null,
+      minPasswordLength: updatedConfig?.min_password_length || 8,
+      requireUppercase: updatedConfig?.require_uppercase || true,
+      requireNumber: updatedConfig?.require_number || true,
+      requireSpecialChar: updatedConfig?.require_special_char || false,
+    });
   } catch (err) {
     console.error('Error updating security config:', err);
     return NextResponse.json(

@@ -53,10 +53,7 @@ export async function GET() {
       permit_count: org.permits?.length || 0,
     }));
 
-    return NextResponse.json({
-      data: enrichedOrgs,
-      error: null,
-    });
+    return NextResponse.json(enrichedOrgs);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(

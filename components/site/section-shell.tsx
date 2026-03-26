@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
@@ -14,7 +14,6 @@ type SectionShellProps = {
 
 export function SectionShell({ id, className, animate = true, children }: SectionShellProps) {
   const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const prefersReducedMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -34,9 +33,9 @@ export function SectionShell({ id, className, animate = true, children }: Sectio
       ref={ref}
       id={id}
       className={cn("py-14 sm:py-16", className)}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 1, y: 0 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-80px", amount: "some" }}
       transition={{
         duration: 0.6,
         ease: [0.23, 1, 0.82, 1],

@@ -1,6 +1,6 @@
 // @ts-nocheck — Supabase generated types lag behind the live schema.
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdminClient } from '@/lib/supabase/server';
+import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
 import { OutboundEmailPayload } from '@/lib/email/types';
 
 const FROM_EMAIL = 'reviews@entitleflow.com';
@@ -17,6 +17,13 @@ const FROM_EMAIL = 'reviews@entitleflow.com';
  */
 export async function POST(request: NextRequest) {
   try {
+    // Auth check
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
     // Parse incoming payload
     const payload: OutboundEmailPayload = await request.json();
 
@@ -37,9 +44,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize Supabase admin client
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) {
+    // Initialize Supabase admin client for database operations
+    const adminSupabase = getSupabaseAdminClient();
+    if (!adminSupabase) {
       console.error('Supabase admin client not configured');
       return NextResponse.json(
         { error: 'Server configuration error' },
@@ -51,7 +58,7 @@ export async function POST(request: NextRequest) {
     let organizationId: string | null = null;
 
     if (payload.permit_id) {
-      const { data: permit } = await supabase
+      const { data: permit } = await adminSupabase
         .from('permits')
         .select('organization_id')
         .eq('id', payload.permit_id)
@@ -83,7 +90,7 @@ export async function POST(request: NextRequest) {
     const sendAttemptId = crypto.randomUUID();
 
     if (organizationId) {
-      await supabase
+      await adminSupabase
         .from('activity_log')
         .insert({
           organization_id: organizationId,

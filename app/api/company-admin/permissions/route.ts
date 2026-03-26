@@ -36,8 +36,9 @@ export async function GET(request: NextRequest) {
     ]);
 
     return NextResponse.json({
-      default_permissions: defaultPermissions || [],
-      user_overrides: userOverrides || [],
+      permissions: defaultPermissions || [],
+      licensePermissions: defaultPermissions || [],
+      overrides: userOverrides || [],
     });
   } catch (err) {
     console.error('Error fetching permissions:', err);

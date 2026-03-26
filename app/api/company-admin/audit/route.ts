@@ -56,17 +56,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const total_pages = Math.ceil((count || 0) / per_page);
-
-    return NextResponse.json({
-      data: logs || [],
-      pagination: {
-        total: count || 0,
-        page,
-        per_page,
-        total_pages,
-      },
-    });
+    return NextResponse.json(logs || []);
   } catch (err) {
     console.error('Error fetching audit log:', err);
     return NextResponse.json(

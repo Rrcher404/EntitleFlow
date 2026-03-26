@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 interface GeocodeResult {
   lat: number;
@@ -12,6 +13,13 @@ interface GeocodeResult {
  * Keeps API key server-only for security
  */
 export async function GET(request: NextRequest) {
+  // Auth check
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const address = searchParams.get('address');
 

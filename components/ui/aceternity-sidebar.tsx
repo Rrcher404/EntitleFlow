@@ -111,7 +111,7 @@ export const DesktopSidebar = ({ children, className }: DesktopSidebarProps) => 
   return (
     <motion.div
       className={cn('hidden h-screen md:flex md:flex-col overflow-hidden bg-card border-r border-border', className)}
-      animate={{ width: open ? 260 : 60 }}
+      animate={{ width: open ? 320 : 60 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
@@ -177,5 +177,3 @@ export const MobileSidebar = ({ children, className }: MobileSidebarProps) => {
     </>
   );
 };
-
-

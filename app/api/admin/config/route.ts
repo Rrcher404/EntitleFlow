@@ -27,10 +27,7 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({
-      data: config || [],
-      error: null,
-    });
+    return NextResponse.json(config || []);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(

@@ -49,15 +49,11 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      storage_used_bytes: organization.storage_used_bytes || 0,
-      storage_limit_bytes: organization.storage_limit_bytes || 10737418240,
-      max_file_size_bytes: organization.max_file_size_bytes || 157286400,
-      storage_percentage: Math.round(
-        ((organization.storage_used_bytes || 0) / (organization.storage_limit_bytes || 10737418240)) * 100
-      ),
-      breakdown_by_project: breakdownByProject,
-      breakdown_by_user: breakdownByUser,
-      file_type_distribution: fileTypeDistribution,
+      used: organization.storage_used_bytes || 0,
+      total: organization.storage_limit_bytes || 10737418240,
+      perFileSizeLimit: organization.max_file_size_bytes || 157286400,
+      breakdown: breakdownByProject,
+      fileTypeDistribution: fileTypeDistribution,
     });
   } catch (err) {
     console.error('Error fetching storage info:', err);

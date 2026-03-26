@@ -41,10 +41,7 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json({
-      data: groupsWithMembers,
-      count: groupsWithMembers.length,
-    });
+    return NextResponse.json(groupsWithMembers);
   } catch (err) {
     console.error('Error fetching groups:', err);
     return NextResponse.json(

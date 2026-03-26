@@ -4,6 +4,7 @@ export const primaryNav: SiteNavItem[] = [
   { href: "/", label: "Home" },
   { href: "/pricing", label: "Pricing" },
   { href: "/compare", label: "Compare" },
+  { href: "/how-it-works", label: "How it works" },
   { href: "/resources", label: "Resources" },
   { href: "/product", label: "Product" },
 ];
