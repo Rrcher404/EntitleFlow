@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, MoreHorizontal, ChevronDown } from 'lucide-react';
+import { Search, MoreHorizontal, ChevronDown, Check, X } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,34 +10,48 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+type LicenseType = 'admin' | 'project_manager' | 'contributor' | 'guest_viewer';
+type UserRole = 'admin' | 'manager' | 'contributor' | 'viewer';
+type UserStatus = 'active' | 'inactive' | 'pending';
+
 interface User {
   id: string;
-  name: string;
+  full_name: string;
   email: string;
-  licenseType: 'pro' | 'standard' | 'basic' | 'free';
-  role: 'admin' | 'manager' | 'contributor' | 'viewer';
-  lastActive: string;
-  status: 'active' | 'inactive' | 'pending';
+  license_type: LicenseType | null;
+  role: UserRole | null;
+  last_seen_at: string | null;
+  is_active: boolean | null;
+  created_at: string;
 }
 
-const LicenseBadge = ({ type }: { type: string }) => {
-  const colors: Record<string, { bg: string; text: string }> = {
-    pro: { bg: 'bg-purple-100', text: 'text-purple-700' },
-    standard: { bg: 'bg-blue-100', text: 'text-blue-700' },
-    basic: { bg: 'bg-green-100', text: 'text-green-700' },
-    free: { bg: 'bg-gray-100', text: 'text-gray-700' },
+const LicenseBadge = ({ type }: { type: LicenseType | null }) => {
+  const licenseConfig: Record<LicenseType, { bg: string; text: string; label: string }> = {
+    admin: { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Admin' },
+    project_manager: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Project Manager' },
+    contributor: { bg: 'bg-green-100', text: 'text-green-700', label: 'Contributor' },
+    guest_viewer: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Guest Viewer' },
   };
 
-  const color = colors[type] || colors.free;
+  if (!type) {
+    return (
+      <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+        Unassigned
+      </span>
+    );
+  }
+
+  const config = licenseConfig[type] || licenseConfig.guest_viewer;
 
   return (
-    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${color.bg} ${color.text}`}>
-      {type.charAt(0).toUpperCase() + type.slice(1)}
+    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${config.bg} ${config.text}`}>
+      {config.label}
     </span>
   );
 };
 
-const StatusBadge = ({ status }: { status: string }) => {
+const StatusBadge = ({ isActive }: { isActive: boolean | null }) => {
+  const status = isActive ? 'active' : 'inactive';
   const colors: Record<string, { bg: string; text: string }> = {
     active: { bg: 'bg-green-100', text: 'text-green-700' },
     inactive: { bg: 'bg-gray-100', text: 'text-gray-700' },
@@ -50,6 +64,98 @@ const StatusBadge = ({ status }: { status: string }) => {
     <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${color.bg} ${color.text}`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
+  );
+};
+
+const LicenseTypeSelector = ({
+  userId,
+  currentLicense,
+  onUpdate,
+  disabled,
+}: {
+  userId: string;
+  currentLicense: LicenseType | null;
+  onUpdate: (newLicense: LicenseType) => void;
+  disabled?: boolean;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const licenseOptions: { value: LicenseType; label: string; price: string }[] = [
+    { value: 'admin', label: 'Admin', price: '$99/mo' },
+    { value: 'project_manager', label: 'Project Manager', price: '$49/mo' },
+    { value: 'contributor', label: 'Contributor', price: '$29/mo' },
+    { value: 'guest_viewer', label: 'Guest Viewer', price: 'Free' },
+  ];
+
+  const handleLicenseChange = async (newLicense: LicenseType) => {
+    if (newLicense === currentLicense) {
+      setIsOpen(false);
+      return;
+    }
+
+    setIsUpdating(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/company-admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ license_type: newLicense }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update license');
+      }
+
+      onUpdate(newLicense);
+      setIsOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <button
+            disabled={disabled || isUpdating}
+            className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <LicenseBadge type={currentLicense} />
+            <ChevronDown className="w-4 h-4 text-gray-600" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-56">
+          {licenseOptions.map((option) => (
+            <DropdownMenuItem
+              key={option.value}
+              onClick={() => handleLicenseChange(option.value)}
+              className="flex items-center justify-between cursor-pointer"
+            >
+              <div>
+                <div className="font-medium text-sm">{option.label}</div>
+                <div className="text-xs text-gray-500">{option.price}</div>
+              </div>
+              {currentLicense === option.value && (
+                <Check className="w-4 h-4 text-green-600" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {error && (
+        <div className="absolute top-full mt-1 left-0 bg-red-100 border border-red-300 text-red-800 text-xs px-2 py-1 rounded whitespace-nowrap z-50">
+          {error}
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -69,7 +175,7 @@ export default function UsersPageClient() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [licenseFilter, setLicenseFilter] = useState('all');
+  const [licenseFilter, setLicenseFilter] = useState<'all' | LicenseType>('all');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -89,14 +195,22 @@ export default function UsersPageClient() {
     fetchUsers();
   }, []);
 
+  const handleLicenseUpdate = (userId: string, newLicense: LicenseType) => {
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === userId ? { ...user, license_type: newLicense } : user
+      )
+    );
+  };
+
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesRole = !roleFilter || user.role === roleFilter;
-      const matchesLicense = licenseFilter === 'all' || user.licenseType === licenseFilter;
+      const matchesLicense = licenseFilter === 'all' || user.license_type === licenseFilter;
 
       return matchesSearch && matchesRole && matchesLicense;
     });
@@ -144,14 +258,14 @@ export default function UsersPageClient() {
             <div className="relative">
               <select
                 value={licenseFilter}
-                onChange={(e) => setLicenseFilter(e.target.value)}
+                onChange={(e) => setLicenseFilter(e.target.value as 'all' | LicenseType)}
                 className="appearance-none pl-4 pr-10 py-2 rounded-lg border border-[#e2e5e5] focus:outline-none focus:ring-2 focus:ring-[#25a18e]"
               >
                 <option value="all">All Licenses</option>
-                <option value="pro">Pro</option>
-                <option value="standard">Standard</option>
-                <option value="basic">Basic</option>
-                <option value="free">Free</option>
+                <option value="admin">Admin</option>
+                <option value="project_manager">Project Manager</option>
+                <option value="contributor">Contributor</option>
+                <option value="guest_viewer">Guest Viewer</option>
               </select>
               <ChevronDown className="absolute right-3 top-3 w-4 h-4 pointer-events-none text-gray-400" />
             </div>
@@ -186,17 +300,23 @@ export default function UsersPageClient() {
               <tbody>
                 {filteredUsers.map((user, index) => (
                   <tr key={user.id} className={index % 2 === 0 ? '' : 'bg-[#f6f5f0]'}>
-                    <td className="px-6 py-4 text-sm text-[#1B3B2D] font-medium">{user.name}</td>
+                    <td className="px-6 py-4 text-sm text-[#1B3B2D] font-medium">{user.full_name}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
                     <td className="px-6 py-4 text-sm">
-                      <LicenseBadge type={user.licenseType} />
+                      <LicenseTypeSelector
+                        userId={user.id}
+                        currentLicense={user.license_type}
+                        onUpdate={(newLicense) => handleLicenseUpdate(user.id, newLicense)}
+                      />
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 capitalize">{user.role}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 capitalize">{user.role || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">
-                      {new Date(user.lastActive).toLocaleDateString()}
+                      {user.last_seen_at
+                        ? new Date(user.last_seen_at).toLocaleDateString()
+                        : 'Never'}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <StatusBadge status={user.status} />
+                      <StatusBadge isActive={user.is_active} />
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <DropdownMenu>
@@ -206,11 +326,11 @@ export default function UsersPageClient() {
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push('/app/settings/profile')}>
-                            View Profile
+                          <DropdownMenuItem onClick={() => router.push(`/app/admin/users/${user.id}`)}>
+                            View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => alert('Change Role - Coming soon')}>
-                            Change Role
+                          <DropdownMenuItem onClick={() => alert('Reset Password - Coming soon')}>
+                            Reset Password
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => alert('Deactivate - Coming soon')}>
                             Deactivate

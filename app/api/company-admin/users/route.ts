@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
+import { checkSeatAvailability } from '@/lib/team/seat-check';
 import type { Database } from '@/lib/database.types';
 
 export async function GET(request: NextRequest) {
@@ -89,6 +90,17 @@ export async function PATCH(request: NextRequest) {
         { error: 'User not found in organization' },
         { status: 404 }
       );
+    }
+
+    // Check seat availability if activating a user
+    if (is_active === true) {
+      const seatCheck = await checkSeatAvailability(serviceClient, admin.organization_id);
+      if (!seatCheck.allowed) {
+        return NextResponse.json(
+          { error: 'Organization has reached its seat limit. Cannot activate additional users.' },
+          { status: 403 }
+        );
+      }
     }
 
     // Update user

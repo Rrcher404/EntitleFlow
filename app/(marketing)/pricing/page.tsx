@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUp } from 'lucide-react';
 
 import { CTABanner } from '@/components/marketing/cta-banner';
 import { PageIntro } from '@/components/site/page-intro';
@@ -8,7 +8,7 @@ import { FAQAccordionBlock } from '@/components/ui/faq-accordion-block';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { buildMetadata } from '@/lib/site-config';
-import { pricingFaqs, pricingTiers } from '@/data/pricing';
+import { pricingFaqs, pricingTiers, pricingAddOns } from '@/data/pricing';
 import { TrackedLinkButton } from '@/components/site/tracked-link-button';
 
 export const metadata = buildMetadata({
@@ -34,6 +34,54 @@ export default function PricingPage() {
           {pricingTiers.map((tier) => (
             <PricingCard key={tier.name} tier={tier} />
           ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="py-12 sm:py-14" animate>
+        <div className="space-y-6">
+          <div className="text-center space-y-3">
+            <Badge variant="outline" className="mx-auto">Add-ons</Badge>
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              Enhance your platform with AI capabilities
+            </h2>
+            <p className="text-base leading-7 text-muted-foreground sm:text-lg max-w-2xl mx-auto">
+              Add specialized AI agents to any plan to augment your team's capabilities.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:max-w-2xl">
+            {pricingAddOns.map((addOn) => (
+              <Card key={addOn.name} className="flex flex-col transition-all duration-300 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:border-slate-300">
+                <CardContent className="flex flex-col flex-grow p-5">
+                  <div className="space-y-3">
+                    <h3 className="font-display text-xl font-semibold text-slate-950">{addOn.name}</h3>
+                    <div className="text-2xl font-semibold tracking-tight text-slate-950">{addOn.price}</div>
+                    <p className="text-sm leading-6 text-slate-600">{addOn.description}</p>
+                  </div>
+
+                  <ul className="mt-6 flex-grow space-y-2 text-sm leading-6 text-slate-700">
+                    {addOn.features.map((feature) => (
+                      <li className="flex gap-3" key={feature}>
+                        <span className="mt-0.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <TrackedLinkButton
+                    className="w-full justify-center mt-6"
+                    eventName="pricing_cta_click"
+                    eventProps={{ tier: addOn.name }}
+                    href="/walkthrough?focus=flowe-addon"
+                    variant="outline"
+                  >
+                    Add to your plan
+                    <ArrowUp className="h-4 w-4 rotate-45" />
+                  </TrackedLinkButton>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </SectionShell>
 

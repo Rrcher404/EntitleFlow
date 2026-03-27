@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
+import { checkSeatAvailability } from '@/lib/team/seat-check';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
@@ -70,6 +71,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Pending invitation already exists for this email' },
         { status: 409 }
+      );
+    }
+
+    // Check seat availability
+    const seatCheck = await checkSeatAvailability(supabase, callerProfile.organization_id);
+    if (!seatCheck.allowed) {
+      const maxDisplay = seatCheck.max === -1 ? 'unlimited' : seatCheck.max;
+      return NextResponse.json(
+        {
+          error: `Seat limit reached. Your plan allows ${maxDisplay} seats. Current: ${seatCheck.current} active + ${seatCheck.pending} pending invitations.`
+        },
+        { status: 403 }
       );
     }
 

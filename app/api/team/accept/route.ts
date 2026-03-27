@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
+import { checkSeatAvailability } from '@/lib/team/seat-check';
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,6 +58,15 @@ export async function POST(request: NextRequest) {
     if (userEmail !== invitationEmail) {
       return NextResponse.json(
         { error: 'Email does not match invitation' },
+        { status: 403 }
+      );
+    }
+
+    // Check seat availability before accepting
+    const seatCheck = await checkSeatAvailability(supabase, invitation.organization_id);
+    if (!seatCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Organization has reached its seat limit.' },
         { status: 403 }
       );
     }

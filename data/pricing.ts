@@ -67,6 +67,23 @@ export const pricingTiers: PricingTier[] = [
 ];
 
 /**
+ * Add-ons that can be purchased alongside any pricing tier.
+ */
+export const pricingAddOns = [
+  {
+    name: "FlowE AI Agents",
+    price: "$30/portal/month",
+    description: "AI-powered assistance for permit review, document analysis, and compliance guidance. Available per company portal.",
+    features: [
+      "AI-powered permit guidance and document analysis",
+      "Compliance checking and verification",
+      "Natural language queries about permits and workflows",
+      "Multi-document context understanding",
+    ],
+  },
+];
+
+/**
  * License types and what each seat includes.
  * Displayed on the pricing page alongside tiers.
  */
