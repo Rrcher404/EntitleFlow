@@ -180,10 +180,10 @@ function LoginForm() {
         {useMagicLink ? 'Use password instead' : 'Use magic link instead'}
       </Button>
 
-      <div className="text-center text-sm">
-        <span className="text-muted-foreground">Don&apos;t have an account? </span>
-        <Link href="/signup" className="font-medium text-foreground hover:underline">
-          Sign up
+      <div className="text-center text-sm text-muted-foreground">
+        Need access?{' '}
+        <Link href="/walkthrough" className="font-medium text-foreground hover:underline">
+          Request a walkthrough
         </Link>
       </div>
     </div>
