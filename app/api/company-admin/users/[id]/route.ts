@@ -113,7 +113,7 @@ export async function PATCH(
     const { id } = await params;
     const userId = id;
     const body = await request.json();
-    const { license_type } = body;
+    const { license_type, request_notes } = body;
 
     // Verify the target user belongs to the same organization
     const { data: targetUser, error: fetchError } = await serviceClient
@@ -147,53 +147,59 @@ export async function PATCH(
       }
     }
 
-    // Update the user's license_type
-    const { data: updatedUser, error: updateError } = await serviceClient
-      .from('profiles')
-      .update({ license_type })
-      .eq('id', userId)
-      .select()
-      .single();
+    // Get the organization's active contract to determine billing terms
+    const { data: contract } = await (serviceClient
+      .from('organization_contracts' as any)
+      .select('billing_term, requires_prepayment_for_changes')
+      .eq('organization_id', admin.organization_id)
+      .eq('is_active', true)
+      .single() as any) as { data: any; error: any };
 
-    if (updateError) {
+    const billingTerm = contract?.billing_term || 'monthly';
+    const requiresPrepayment = contract?.requires_prepayment_for_changes || false;
+
+    // Create a license_change_request instead of directly updating
+    const { data: changeRequest, error: createError } = await (serviceClient
+      .from('license_change_requests' as any)
+      .insert({
+        organization_id: admin.organization_id,
+        requested_by: admin.id,
+        target_user_id: userId,
+        current_license_type: targetUser.license_type || 'contributor',
+        requested_license_type: license_type,
+        status: 'pending',
+        billing_term: billingTerm,
+        requires_prepayment: requiresPrepayment,
+        request_notes,
+      })
+      .select()
+      .single() as any) as { data: any; error: any };
+
+    if (createError) {
       return NextResponse.json(
-        { error: updateError.message },
+        { error: createError.message },
         { status: 400 }
       );
     }
 
-    // Log the change to admin_audit_log
-    await serviceClient.from('admin_audit_log').insert({
-      admin_id: admin.id,
+    // Log the request to activity_log
+    await serviceClient.from('activity_log').insert({
       organization_id: admin.organization_id,
-      action: 'user_license_updated',
-      target_type: 'user',
-      target_id: userId,
-      details: {
-        old_license_type: targetUser.license_type,
-        new_license_type: license_type,
-        user_email: targetUser.email,
-        user_name: targetUser.full_name,
-      },
-    });
-
-    // Log to user_activity_tracking
-    await serviceClient.from('user_activity_tracking').insert({
-      profile_id: admin.id,
-      organization_id: admin.organization_id,
-      action: 'user_license_changed_by_admin',
-      resource_type: 'user',
-      resource_id: userId,
-      resource_name: targetUser.full_name || 'Unknown',
+      action: 'status_changed' as any,
+      description: `License change requested for ${targetUser.full_name || 'Unknown'}: ${targetUser.license_type || 'contributor'} → ${license_type}`,
       metadata: {
-        old_license_type: targetUser.license_type,
-        new_license_type: license_type,
+        type: 'license_change_requested',
+        current_license_type: targetUser.license_type || 'contributor',
+        requested_license_type: license_type,
+        request_id: changeRequest?.id,
+        billing_term: billingTerm,
+        requires_prepayment: requiresPrepayment,
       },
-    });
+    } as any);
 
-    return NextResponse.json(updatedUser);
+    return NextResponse.json(changeRequest);
   } catch (err) {
-    console.error('Error updating user license:', err);
+    console.error('Error creating license change request:', err);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

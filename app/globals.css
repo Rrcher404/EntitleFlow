@@ -149,6 +149,17 @@
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 @utility shadow-xs {
   @apply shadow-[0_1px_2px_0_rgba(20,20,19,0.03)];
 }

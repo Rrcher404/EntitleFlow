@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, MoreHorizontal, ChevronDown, Check, X } from 'lucide-react';
+import { Search, MoreHorizontal, ChevronDown, Check, X, Clock, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
 type LicenseType = 'admin' | 'project_manager' | 'contributor' | 'guest_viewer';
 type UserRole = 'admin' | 'manager' | 'contributor' | 'viewer';
 type UserStatus = 'active' | 'inactive' | 'pending';
+type RequestStatus = 'pending' | 'approved' | 'rejected' | 'applied';
 
 interface User {
   id: string;
@@ -23,6 +24,18 @@ interface User {
   last_seen_at: string | null;
   is_active: boolean | null;
   created_at: string;
+}
+
+interface LicenseRequest {
+  id: string;
+  user_id: string;
+  user_name: string;
+  current_license: LicenseType | null;
+  requested_license: LicenseType;
+  status: RequestStatus;
+  submitted_at: string;
+  reviewed_at?: string;
+  review_notes?: string;
 }
 
 const LicenseBadge = ({ type }: { type: LicenseType | null }) => {
@@ -67,20 +80,60 @@ const StatusBadge = ({ isActive }: { isActive: boolean | null }) => {
   );
 };
 
+// Toast notification component
+interface Toast {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
+const SimpleToast = ({ toast, onClose }: { toast: Toast; onClose: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 4000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const bgColor = {
+    success: 'bg-emerald-50 border-emerald-200',
+    error: 'bg-red-50 border-red-200',
+    info: 'bg-blue-50 border-blue-200',
+  }[toast.type];
+
+  const textColor = {
+    success: 'text-emerald-800',
+    error: 'text-red-800',
+    info: 'text-blue-800',
+  }[toast.type];
+
+  return (
+    <div className={`border ${bgColor} rounded-lg px-4 py-3 flex items-center justify-between animate-slide-in-right`}>
+      <p className={`text-sm font-medium ${textColor}`}>{toast.message}</p>
+      <button onClick={onClose} className="ml-4 text-gray-400 hover:text-gray-600">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+};
+
 const LicenseTypeSelector = ({
   userId,
   currentLicense,
-  onUpdate,
+  hasPendingRequest,
+  pendingRequestedType,
+  onRequestSubmitted,
+  onToast,
   disabled,
 }: {
   userId: string;
   currentLicense: LicenseType | null;
-  onUpdate: (newLicense: LicenseType) => void;
+  hasPendingRequest: boolean;
+  pendingRequestedType?: LicenseType;
+  onRequestSubmitted: () => void;
+  onToast: (message: string, type: 'success' | 'error') => void;
   disabled?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const licenseOptions: { value: LicenseType; label: string; price: string }[] = [
     { value: 'admin', label: 'Admin', price: '$99/mo' },
@@ -90,13 +143,12 @@ const LicenseTypeSelector = ({
   ];
 
   const handleLicenseChange = async (newLicense: LicenseType) => {
-    if (newLicense === currentLicense) {
+    if (newLicense === currentLicense || hasPendingRequest) {
       setIsOpen(false);
       return;
     }
 
-    setIsUpdating(true);
-    setError(null);
+    setIsSubmitting(true);
 
     try {
       const response = await fetch(`/api/company-admin/users/${userId}`, {
@@ -107,25 +159,28 @@ const LicenseTypeSelector = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update license');
+        throw new Error(errorData.error || 'Failed to submit request');
       }
 
-      onUpdate(newLicense);
+      onToast('License change request submitted for approval', 'success');
+      onRequestSubmitted();
       setIsOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setTimeout(() => setError(null), 3000);
+      onToast(
+        err instanceof Error ? err.message : 'Failed to submit request',
+        'error'
+      );
     } finally {
-      setIsUpdating(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative">
+    <div className="flex items-center gap-2">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button
-            disabled={disabled || isUpdating}
+            disabled={disabled || isSubmitting || hasPendingRequest}
             className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <LicenseBadge type={currentLicense} />
@@ -138,6 +193,7 @@ const LicenseTypeSelector = ({
               key={option.value}
               onClick={() => handleLicenseChange(option.value)}
               className="flex items-center justify-between cursor-pointer"
+              disabled={isSubmitting}
             >
               <div>
                 <div className="font-medium text-sm">{option.label}</div>
@@ -150,13 +206,24 @@ const LicenseTypeSelector = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-      {error && (
-        <div className="absolute top-full mt-1 left-0 bg-red-100 border border-red-300 text-red-800 text-xs px-2 py-1 rounded whitespace-nowrap z-50">
-          {error}
-        </div>
+
+      {hasPendingRequest && pendingRequestedType && (
+        <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-amber-100 text-amber-700">
+          Pending: → {getLicenseLabel(pendingRequestedType)}
+        </span>
       )}
     </div>
   );
+};
+
+const getLicenseLabel = (license: LicenseType): string => {
+  const labels: Record<LicenseType, string> = {
+    admin: 'Admin',
+    project_manager: 'Project Manager',
+    contributor: 'Contributor',
+    guest_viewer: 'Guest Viewer',
+  };
+  return labels[license] || license;
 };
 
 const LoadingSkeleton = () => (
@@ -167,24 +234,132 @@ const LoadingSkeleton = () => (
   </div>
 );
 
+const RequestStatusBadge = ({ status }: { status: RequestStatus }) => {
+  const config: Record<RequestStatus, { bg: string; text: string; icon: React.ReactNode }> = {
+    pending: {
+      bg: 'bg-amber-100',
+      text: 'text-amber-700',
+      icon: <Clock className="w-4 h-4" />,
+    },
+    approved: {
+      bg: 'bg-blue-100',
+      text: 'text-blue-700',
+      icon: <CheckCircle2 className="w-4 h-4" />,
+    },
+    applied: {
+      bg: 'bg-emerald-100',
+      text: 'text-emerald-700',
+      icon: <CheckCircle2 className="w-4 h-4" />,
+    },
+    rejected: {
+      bg: 'bg-red-100',
+      text: 'text-red-700',
+      icon: <XCircle className="w-4 h-4" />,
+    },
+  };
+
+  const cfg = config[status];
+  return (
+    <div className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${cfg.bg} ${cfg.text}`}>
+      {cfg.icon}
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </div>
+  );
+};
+
+const RecentRequestsSection = ({ requests }: { requests: LicenseRequest[] }) => {
+  if (requests.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="rounded-xl border border-[#e2e5e5] bg-white shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-[#e2e5e5] bg-[#f6f5f0]">
+        <h2 className="text-lg font-semibold text-[#1B3B2D]" style={{ fontFamily: 'var(--font-display, sans-serif)' }}>
+          Recent License Change Requests
+        </h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="border-b border-[#e2e5e5] bg-[#f6f5f0]">
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-[#1B3B2D]">User</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-[#1B3B2D]">Change</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-[#1B3B2D]">Status</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-[#1B3B2D]">Submitted</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-[#1B3B2D]">Review Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((request, index) => (
+              <tr key={request.id} className={index % 2 === 0 ? '' : 'bg-[#f6f5f0]'}>
+                <td className="px-6 py-4 text-sm text-[#1B3B2D] font-medium">{request.user_name}</td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {getLicenseLabel(request.current_license as LicenseType || 'guest_viewer')} → {getLicenseLabel(request.requested_license)}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  <RequestStatusBadge status={request.status} />
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {new Date(request.submitted_at).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {request.review_notes ? (
+                    <span className="text-red-600 italic">{request.review_notes}</span>
+                  ) : (
+                    <span className="text-gray-400">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 export default function UsersPageClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const roleFilter = searchParams.get('role');
 
   const [users, setUsers] = useState<User[]>([]);
+  const [requests, setRequests] = useState<LicenseRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [licenseFilter, setLicenseFilter] = useState<'all' | LicenseType>('all');
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<Toast | null>(null);
+
+  const showToast = useCallback((message: string, type: 'success' | 'error') => {
+    setToast({
+      id: Math.random().toString(),
+      message,
+      type,
+    });
+  }, []);
+
+  const closeToast = useCallback(() => {
+    setToast(null);
+  }, []);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/company-admin/users');
-        if (!response.ok) throw new Error('Failed to fetch users');
-        const data = await response.json();
-        setUsers(data);
+        const [usersRes, requestsRes] = await Promise.all([
+          fetch('/api/company-admin/users'),
+          fetch('/api/company-admin/license-requests?status=pending'),
+        ]);
+
+        if (!usersRes.ok) throw new Error('Failed to fetch users');
+        const usersData = await usersRes.json();
+        setUsers(usersData);
+
+        if (requestsRes.ok) {
+          const requestsData = await requestsRes.json();
+          setRequests(requestsData);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -192,15 +367,27 @@ export default function UsersPageClient() {
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, []);
 
-  const handleLicenseUpdate = (userId: string, newLicense: LicenseType) => {
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === userId ? { ...user, license_type: newLicense } : user
-      )
-    );
+  const handleRequestSubmitted = useCallback(() => {
+    // Re-fetch pending requests
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch('/api/company-admin/license-requests?status=pending');
+        if (response.ok) {
+          const data = await response.json();
+          setRequests(data);
+        }
+      } catch (err) {
+        console.error('Failed to refresh requests:', err);
+      }
+    };
+    fetchRequests();
+  }, []);
+
+  const getPendingRequestForUser = (userId: string): LicenseRequest | undefined => {
+    return requests.find((req) => req.user_id === userId && req.status === 'pending');
   };
 
   const filteredUsers = useMemo(() => {
@@ -226,6 +413,13 @@ export default function UsersPageClient() {
 
   return (
     <div className="space-y-6">
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 w-96 animate-slide-in-right">
+          <SimpleToast toast={toast} onClose={closeToast} />
+        </div>
+      )}
+
       {/* Breadcrumb */}
       <div className="text-sm text-gray-600">
         <span>Admin</span> / <span className="font-medium text-[#1B3B2D]">Users</span>
@@ -237,9 +431,14 @@ export default function UsersPageClient() {
           User Management
         </h1>
         <p className="text-gray-600 mt-2">
-          Manage all users in your organization
+          Manage all users in your organization. License changes require approval from the super-admin.
         </p>
       </div>
+
+      {/* Recent Requests Section */}
+      {requests.length > 0 && (
+        <RecentRequestsSection requests={requests} />
+      )}
 
       {/* Filters */}
       <div className="rounded-xl border border-[#e2e5e5] bg-white p-6 shadow-sm">
@@ -298,48 +497,54 @@ export default function UsersPageClient() {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.map((user, index) => (
-                  <tr key={user.id} className={index % 2 === 0 ? '' : 'bg-[#f6f5f0]'}>
-                    <td className="px-6 py-4 text-sm text-[#1B3B2D] font-medium">{user.full_name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
-                    <td className="px-6 py-4 text-sm">
-                      <LicenseTypeSelector
-                        userId={user.id}
-                        currentLicense={user.license_type}
-                        onUpdate={(newLicense) => handleLicenseUpdate(user.id, newLicense)}
-                      />
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 capitalize">{user.role || 'N/A'}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {user.last_seen_at
-                        ? new Date(user.last_seen_at).toLocaleDateString()
-                        : 'Never'}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <StatusBadge isActive={user.is_active} />
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button className="p-2 hover:bg-gray-100 rounded transition-colors">
-                            <MoreHorizontal className="w-4 h-4 text-gray-600" />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push(`/app/admin/users/${user.id}`)}>
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => alert('Reset Password - Coming soon')}>
-                            Reset Password
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => alert('Deactivate - Coming soon')}>
-                            Deactivate
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
+                {filteredUsers.map((user, index) => {
+                  const pendingRequest = getPendingRequestForUser(user.id);
+                  return (
+                    <tr key={user.id} className={index % 2 === 0 ? '' : 'bg-[#f6f5f0]'}>
+                      <td className="px-6 py-4 text-sm text-[#1B3B2D] font-medium">{user.full_name}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
+                      <td className="px-6 py-4 text-sm">
+                        <LicenseTypeSelector
+                          userId={user.id}
+                          currentLicense={user.license_type}
+                          hasPendingRequest={!!pendingRequest}
+                          pendingRequestedType={pendingRequest?.requested_license}
+                          onRequestSubmitted={handleRequestSubmitted}
+                          onToast={showToast}
+                        />
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600 capitalize">{user.role || 'N/A'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {user.last_seen_at
+                          ? new Date(user.last_seen_at).toLocaleDateString()
+                          : 'Never'}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <StatusBadge isActive={user.is_active} />
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-2 hover:bg-gray-100 rounded transition-colors">
+                              <MoreHorizontal className="w-4 h-4 text-gray-600" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => router.push(`/app/admin/users/${user.id}`)}>
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => alert('Reset Password - Coming soon')}>
+                              Reset Password
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => alert('Deactivate - Coming soon')}>
+                              Deactivate
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

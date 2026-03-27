@@ -17,6 +17,7 @@ import {
   Key,
   ActivitySquare,
   Database,
+  ClipboardCheck,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +29,7 @@ const navItems = [
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Organizations', href: '/admin/organizations', icon: Building2 },
   { name: 'Licenses', href: '/admin/licenses', icon: Key },
+  { name: 'License Requests', href: '/admin/license-requests', icon: ClipboardCheck },
   { name: 'Leads', href: '/admin/leads', icon: Zap },
   { name: 'Permits', href: '/admin/permits', icon: FileText },
   { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp },
@@ -54,6 +56,7 @@ export default function AdminLayout({
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [pendingLicenseRequests, setPendingLicenseRequests] = useState(0)
   const supabase = createClient()
 
   useEffect(() => {
@@ -90,7 +93,21 @@ export default function AdminLayout({
       }
     }
 
+    const getPendingLicenseRequests = async () => {
+      try {
+        const res = await fetch('/api/admin/license-requests?status=pending')
+        if (res.ok) {
+          const data = await res.json()
+          const requests = Array.isArray(data) ? data : data.requests || []
+          setPendingLicenseRequests(requests.length)
+        }
+      } catch (error) {
+        console.error('Error fetching pending requests:', error)
+      }
+    }
+
     getUser()
+    getPendingLicenseRequests()
   }, [])
 
   const handleLogout = async () => {
@@ -136,6 +153,7 @@ export default function AdminLayout({
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
+            const showBadge = item.href === '/admin/license-requests' && pendingLicenseRequests > 0
             return (
               <Link
                 key={item.href}
@@ -148,6 +166,19 @@ export default function AdminLayout({
               >
                 <Icon size={18} />
                 <span className="text-sm font-medium">{item.name}</span>
+                {showBadge && (
+                  <Badge
+                    style={{
+                      marginLeft: 'auto',
+                      backgroundColor: isActive ? '#FDFBF7' : '#DC2626',
+                      color: isActive ? '#DC2626' : '#FDFBF7',
+                      fontSize: '11px',
+                      padding: '2px 6px',
+                    }}
+                  >
+                    {pendingLicenseRequests}
+                  </Badge>
+                )}
               </Link>
             )
           })}
