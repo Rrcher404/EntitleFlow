@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 import type { Database } from '@/lib/database.types';
+import { notifyLicenseChangeRequest } from '@/lib/email/notify';
 
 export async function GET(
   request: NextRequest,
@@ -196,6 +197,29 @@ export async function PATCH(
         requires_prepayment: requiresPrepayment,
       },
     } as any);
+
+    // Fetch org name for the email notification
+    const { data: org } = await serviceClient
+      .from('organizations')
+      .select('name')
+      .eq('id', admin.organization_id)
+      .single();
+
+    // Fire-and-forget email to Licenses@entitleflow.com
+    notifyLicenseChangeRequest({
+      requestId: changeRequest?.id || 'unknown',
+      organizationName: org?.name || 'Unknown Organization',
+      organizationId: admin.organization_id,
+      requestedByName: admin.full_name || 'Company Admin',
+      requestedByEmail: admin.email || '',
+      targetUserName: targetUser.full_name || 'Unknown',
+      targetUserEmail: targetUser.email || '',
+      currentLicense: targetUser.license_type || 'contributor',
+      requestedLicense: license_type,
+      billingTerm,
+      requiresPrepayment,
+      requestNotes: request_notes,
+    }).catch((err) => console.error('[license-request] Email notification failed:', err));
 
     return NextResponse.json(changeRequest);
   } catch (err) {

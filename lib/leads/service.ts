@@ -1,5 +1,6 @@
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 import type { MarketingLeadSchema } from "@/lib/leads/schema";
+import { notifyWalkthroughRequest, notifyEarlyAccessRequest } from "@/lib/email/notify";
 
 type CreateLeadResult = {
   ok: true;
@@ -86,6 +87,33 @@ export async function createMarketingLead(payload: MarketingLeadSchema): Promise
 
   if (!data?.id) {
     throw new Error("Lead storage did not return an id.");
+  }
+
+  // Fire-and-forget email notification — never blocks lead creation
+  if (payload.intent === "walkthrough") {
+    notifyWalkthroughRequest({
+      leadId: data.id,
+      fullName: payload.fullName,
+      email: payload.email,
+      company: payload.company,
+      companyType: payload.companyType,
+      jurisdictions: payload.activeNcJurisdictions,
+      annualVolume: payload.annualProjectVolume,
+      biggestIssue: payload.biggestWorkflowIssue,
+      issueCategory: payload.issueCategory,
+      sourcePath: payload.sourcePath,
+    }).catch((err) => console.error("[leads] Walkthrough notification failed:", err));
+  } else {
+    notifyEarlyAccessRequest({
+      leadId: data.id,
+      fullName: payload.fullName,
+      email: payload.email,
+      company: payload.company,
+      companyType: payload.companyType,
+      primaryJurisdiction: payload.primaryNcJurisdiction,
+      note: payload.note || undefined,
+      sourcePath: payload.sourcePath,
+    }).catch((err) => console.error("[leads] Early access notification failed:", err));
   }
 
   return {
