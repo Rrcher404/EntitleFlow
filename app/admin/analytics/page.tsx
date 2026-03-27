@@ -5,15 +5,31 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface AnalyticsData {
-  totalSignups: number;
-  signupsTrend: Array<{ month: string; count: number }>;
-  permitsByStatus: Record<string, number>;
-  permitsByJurisdiction: Record<string, number>;
+interface StatsResponse {
+  stats: {
+    totalUsers: number;
+    totalOrganizations: number;
+    activeProjects: number;
+    totalPermits: number;
+    marketingLeads: number;
+  };
+  activityLogs: Array<{
+    id: string;
+    action: string;
+    description: string;
+    created_at: string;
+    user_email?: string;
+  }>;
+  recentSignups: Array<{
+    id: string;
+    email: string;
+    full_name: string;
+    created_at: string;
+  }>;
 }
 
 export default function AnalyticsPage() {
-  const [data, setData] = useState<AnalyticsData | null>(null);
+  const [data, setData] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,23 +89,26 @@ export default function AnalyticsPage() {
     );
   }
 
-  const signupMax = Math.max(
-    ...(data?.signupsTrend.map((item) => item.count) || [1])
-  );
-  const statusMax = Math.max(
-    ...(Object.values(data?.permitsByStatus || {}) as number[])
-  );
-  const jurisdictionMax = Math.max(
-    ...(Object.values(data?.permitsByJurisdiction || {}) as number[])
-  );
+  const stats = data?.stats;
+  const activityLogs = data?.activityLogs || [];
+  const recentSignups = data?.recentSignups || [];
+
+  // Build summary KPI entries
+  const kpis = [
+    { label: 'Total Users', value: stats?.totalUsers || 0, color: '#1B3B2D' },
+    { label: 'Organizations', value: stats?.totalOrganizations || 0, color: '#1B3B2D' },
+    { label: 'Active Projects', value: stats?.activeProjects || 0, color: '#D4A937' },
+    { label: 'Total Permits', value: stats?.totalPermits || 0, color: '#1B3B2D' },
+    { label: 'Marketing Leads', value: stats?.marketingLeads || 0, color: '#D4A937' },
+  ];
+
+  const kpiMax = Math.max(...kpis.map((k) => k.value), 1);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -118,74 +137,58 @@ export default function AnalyticsPage() {
           animate="visible"
           className="space-y-8"
         >
+          {/* KPI Summary Cards */}
           <motion.div variants={itemVariants}>
             <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
               <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
-                Summary Stats
+                Platform Overview
               </h2>
-              <div className="grid grid-cols-3 gap-6">
-                <div>
-                  <p className="text-gray-600 text-sm">Total Signups</p>
-                  <p className="text-4xl font-bold mt-2" style={{ color: '#1B3B2D' }}>
-                    {data?.totalSignups || 0}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Total Permits</p>
-                  <p className="text-4xl font-bold mt-2" style={{ color: '#1B3B2D' }}>
-                    {Object.values(data?.permitsByStatus || {}).reduce(
-                      (a, b) => a + b,
-                      0
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Jurisdictions</p>
-                  <p className="text-4xl font-bold mt-2" style={{ color: '#1B3B2D' }}>
-                    {Object.keys(data?.permitsByJurisdiction || {}).length}
-                  </p>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {kpis.map((kpi) => (
+                  <div key={kpi.label}>
+                    <p className="text-gray-600 text-sm">{kpi.label}</p>
+                    <p className="text-4xl font-bold mt-2" style={{ color: kpi.color }}>
+                      {kpi.value}
+                    </p>
+                  </div>
+                ))}
               </div>
             </Card>
           </motion.div>
 
+          {/* Platform Metrics Bar Chart */}
           <motion.div variants={itemVariants}>
             <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
               <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
-                Signups Over Time
+                Platform Metrics
               </h2>
               <div className="space-y-4">
-                {data?.signupsTrend.map((item, idx) => (
+                {kpis.map((kpi, idx) => (
                   <motion.div
-                    key={item.month}
+                    key={kpi.label}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: idx * 0.1,
-                    }}
+                    transition={{ duration: 0.5, delay: idx * 0.1 }}
                     style={{ originX: 0 }}
                     className="flex items-center gap-4"
                   >
-                    <span className="w-20 text-sm font-medium" style={{ color: '#1B3B2D' }}>
-                      {item.month}
+                    <span className="w-32 text-sm font-medium" style={{ color: '#1B3B2D' }}>
+                      {kpi.label}
                     </span>
                     <div className="flex-1 bg-gray-200 rounded-full h-8 overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
                         style={{
-                          backgroundColor: '#1B3B2D',
-                          width: `${(item.count / signupMax) * 100}%`,
+                          backgroundColor: kpi.color,
+                          width: `${(kpi.value / kpiMax) * 100}%`,
                         }}
                         initial={{ width: 0 }}
-                        animate={{
-                          width: `${(item.count / signupMax) * 100}%`,
-                        }}
+                        animate={{ width: `${(kpi.value / kpiMax) * 100}%` }}
                         transition={{ duration: 0.8, delay: idx * 0.1 }}
                       />
                     </div>
                     <span className="w-12 text-sm text-right text-gray-700">
-                      {item.count}
+                      {kpi.value}
                     </span>
                   </motion.div>
                 ))}
@@ -193,97 +196,73 @@ export default function AnalyticsPage() {
             </Card>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
-              <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
-                Permits by Status
-              </h2>
-              <div className="space-y-4">
-                {Object.entries(data?.permitsByStatus || {}).map(
-                  ([status, count], idx) => (
-                    <motion.div
-                      key={status}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: idx * 0.1,
-                      }}
-                      style={{ originX: 0 }}
-                      className="flex items-center gap-4"
-                    >
-                      <span className="w-20 text-sm font-medium capitalize" style={{ color: '#1B3B2D' }}>
-                        {status}
-                      </span>
-                      <div className="flex-1 bg-gray-200 rounded-full h-8 overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{
-                            backgroundColor: '#D4A937',
-                            width: `${(count / statusMax) * 100}%`,
-                          }}
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: `${(count / statusMax) * 100}%`,
-                          }}
-                          transition={{ duration: 0.8, delay: idx * 0.1 }}
-                        />
-                      </div>
-                      <span className="w-12 text-sm text-right text-gray-700">
-                        {count}
-                      </span>
-                    </motion.div>
-                  )
-                )}
-              </div>
-            </Card>
-          </motion.div>
+          {/* Recent Signups */}
+          {recentSignups.length > 0 && (
+            <motion.div variants={itemVariants}>
+              <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
+                <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
+                  Recent Signups
+                </h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr style={{ backgroundColor: '#F5F3F0', borderBottom: '1px solid #E8E0D0' }}>
+                        <th className="px-4 py-3 text-left text-sm font-semibold" style={{ color: '#1B3B2D' }}>Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold" style={{ color: '#1B3B2D' }}>Email</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold" style={{ color: '#1B3B2D' }}>Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentSignups.map((signup) => (
+                        <tr key={signup.id} style={{ borderBottom: '1px solid #E8E0D0' }}>
+                          <td className="px-4 py-3 text-sm font-medium" style={{ color: '#1B3B2D' }}>
+                            {signup.full_name || 'N/A'}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{signup.email}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {new Date(signup.created_at).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </motion.div>
+          )}
 
-          <motion.div variants={itemVariants}>
-            <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
-              <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
-                Permits by Jurisdiction
-              </h2>
-              <div className="space-y-4">
-                {Object.entries(data?.permitsByJurisdiction || {}).map(
-                  ([jurisdiction, count], idx) => (
-                    <motion.div
-                      key={jurisdiction}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: idx * 0.1,
-                      }}
-                      style={{ originX: 0 }}
-                      className="flex items-center gap-4"
+          {/* Recent Activity */}
+          {activityLogs.length > 0 && (
+            <motion.div variants={itemVariants}>
+              <Card className="border p-6" style={{ borderColor: '#E8E0D0' }}>
+                <h2 className="text-lg font-semibold mb-6" style={{ color: '#1B3B2D' }}>
+                  Recent Activity
+                </h2>
+                <div className="space-y-3">
+                  {activityLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="flex items-start justify-between p-3 rounded-lg"
+                      style={{ backgroundColor: '#F5F3F0' }}
                     >
-                      <span className="w-32 text-sm font-medium truncate" style={{ color: '#1B3B2D' }}>
-                        {jurisdiction}
-                      </span>
-                      <div className="flex-1 bg-gray-200 rounded-full h-8 overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{
-                            backgroundColor: '#1B3B2D',
-                            width: `${(count / jurisdictionMax) * 100}%`,
-                          }}
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: `${(count / jurisdictionMax) * 100}%`,
-                          }}
-                          transition={{ duration: 0.8, delay: idx * 0.1 }}
-                        />
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: '#1B3B2D' }}>
+                          {log.action}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">{log.description}</p>
+                        {log.user_email && (
+                          <p className="text-xs text-gray-500 mt-1">by {log.user_email}</p>
+                        )}
                       </div>
-                      <span className="w-12 text-sm text-right text-gray-700">
-                        {count}
-                      </span>
-                    </motion.div>
-                  )
-                )}
-              </div>
-            </Card>
-          </motion.div>
+                      <p className="text-xs text-gray-500 whitespace-nowrap ml-4">
+                        {new Date(log.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </div>
