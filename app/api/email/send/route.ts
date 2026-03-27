@@ -1,4 +1,3 @@
-// @ts-nocheck — Supabase generated types lag behind the live schema.
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
 import { OutboundEmailPayload } from '@/lib/email/types';
@@ -105,7 +104,8 @@ export async function POST(request: NextRequest) {
             subject: payload.subject,
             status: 'queued'
           }
-        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- metadata fields not in generated types
+        } as any);
     }
 
     return NextResponse.json(

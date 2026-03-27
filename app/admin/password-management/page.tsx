@@ -36,7 +36,8 @@ export default function PasswordManagementPage() {
         const res = await fetch('/api/admin/password-management')
         if (!res.ok) throw new Error('Failed to fetch password resets')
         const data = await res.json()
-        setResets(data)
+        // API returns { config, recent_resets } — extract the array
+        setResets(Array.isArray(data) ? data : data.recent_resets || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error fetching password resets')
       } finally {
@@ -76,8 +77,8 @@ export default function PasswordManagementPage() {
       // Refresh resets list
       const res2 = await fetch('/api/admin/password-management')
       if (res2.ok) {
-        const updatedResets = await res2.json()
-        setResets(updatedResets)
+        const updatedData = await res2.json()
+        setResets(Array.isArray(updatedData) ? updatedData : updatedData.recent_resets || [])
       }
     } catch (err) {
       setSendError(err instanceof Error ? err.message : 'Error sending password reset')

@@ -33,9 +33,9 @@ const requestSchema = z.object({
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized: User session required' },
         { status: 401 },

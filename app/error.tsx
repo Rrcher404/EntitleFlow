@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
@@ -11,9 +12,15 @@ interface ErrorProps {
 }
 
 export default function Error({ error, reset }: ErrorProps) {
+  const pathname = usePathname();
+
   useEffect(() => {
     console.error('Application error:', error);
   }, [error]);
+
+  // Route back to the right "home" based on context
+  const backHref = pathname?.startsWith('/admin') ? '/admin/dashboard' : pathname?.startsWith('/app') ? '/app/dashboard' : '/';
+  const backLabel = pathname?.startsWith('/admin') ? 'Back to Admin' : pathname?.startsWith('/app') ? 'Back to Dashboard' : 'Back to home';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -52,7 +59,7 @@ export default function Error({ error, reset }: ErrorProps) {
           className="w-full"
           asChild
         >
-          <Link href="/">Back to home</Link>
+          <Link href={backHref}>{backLabel}</Link>
         </Button>
       </div>
     </div>

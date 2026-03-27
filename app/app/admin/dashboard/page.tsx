@@ -115,7 +115,7 @@ export default function DashboardPage() {
           Dashboard Overview
         </h1>
         <p className="text-gray-600 mt-2">
-          Welcome back! Here's your organization at a glance.
+          Welcome back! Here&apos;s your organization at a glance.
         </p>
       </div>
 

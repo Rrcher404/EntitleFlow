@@ -39,12 +39,18 @@ export default function SettingsPage() {
           fetch('/api/admin/flags'),
         ]);
 
-        if (!configRes.ok || !flagsRes.ok) {
-          throw new Error('Failed to fetch settings');
-        }
+        // Parse responses gracefully — treat non-OK as empty data
+        let configData: ConfigItem[] = [];
+        let flagsData: FeatureFlag[] = [];
 
-        const configData = await configRes.json();
-        const flagsData = await flagsRes.json();
+        if (configRes.ok) {
+          const raw = await configRes.json();
+          configData = Array.isArray(raw) ? raw : raw?.data ? [raw.data] : [];
+        }
+        if (flagsRes.ok) {
+          const raw = await flagsRes.json();
+          flagsData = Array.isArray(raw) ? raw : raw?.data ? [raw.data] : [];
+        }
 
         setConfig(configData);
         setFlags(flagsData);
@@ -68,7 +74,7 @@ export default function SettingsPage() {
     setSavingKeys((prev) => new Set(prev).add(key));
     try {
       const res = await fetch('/api/admin/config', {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, value: editingValues[key] }),
       });

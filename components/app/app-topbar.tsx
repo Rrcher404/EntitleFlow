@@ -30,6 +30,7 @@ export function AppTopbar() {
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userInitials, setUserInitials] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,8 +46,23 @@ export function AppTopbar() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const meta = user.user_metadata;
-        const name = meta?.full_name || meta?.name || user.email?.split('@')[0] || 'User';
+        let name = meta?.full_name || meta?.name || user.email?.split('@')[0] || 'User';
         const email = user.email || '';
+
+        // Fetch profile data (including avatar_url) from profiles table
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('full_name, avatar_url')
+          .eq('id', user.id)
+          .single();
+
+        if (profileData?.full_name) {
+          name = profileData.full_name;
+        }
+        // Prefer profile table avatar, fall back to auth metadata
+        const avatar = profileData?.avatar_url || meta?.avatar_url || null;
+        setAvatarUrl(avatar);
+
         setUserName(name);
         setUserEmail(email);
         const parts = name.split(' ').filter(Boolean);
@@ -244,9 +260,17 @@ export function AppTopbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-medium text-primary">
-                {userInitials || '..'}
-              </div>
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={userName || 'User'}
+                  className="h-8 w-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-medium text-primary">
+                  {userInitials || '..'}
+                </div>
+              )}
               <div className="hidden sm:block">
                 <div className="text-sm font-medium text-foreground">{userName || 'Loading...'}</div>
                 <div className="text-[11px] text-muted-foreground">{userEmail || ''}</div>

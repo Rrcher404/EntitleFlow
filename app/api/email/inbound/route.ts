@@ -1,4 +1,3 @@
-// @ts-nocheck — Supabase generated types lag behind the live schema; queries use columns (reviewer_email, metadata JSONB paths) not yet in the type file.
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdminClient } from '@/lib/supabase/server';
 import { parseEmailAddress, extractPermitNumber, classifyEmailCategory, stripHtmlTags } from '@/lib/email/parser';
@@ -122,7 +121,8 @@ export async function POST(request: NextRequest) {
 
     // Strategy 2: Match by sender email (reviewer_email field)
     if (!permitId && fromEmail) {
-      const { data: permit } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- reviewer_email not in generated types yet
+      const { data: permit } = await (supabase as any)
         .from('permits')
         .select('id, organization_id')
         .eq('reviewer_email', fromEmail)
@@ -138,7 +138,8 @@ export async function POST(request: NextRequest) {
     // If no organization found, try to find from domain of to address
     if (!organizationId) {
       const domain = payload.to.split('@')[1];
-      const { data: org } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- email_domain not in generated types yet
+      const { data: org } = await (supabase as any)
         .from('organizations')
         .select('id')
         .eq('email_domain', domain)
@@ -151,7 +152,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare metadata
-    const metadata: Record<string, any> = {
+    const metadata: Record<string, unknown> = {
       message_id: payload.message_id,
       date: payload.date,
       original_to: payload.to,
@@ -182,8 +183,9 @@ export async function POST(request: NextRequest) {
         source: source,
         category: category,
         is_resolved: false,
-        metadata: metadata
-      })
+        metadata: metadata,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- columns not in generated types
+      } as any)
       .select('id')
       .single();
 
@@ -211,7 +213,8 @@ export async function POST(request: NextRequest) {
             category: category,
             message_id: payload.message_id
           }
-        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- columns not in generated types
+        } as any);
     }
 
     // Handle attachments if present
@@ -229,7 +232,8 @@ export async function POST(request: NextRequest) {
           email_message_id: payload.message_id,
           comment_id: comment.id
         }
-      }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- columns not in generated types
+      } as any));
 
       await supabase
         .from('documents')

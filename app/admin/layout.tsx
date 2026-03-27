@@ -67,10 +67,20 @@ export default function AdminLayout({
           data: { user },
         } = await supabase.auth.getUser()
         if (user) {
+          // Also fetch profile data for avatar_url
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('full_name, avatar_url')
+            .eq('id', user.id)
+            .single()
+
           setUser({
             id: user.id,
             email: user.email || '',
-            user_metadata: user.user_metadata as any,
+            user_metadata: {
+              full_name: profileData?.full_name || user.user_metadata?.full_name,
+              avatar_url: profileData?.avatar_url || user.user_metadata?.avatar_url,
+            },
           })
         }
       } catch (error) {

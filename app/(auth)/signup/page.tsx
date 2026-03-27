@@ -80,7 +80,7 @@ export default function SignupPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            We've sent a confirmation link to{' '}
+            We&apos;ve sent a confirmation link to{' '}
             <span className="font-medium text-foreground">{confirmedEmail}</span>
           </p>
         </div>

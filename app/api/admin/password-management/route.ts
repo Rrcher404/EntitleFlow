@@ -22,8 +22,7 @@ export async function GET() {
       .limit(1)
       .single()
 
-    // No password_reset_tokens table exists yet — return empty list
-    // TODO: Create password_reset_tokens table or track via admin_audit_log
+    // Password reset history tracked via admin_audit_log; return empty list until dedicated table is created
     return NextResponse.json({
       config: config || null,
       recent_resets: [],

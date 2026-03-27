@@ -268,7 +268,7 @@ export default function AppDashboard() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground font-display">Dashboard</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Welcome back. Here's your approval operations overview.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Welcome back. Here&apos;s your approval operations overview.</p>
         </div>
         <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4].map(i => (

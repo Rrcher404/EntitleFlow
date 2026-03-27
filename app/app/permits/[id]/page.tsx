@@ -625,6 +625,18 @@ export default function PermitDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isChangingStatus, setIsChangingStatus] = useState(false);
 
+  // Edit modal state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState<Record<string, string | null>>({});
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  // Add comment state
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const [newCommentBody, setNewCommentBody] = useState('');
+  const [newCommentCategory, setNewCommentCategory] = useState('General');
+  const [commentSubmitting, setCommentSubmitting] = useState(false);
+
   const supabase = createClient();
 
   // Load permit data
@@ -895,6 +907,107 @@ export default function PermitDetailPage() {
     []
   );
 
+  // Open edit modal with current permit data
+  const openEditModal = useCallback(() => {
+    if (!permit) return;
+    setEditFormData({
+      title: permit.title || '',
+      description: permit.description || '',
+      permit_type: permit.permit_type || '',
+      jurisdiction: permit.jurisdiction || '',
+      assigned_reviewer: permit.assigned_reviewer || '',
+      reviewer_email: permit.reviewer_email || '',
+      priority: permit.priority || 'medium',
+    });
+    setEditError(null);
+    setShowEditModal(true);
+  }, [permit]);
+
+  // Handle edit form submit
+  const handleEditSubmit = useCallback(async () => {
+    if (!permit || !supabase) return;
+    setEditSubmitting(true);
+    setEditError(null);
+    try {
+      const { error: updateError } = await supabase
+        .from('permits')
+        .update({
+          title: editFormData.title,
+          description: editFormData.description || null,
+          permit_type: editFormData.permit_type || null,
+          jurisdiction: editFormData.jurisdiction || null,
+          assigned_reviewer: editFormData.assigned_reviewer || null,
+          reviewer_email: editFormData.reviewer_email || null,
+          priority: editFormData.priority || 'medium',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic form data
+        } as any)
+        .eq('id', permit.id);
+
+      if (updateError) throw updateError;
+
+      setPermit({
+        ...permit,
+        title: editFormData.title || permit.title,
+        description: editFormData.description || null,
+        permit_type: (editFormData.permit_type || permit.permit_type) as Permit['permit_type'],
+        jurisdiction: editFormData.jurisdiction || permit.jurisdiction || '',
+        assigned_reviewer: editFormData.assigned_reviewer || null,
+        reviewer_email: editFormData.reviewer_email || null,
+        priority: (editFormData.priority === 'medium' ? 'normal' : editFormData.priority || permit.priority) as Permit['priority'],
+      });
+      setShowEditModal(false);
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : 'Failed to update permit');
+    } finally {
+      setEditSubmitting(false);
+    }
+  }, [permit, supabase, editFormData]);
+
+  // Handle add comment
+  const handleAddComment = useCallback(async () => {
+    if (!permit || !supabase || !newCommentBody.trim()) return;
+    setCommentSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name, organization_id')
+        .eq('id', user.id)
+        .single();
+
+      const { data: newComment, error: insertError } = await supabase
+        .from('comments')
+        .insert({
+          permit_id: permit.id,
+          organization_id: profileData?.organization_id,
+          body: newCommentBody.trim(),
+          author_id: user.id,
+          author_name: profileData?.full_name || user.email?.split('@')[0] || 'User',
+          category: newCommentCategory,
+          source: 'portal',
+          is_resolved: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic form data
+        } as any)
+        .select('*')
+        .single();
+
+      if (insertError) throw insertError;
+
+      if (newComment) {
+        setComments((prev) => [...prev, newComment as CommentWithAuthor]);
+      }
+      setNewCommentBody('');
+      setNewCommentCategory('General');
+      setShowCommentForm(false);
+    } catch (err) {
+      console.error('Error adding comment:', err);
+    } finally {
+      setCommentSubmitting(false);
+    }
+  }, [permit, supabase, newCommentBody, newCommentCategory]);
+
   // Filter comments based on tab state
   const filteredComments = comments.filter((c) => {
     if (tabState.comments === 'open' && c.is_resolved) return false;
@@ -977,7 +1090,7 @@ export default function PermitDetailPage() {
             </div>
           </div>
 
-          <Button className="bg-blue-600 hover:bg-blue-700">Edit</Button>
+          <Button onClick={openEditModal} className="bg-blue-600 hover:bg-blue-700">Edit</Button>
         </div>
       </div>
 
@@ -1129,11 +1242,56 @@ export default function PermitDetailPage() {
               )}
             </div>
 
-            {/* Add Comment Button */}
+            {/* Add Comment Form */}
             <div className="pt-6 border-t">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 h-10">
-                + Add Comment
-              </Button>
+              {showCommentForm ? (
+                <div className="space-y-3">
+                  <textarea
+                    value={newCommentBody}
+                    onChange={(e) => setNewCommentBody(e.target.value)}
+                    placeholder="Write your comment..."
+                    className="w-full p-3 border rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows={4}
+                    autoFocus
+                  />
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={newCommentCategory}
+                      onChange={(e) => setNewCommentCategory(e.target.value)}
+                      className="text-sm px-3 py-2 border rounded-lg bg-white"
+                    >
+                      {COMMENT_CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                    <div className="flex-1" />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setShowCommentForm(false);
+                        setNewCommentBody('');
+                      }}
+                      className="h-9"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleAddComment}
+                      disabled={commentSubmitting || !newCommentBody.trim()}
+                      className="bg-blue-600 hover:bg-blue-700 h-9"
+                    >
+                      {commentSubmitting ? 'Saving...' : 'Save Comment'}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowCommentForm(true)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 h-10"
+                >
+                  + Add Comment
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -1212,12 +1370,113 @@ export default function PermitDetailPage() {
               </div>
             )}
 
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={openEditModal} className="bg-blue-600 hover:bg-blue-700">
               Edit Details
             </Button>
           </div>
         )}
       </Card>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-lg max-h-[80vh] overflow-y-auto p-6 m-4 bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Edit Permit</h2>
+              <button
+                onClick={() => { setShowEditModal(false); setEditError(null); }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {editError && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                {editError}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input
+                  type="text"
+                  value={editFormData.title || ''}
+                  onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={editFormData.description || ''}
+                  onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Jurisdiction</label>
+                  <input
+                    type="text"
+                    value={editFormData.jurisdiction || ''}
+                    onChange={(e) => setEditFormData({ ...editFormData, jurisdiction: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                  <select
+                    value={editFormData.priority || 'medium'}
+                    onChange={(e) => setEditFormData({ ...editFormData, priority: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Reviewer</label>
+                  <input
+                    type="text"
+                    value={editFormData.assigned_reviewer || ''}
+                    onChange={(e) => setEditFormData({ ...editFormData, assigned_reviewer: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Reviewer Email</label>
+                  <input
+                    type="email"
+                    value={editFormData.reviewer_email || ''}
+                    onChange={(e) => setEditFormData({ ...editFormData, reviewer_email: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <Button variant="outline" onClick={() => setShowEditModal(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleEditSubmit}
+                disabled={editSubmitting}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {editSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
