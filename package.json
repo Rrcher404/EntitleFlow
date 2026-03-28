@@ -34,6 +34,7 @@
     "@vis.gl/react-google-maps": "^1.7.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "docx": "^9.6.1",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.551.0",

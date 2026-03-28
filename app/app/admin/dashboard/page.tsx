@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { Users, FolderOpen, HardDrive, ScrollText, Plus, Key, BarChart3, Download } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { Users, FolderOpen, HardDrive, ScrollText, Plus, Key, Download } from 'lucide-react';
 
 interface DashboardStats {
   totalUsers: number;

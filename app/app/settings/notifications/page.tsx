@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import type { Database } from '@/lib/database.types';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -23,7 +22,7 @@ const NOTIFICATION_TYPES = [
   { key: 'mention', label: 'Mentions' },
 ];
 
-interface NotificationPreference {
+interface _NotificationPreference {
   id?: string;
   profile_id?: string;
   notification_type: string;
@@ -112,7 +111,7 @@ export default function NotificationPreferencesPage() {
         } else if (prefsData && prefsData.length > 0) {
           // Convert array of preferences to object format
           const prefsMap: PreferencesState = {};
-          prefsData.forEach((pref: any) => {
+          prefsData.forEach((pref: Database['public']['Tables']['notification_preferences']['Row']) => {
             prefsMap[pref.notification_type] = {
               in_app: pref.in_app !== false,
               email: pref.email !== false,

@@ -112,7 +112,7 @@ const getStatusBadgeStyle = (status: string) => {
   }
 }
 
-const getTypeIcon = (type: string) => {
+const getTypeIcon = (_type: string) => {
   return <File className="w-4 h-4" />
 }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
-import crypto from 'crypto';
+import type { Database } from '@/lib/database.types';
 
 export async function PATCH(
   request: NextRequest,
@@ -77,7 +77,13 @@ export async function PATCH(
     }
 
     const adminClient = getSupabaseAdminClient();
-    const { error: updateError } = await (adminClient as any)
+    if (!adminClient) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+    const { error: updateError } = await adminClient
       .from('profiles')
       .update({ role, updated_at: new Date().toISOString() })
       .eq('id', id);
@@ -95,19 +101,12 @@ export async function PATCH(
       .eq('id', id)
       .single();
 
-    const { error: activityError } = await (adminClient as any)
+    const { error: activityError } = await adminClient
       .from('activity_log')
       .insert({
         organization_id: callerProfile.organization_id,
-        user_id: user.id,
-        action: 'team_member_role_changed',
-        resource_type: 'team_member',
-        resource_id: id,
-        details: {
-          old_role: targetProfile.role,
-          new_role: role,
-          target_user_email: targetProfile.id
-        },
+        actor_id: user.id,
+        action: 'team_member_role_changed' as Database['public']['Enums']['activity_action'],
         created_at: new Date().toISOString()
       });
 
@@ -200,31 +199,32 @@ export async function DELETE(
     }
 
     const adminClient = getSupabaseAdminClient();
+    if (!adminClient) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
     const { data: existingMember } = await supabase
       .from('team_members')
       .select('id')
-      .eq('user_id', id)
+      .eq('profile_id', id)
       .eq('organization_id', callerProfile.organization_id)
       .single();
 
     if (existingMember) {
-      await (adminClient as any)
+      await adminClient
         .from('team_members')
         .delete()
         .eq('id', existingMember.id);
     }
 
-    const { error: activityError } = await (adminClient as any)
+    const { error: activityError } = await adminClient
       .from('activity_log')
       .insert({
         organization_id: callerProfile.organization_id,
-        user_id: user.id,
-        action: 'team_member_removed',
-        resource_type: 'team_member',
-        resource_id: id,
-        details: {
-          member_role: targetProfile.role
-        },
+        actor_id: user.id,
+        action: 'team_member_removed' as Database['public']['Enums']['activity_action'],
         created_at: new Date().toISOString()
       });
 

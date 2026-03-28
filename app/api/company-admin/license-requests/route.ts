@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
-import type { Database } from '@/lib/database.types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +17,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = url.searchParams.get('status');
 
     let query = serviceClient
-      .from('license_change_requests' as any)
+      .from('license_change_requests')
       .select(`
         id,
         organization_id,
@@ -43,7 +42,7 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', admin.organization_id);
 
     if (statusFilter) {
-      query = query.eq('status', statusFilter);
+      query = query.eq('status', statusFilter as "cancelled" | "pending" | "approved" | "applied" | "rejected");
     }
 
     const { data: requests, error: queryError } = await query.order('created_at', {
@@ -58,13 +57,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Format response with joined data
-    const formattedRequests = (requests || []).map((req: any) => ({
+    const formattedRequests = (requests || []).map((req: Record<string, unknown>) => ({
       id: req.id,
       organization_id: req.organization_id,
       requested_by: req.requested_by,
       target_user_id: req.target_user_id,
-      target_user_name: req.target_user?.full_name,
-      target_user_email: req.target_user?.email,
+      target_user_name: (req.target_user as { full_name: string })?.full_name,
+      target_user_email: (req.target_user as { email: string })?.email,
       current_license_type: req.current_license_type,
       requested_license_type: req.requested_license_type,
       status: req.status,
@@ -116,12 +115,12 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Fetch the change request to verify it belongs to this organization and is pending
-    const { data: changeRequest, error: fetchError } = await (serviceClient
-      .from('license_change_requests' as any)
+    const { data: changeRequest, error: fetchError } = await serviceClient
+      .from('license_change_requests')
       .select('*')
       .eq('id', request_id)
       .eq('organization_id', admin.organization_id)
-      .single() as any) as { data: any; error: any };
+      .single();
 
     if (fetchError || !changeRequest) {
       return NextResponse.json(
@@ -142,7 +141,7 @@ export async function DELETE(request: NextRequest) {
 
     // Update request status to 'cancelled'
     const { data: cancelledRequest, error: updateError } = await serviceClient
-      .from('license_change_requests' as any)
+      .from('license_change_requests')
       .update({
         status: 'cancelled',
       })
@@ -166,7 +165,7 @@ export async function DELETE(request: NextRequest) {
 
     await serviceClient.from('activity_log').insert({
       organization_id: admin.organization_id,
-      action: 'status_changed' as any,
+      action: 'status_changed',
       description: `License change request cancelled for ${targetUser?.full_name || 'Unknown'} (${changeRequest.current_license_type} → ${changeRequest.requested_license_type})`,
       metadata: {
         type: 'license_change_cancelled',
@@ -175,7 +174,7 @@ export async function DELETE(request: NextRequest) {
         original_license_type: changeRequest.current_license_type,
         requested_license_type: changeRequest.requested_license_type,
       },
-    } as any);
+    });
 
     return NextResponse.json(cancelledRequest);
   } catch (err) {

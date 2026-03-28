@@ -1,0 +1,232 @@
+================================================================================
+CITY OF GREENSBORO
+PLANNING DEPARTMENT
+TECHNICAL REVIEW COMMITTEE (TRC) RESPONSE
+================================================================================
+
+Date: March 15, 2026
+Project Name: Riverside Mixed-Use Development
+Project Location: 1234 Riverside Drive, Greensboro, NC 27401
+Applicant: Riverside Development Partners LLC
+Special Use Permit #: SP-2026-0142
+Parcel ID: 110532-45-07-66.00
+Zoning: MU-2 (Mixed Use - Downtown Core)
+
+This letter summarizes the results of the Technical Review Committee meeting held
+on March 8, 2026. The following departments reviewed the site plan and associated
+documents for the proposed mixed-use development with 85,000 sq ft retail/office,
+120 residential units, and 450 parking spaces (mixed surface and structured).
+
+================================================================================
+TRANSPORTATION DEPARTMENT COMMENTS
+================================================================================
+
+COMMENT T-1 (MAJOR)
+Driveway spacing: Primary retail entrance driveway is only 285 feet from Riverside
+Drive intersection. Revise plan to locate at least 350 feet from intersection per
+NCGS § 136-66 and City of Greensboro Development Standards Section 3.2.1. Include
+spacing calculations on revised plan sheet.
+
+COMMENT T-2 (MAJOR)
+Sight triangle: The service entrance driveway does not maintain clear sight lines
+per AASHTO standards. Remove or relocate landscaping and street furniture within
+sight triangle (25 feet from driveway edge, 250 feet along Riverside Drive). Provide
+sight distance diagram on revised plan.
+
+COMMENT T-3 (STANDARD)
+Left-turn lane: Provide dedicated left-turn lane for southbound Riverside Drive
+traffic accessing retail entrance. Lane must be minimum 100 feet in length with
+6-foot taper. Coordinate with NCDOT if any work within state right-of-way.
+
+COMMENT T-4 (STANDARD)
+Parking lot circulation: Reduce internal drive-aisle width from 28 feet to 24 feet
+for interior drives not serving loading zones. This is per City standard and will
+improve pedestrian connectivity and reduce impervious area.
+
+COMMENT T-5 (STANDARD)
+Pedestrian connectivity: Sidewalk connection from retail entrance to Riverside Drive
+sidewalk is interrupted at parking lot edge. Provide continuous sidewalk with
+cross-walk connection and accessible ramp per ADA standards.
+
+================================================================================
+STORMWATER MANAGEMENT DEPARTMENT COMMENTS
+================================================================================
+
+COMMENT S-1 (MAJOR)
+BMP design: Proposed bioretention is undersized for 25-year storm (81.3 inches
+annual rainfall per NCAC T15A.02D). Recalculate and provide calculations per
+NC DWI Stormwater BMP Manual (2022 Update). Current sizing insufficient by 35%.
+
+COMMENT S-2 (MAJOR)
+Outfall stabilization: Outfall at northeast corner discharges to creek without
+energy dissipation or stabilization. Provide rip-rap apron minimum 6 feet wide,
+12 feet long per NC DWI specifications. Include erosion control details on
+stormwater plan.
+
+COMMENT S-3 (STANDARD)
+Detention basin: Basin outlet structure lacks velocity control device. Add
+multi-stage outlet orifice system to restrict discharge to pre-development rate
+(0.08 cfs/acre for 2-year storm).
+
+COMMENT S-4 (STANDARD)
+Erosion control: Temporary construction BMPs (silt fence, inlet protection) are
+shown but not detailed. Add construction sequencing and detail specifications
+per NCAC T15A.02H. Specify maintenance frequency during construction.
+
+COMMENT S-5 (MINOR)
+Impervious area calculation: Sheet C-3 shows 78.2% but tabulation appears to
+include proposed roofline. Recalculate excluding future building areas per NC DWI
+methodology for undeveloped condition baseline.
+
+================================================================================
+ZONING AND PLANNING COMMENTS
+================================================================================
+
+COMMENT Z-1 (MAJOR)
+Setback variance: Proposed building footprint encroaches 4 feet into required
+50-foot riparian buffer. Although MU-2 zoning allows modification of riparian
+buffer with Planning Director approval (NCGS § 160D-701), stream restoration must
+be provided in compensatory mitigation area per Environmental Services comments
+(see ENV-4).
+
+COMMENT Z-2 (STANDARD)
+Parking ratio: Proposed 450 spaces for 120 residential units (3.75 sp/unit) exceeds
+City standard of 1.75 sp/unit for mixed-income housing. Reduce to 210 spaces or
+justify need for additional spaces with lease/parking demand study.
+
+COMMENT Z-3 (STANDARD)
+Signage plan: Proposed monument sign is 12 feet tall; maximum permitted is 8 feet
+for properties under 3 acres per Zoning Ordinance Section 8.3.4. Revise plan to
+comply or submit variance application with design justification.
+
+COMMENT Z-4 (MINOR)
+Buffer planting: The 15-foot landscape buffer along Holden Road is shown with
+deciduous trees only. Add 40% evergreen screening per Zoning Ordinance Section
+7.2.3 to provide year-round visual buffer.
+
+================================================================================
+FIRE AND LIFE SAFETY DEPARTMENT COMMENTS
+================================================================================
+
+COMMENT F-1 (MAJOR)
+Emergency access: Single access drive from Riverside Drive is insufficient. Provide
+second emergency access from Holden Road per NFPA 101 Life Safety Code Section
+7.5.1.2. Minimum 20-foot wide paved surface to all building exits.
+
+COMMENT F-2 (STANDARD)
+Hydrant spacing: Provide fire hydrants per NFPA 14 spacing requirements—one hydrant
+per 5,000 sq ft of building area. Current plan shows 4 hydrants; calculations indicate
+6 hydrants required. Revise water utility coordination.
+
+COMMENT F-3 (STANDARD)
+Sprinkler system: Proposed residential units require automatic sprinkler system per
+NC Building Code § 903.2.1.1. Show system riser locations on architectural plans and
+coordinate with utility routing on site plan.
+
+================================================================================
+LANDSCAPE ARCHITECTURE COMMENTS
+================================================================================
+
+COMMENT L-1 (MAJOR)
+Tree save: Existing tree cluster in northeast corner (8 oaks, 65 DBH average) is not
+identified for preservation. Revise plan to protect existing canopy or provide
+compensatory mitigation planting at 2:1 ratio per Zoning Ordinance Section 7.1.2.
+Submit ISA Certified Arborist assessment if removal is necessary.
+
+COMMENT L-2 (STANDARD)
+Landscape planting schedule: Street trees along Riverside Drive frontage are proposed
+at 40-foot spacing; revise to 30-foot spacing per City streetscape standards. Species
+selection of Zelkova serrata is appropriate for street tree (hardy to Zone 7b).
+
+COMMENT L-3 (STANDARD)
+Irrigation plan: Bioretention areas are to be irrigated with drip system for first
+two growing seasons. Provide irrigation plan with valve locations, line sizing,
+and maintenance schedule for establishment phase.
+
+================================================================================
+WATER AND SEWER UTILITY COMMENTS
+================================================================================
+
+COMMENT W-1 (MAJOR)
+Water service: Proposed connection to 8-inch main on Riverside Drive will require
+system impact study per Water Department policy. Submit demand projection (gallons/day)
+for 120 units at single-family equivalent rates (300 gpd/unit). May require system
+upgrade analysis.
+
+COMMENT W-2 (STANDARD)
+Sanitary sewer: Proposed connection point on Holden Road is 4,200 feet from site.
+Provide lift station analysis showing minimum 5-foot depth and adequate slope for
+gravity service. If gravity service infeasible, submit lift station design per
+NCAC T15A.02U standards.
+
+COMMENT W-3 (STANDARD)
+Utility easements: Water main easement must be recorded 15 feet minimum from building
+foundation per Water Department standards. Show easements on recorded plat and
+coordinate with architectural site plan.
+
+================================================================================
+LANDSCAPE AND ENVIRONMENTAL SERVICES COMMENTS
+================================================================================
+
+COMMENT ENV-1 (MAJOR)
+Stream assessment: Plan does not include Stream Quality Assessment (NCDWQ Form 1)
+for creek impacting stormwater outfall. Submit Level 1 assessment by Environmental
+consultant (state-certified) documenting existing stream conditions and proposed
+impacts.
+
+COMMENT ENV-2 (STANDARD)
+Wetland delineation: No wetland delineation submitted. Site aerial shows potential
+wetland area at northeast corner (darker vegetation patch). Submit Corps of Engineers
+delineation or Environmental consultant assessment confirming no wetlands impact.
+
+COMMENT ENV-3 (STANDARD)
+Wildlife habitat: Site plan does not address wildlife corridors. Riparian buffer
+restoration (ENV-4 mitigation) should prioritize native species supporting terrestrial
+connectivity per NCAC T15A.02E guidance.
+
+COMMENT ENV-4 (MAJOR)
+Riparian restoration: To mitigate setback encroachment (Z-1), provide 0.25-acre
+riparian buffer restoration upstream of development impact area. Plant 100 native
+shrubs and 50 understory trees (2-3 inches caliper). Provide 3-year monitoring and
+management plan.
+
+================================================================================
+GENERAL PLANNING AND CONDITIONS COMMENTS
+================================================================================
+
+COMMENT G-1 (STANDARD)
+Phasing plan: Project proposes two phases (Phase 1: retail/office + surface parking,
+Phase 2: residential + structured parking). Submit phasing timeline and interim site
+stabilization measures. Phase 1 completion must not leave stormwater or traffic
+impacts unresolved.
+
+COMMENT G-2 (MINOR)
+Conditions of approval: Proposed development approval is conditioned on:
+(a) All TRC comments resolved to departments' satisfaction
+(b) Riparian buffer restoration established and maintained (ENV-4)
+(c) Secondary emergency access operational before occupancy (F-1)
+(d) Parking ratios compliant or variance approved (Z-2)
+(e) All utilities coordinated and approved in writing
+
+================================================================================
+NEXT STEPS
+
+Please submit revised site plans addressing the above comments within 30 days.
+Resubmittal should include a comment response matrix identifying which comments
+have been addressed and how. Comments marked MAJOR require resolution; STANDARD
+comments require resolution or variance justification; MINOR comments are
+recommendations that improve the plan.
+
+A follow-up TRC meeting will be scheduled upon complete resubmittal.
+
+Questions regarding these comments should be directed to:
+
+Transportation: Robert J. Chen, AICP (rchen@greensboro-nc.gov)
+Stormwater: Michelle D. Patterson, PE (mpatterson@greensboro-nc.gov)
+Zoning: David Whitmore, AICP (dwhitmore@greensboro-nc.gov)
+Fire/Life Safety: Captain James Mueller (jmueller@greensboro-nc.gov)
+Landscape: Sarah K. Richardson, ASLA (srichardson@greensboro-nc.gov)
+Water/Sewer: Thomas L. Brady, PE (tbrady@greensboro-nc.gov)
+Environmental: Jennifer M. Foster (jfoster@greensboro-nc.gov)
+
+================================================================================

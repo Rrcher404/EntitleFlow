@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
 import { FolderPlus, FileText, Upload, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 
@@ -30,8 +29,8 @@ interface TeamMemberWorkload {
 }
 
 export default function AppDashboard() {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [_profile, setProfile] = useState<Profile | null>(null);
+  const [_organization, setOrganization] = useState<Organization | null>(null);
   const [kpis, setKpis] = useState<KPIData>({ projects: 0, permits: 0, pendingReviews: 0, documents: 0 });
   const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<Deadline[]>([]);
@@ -154,7 +153,7 @@ export default function AppDashboard() {
               .eq('is_resolved', false);
 
             if (myComments && myComments.length > 0) {
-              const permitIds = (myComments as any[]).map(c => c.permit_id);
+              const permitIds = (myComments as Record<string, unknown>[]).map(c => c.permit_id) as (string | null)[];
               const { count: overdue } = await supabase
                 .from('deadlines')
                 .select('id', { count: 'exact', head: true })
@@ -348,7 +347,7 @@ export default function AppDashboard() {
                   href: '/app/documents',
                 },
               ].map((item) => {
-                const Icon = item.icon;
+                const _Icon = item.icon;
                 return (
                   <Link key={item.step} href={item.href} className="group">
                     <div className="rounded-lg border border-border bg-card p-4 transition-all hover:shadow-md hover:border-primary/40">

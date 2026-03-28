@@ -53,12 +53,16 @@ export async function POST(
 
     const adminClient = getSupabaseAdminClient();
 
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     // Update comment with AI suggestion
-    const { data: updatedComment, error: updateError } = await (adminClient as any)
+    const { data: updatedComment, error: updateError } = await adminClient!
       .from('comments')
       .update({
         metadata: {
-          ...(comment.metadata as any),
+          ...(comment.metadata as Record<string, unknown> || {}),
           ai_suggested_response: agentResponse.result.response,
           ai_confidence: agentResponse.result.confidence,
           ai_tone: agentResponse.result.tone,

@@ -72,7 +72,7 @@ export default function SecurityPage() {
     }
   };
 
-  const handleChange = (field: keyof SecurityPolicy, value: any) => {
+  const handleChange = (field: keyof SecurityPolicy, value: string | number | boolean) => {
     setPolicy((prev) => ({ ...prev, [field]: value }));
   };
 

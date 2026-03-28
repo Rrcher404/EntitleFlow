@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical, ChevronDown, X } from 'lucide-react';
+import { MoreVertical, ChevronDown } from 'lucide-react';
 
 type OrgRole = 'owner' | 'admin' | 'member' | 'viewer';
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -28,7 +28,7 @@ interface PendingInvitation {
   id: string;
   email: string;
   role: OrgRole;
-  invited_at: string;
+  created_at: string | null;
   organization_id: string;
 }
 
@@ -47,7 +47,7 @@ const getInitials = (fullName: string | null) => {
     .slice(0, 2);
 };
 
-const getRoleInitial = (role: OrgRole) => {
+const _getRoleInitial = (role: OrgRole) => {
   const initials: Record<OrgRole, string> = {
     owner: 'O',
     admin: 'A',
@@ -71,7 +71,7 @@ export default function TeamSettingsPage() {
 
   const supabase = createClient();
 
-  const loadTeamData = async () => {
+  const loadTeamData = useCallback(async () => {
     if (!supabase) {
       setLoading(false);
       return;
@@ -118,7 +118,7 @@ export default function TeamSettingsPage() {
       setTeamMembers(
         (membersData || []).map(member => ({
           ...member,
-          role: ((member as any).role || 'member') as OrgRole,
+          role: (member.role || 'member') as OrgRole,
         }))
       );
 
@@ -131,7 +131,7 @@ export default function TeamSettingsPage() {
 
       if (!invitationsError && invitationsData) {
         setPendingInvitations(
-          invitationsData.map((inv: any) => ({
+          invitationsData.map((inv: Database['public']['Tables']['team_invitations']['Row']) => ({
             ...inv,
             role: inv.role as OrgRole,
           }))
@@ -143,7 +143,7 @@ export default function TeamSettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     loadTeamData();
@@ -259,7 +259,7 @@ export default function TeamSettingsPage() {
 
   const canManageTeam =
     profile &&
-    (((profile as any).role === 'owner' || (profile as any).role === 'admin'));
+    (((profile as Database['public']['Tables']['profiles']['Row']).role === 'owner' || (profile as Database['public']['Tables']['profiles']['Row']).role === 'admin'));
 
   if (loading) {
     return (
@@ -489,7 +489,7 @@ export default function TeamSettingsPage() {
             <div className="divide-y divide-[#E8E0D0]">
               {pendingInvitations.map(invitation => {
                 const roleColor = ORG_ROLE_COLORS[invitation.role];
-                const invitedDate = new Date(invitation.invited_at).toLocaleDateString(
+                const invitedDate = new Date(invitation.created_at || '').toLocaleDateString(
                   'en-US',
                   { month: 'short', day: 'numeric' }
                 );

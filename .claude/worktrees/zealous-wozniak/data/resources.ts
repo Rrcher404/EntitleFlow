@@ -1,0 +1,58 @@
+import type { GuideCard } from "@/lib/types";
+
+export const resources: GuideCard[] = [
+  {
+    title: "Greensboro workflow guide",
+    description: "A practical overview of systems, departments, and workflow friction for Greensboro approvals.",
+    category: "NC workflow guide",
+    updatedAt: "2026-03-10",
+    status: "Available now",
+    href: "/nc-jurisdictions/greensboro",
+    ctaLabel: "View Greensboro guide",
+  },
+  {
+    title: "Raleigh workflow guide",
+    description: "A launch-ready look at Raleigh and Wake workflow context for regional project teams.",
+    category: "NC workflow guide",
+    updatedAt: "2026-03-11",
+    status: "Available now",
+    href: "/nc-jurisdictions/raleigh",
+    ctaLabel: "View Raleigh guide",
+  },
+  {
+    title: "Charlotte / Mecklenburg guide",
+    description: "Research preview covering split systems, county coordination, and workflow handoff risk.",
+    category: "Research preview",
+    updatedAt: "2026-03-08",
+    status: "Research preview",
+    href: "/early-access",
+    ctaLabel: "Request this guide",
+  },
+  {
+    title: "AccessDEQ workflow guide",
+    description: "Early notes on how state-level workflows add another layer of operational complexity.",
+    category: "State workflow",
+    updatedAt: "2026-03-06",
+    status: "Research preview",
+    href: "/early-access",
+    ctaLabel: "Request this guide",
+  },
+  {
+    title: "Resubmittal best practices",
+    description: "A field guide to building cleaner response packages and reducing deadline scrambles.",
+    category: "Operations guide",
+    updatedAt: "2026-03-09",
+    status: "Coming next",
+    href: "/walkthrough",
+    ctaLabel: "Talk through the workflow",
+  },
+  {
+    title: "Reviewer comment management guide",
+    description: "How to turn reviewer markups and PDFs into a shared issue workflow instead of another inbox problem.",
+    category: "Operations guide",
+    updatedAt: "2026-03-09",
+    status: "Coming next",
+    href: "/walkthrough",
+    ctaLabel: "See the workflow",
+  },
+];

@@ -120,9 +120,9 @@ export async function PATCH(
 
     const { id } = await params
     const userId = id
-    const { is_super_admin, license_type, is_active } = await request.json()
+    const { is_super_admin, is_active } = await request.json()
 
-    const updateData: Record<string, any> = {}
+    const updateData: Record<string, unknown> = {}
     if (is_super_admin !== undefined) updateData.is_super_admin = is_super_admin
     if (is_active !== undefined) updateData.is_active = is_active
 

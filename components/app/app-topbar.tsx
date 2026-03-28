@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Search, LogOut, Settings, User, Bell, BarChart3, Users, FolderOpen, FileText, File, Loader2 } from 'lucide-react';
 import { NotificationBell } from '@/components/app/notification-bell';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +14,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SearchResult {
   id: string;
@@ -261,9 +261,11 @@ export function AppTopbar() {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               {avatarUrl ? (
-                <img
+                <Image
                   src={avatarUrl}
                   alt={userName || 'User'}
+                  width={32}
+                  height={32}
                   className="h-8 w-8 rounded-full object-cover"
                 />
               ) : (

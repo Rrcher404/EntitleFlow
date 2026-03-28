@@ -88,8 +88,14 @@ export async function POST(request: NextRequest) {
 
     const token = crypto.randomBytes(32).toString('hex');
     const adminClient = getSupabaseAdminClient();
+    if (!adminClient) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
 
-    const { data: invitation, error: inviteError } = await (adminClient as any)
+    const { data: invitation, error: inviteError } = await adminClient
       .from('team_invitations')
       .insert({
         organization_id: callerProfile.organization_id,
@@ -98,7 +104,8 @@ export async function POST(request: NextRequest) {
         token,
         status: 'pending',
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        invited_by: user.id
       })
       .select()
       .single();
@@ -110,18 +117,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { error: activityError } = await (adminClient as any)
+    const { error: activityError } = await adminClient
       .from('activity_log')
       .insert({
         organization_id: callerProfile.organization_id,
-        user_id: user.id,
+        actor_id: user.id,
         action: 'team_invitation_sent',
-        resource_type: 'team_invitation',
-        resource_id: invitation.id,
-        details: {
-          invited_email: email,
-          invited_role: role
-        },
         created_at: new Date().toISOString()
       });
 

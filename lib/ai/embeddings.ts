@@ -33,7 +33,7 @@ export async function generateEmbedding(text: string): Promise<EmbeddingResult |
     const projectId = process.env.GCP_PROJECT_ID || 'gravityclaw-488910';
     const location = process.env.VERTEX_AI_LOCATION || 'us-central1';
 
-    const vertexAI = new VertexAI({ project: projectId, location });
+    const _vertexAI = new VertexAI({ project: projectId, location });
 
     // Use the prediction API for embeddings
     const model = 'textembedding-gecko@003';
@@ -54,21 +54,22 @@ export async function generateEmbedding(text: string): Promise<EmbeddingResult |
       },
     });
 
-    const predictions = (response.data as any)?.predictions;
+    const predictions = (response.data as Record<string, unknown>)?.predictions as Array<Record<string, unknown>> | undefined;
     if (!predictions || predictions.length === 0) {
       console.error('No embedding returned from Vertex AI');
       return null;
     }
 
-    const embedding = predictions[0].embeddings?.values;
-    if (!embedding) {
+    const embedding = (predictions[0] as Record<string, unknown>)?.embeddings as Record<string, unknown> | undefined;
+    const values = embedding?.values as number[] | undefined;
+    if (!values) {
       console.error('Embedding values not found in response');
       return null;
     }
 
     return {
-      embedding,
-      dimensions: embedding.length,
+      embedding: values,
+      dimensions: values.length,
     };
   } catch (error) {
     console.error('Failed to generate embedding:', error);
@@ -104,13 +105,14 @@ export async function generateBatchEmbeddings(
       },
     });
 
-    const predictions = (response.data as any)?.predictions;
+    const predictions = (response.data as Record<string, unknown>)?.predictions as Array<Record<string, unknown>> | undefined;
     if (!predictions) return texts.map(() => null);
 
-    return predictions.map((pred: any) => {
-      const embedding = pred.embeddings?.values;
-      if (!embedding) return null;
-      return { embedding, dimensions: embedding.length };
+    return predictions.map((pred) => {
+      const embedding = (pred as Record<string, unknown>).embeddings as Record<string, unknown> | undefined;
+      const values = embedding?.values as number[] | undefined;
+      if (!values) return null;
+      return { embedding: values, dimensions: values.length };
     });
   } catch (error) {
     console.error('Failed to generate batch embeddings:', error);
@@ -131,7 +133,7 @@ export async function embedKnowledgeEntry(entryId: string): Promise<boolean> {
 
   try {
     // Fetch the entry
-    const { data: entry, error } = await (adminClient as any)
+    const { data: entry, error } = await adminClient
       .from('flowe_knowledge')
       .select('title, content, example_question')
       .eq('id', entryId)
@@ -148,7 +150,7 @@ export async function embedKnowledgeEntry(entryId: string): Promise<boolean> {
     if (!result) return false;
 
     // Store the embedding
-    const { error: updateError } = await (adminClient as any)
+    const { error: updateError } = await adminClient
       .from('flowe_knowledge')
       .update({
         embedding: `[${result.embedding.join(',')}]`,
@@ -177,7 +179,7 @@ export async function embedAllKnowledge(): Promise<{ processed: number; succeede
   if (!adminClient) return { processed: 0, succeeded: 0 };
 
   try {
-    const { data: entries, error } = await (adminClient as any)
+    const { data: entries, error } = await adminClient
       .from('flowe_knowledge')
       .select('id, title, content, example_question')
       .eq('is_active', true)
@@ -189,7 +191,7 @@ export async function embedAllKnowledge(): Promise<{ processed: number; succeede
     }
 
     // Generate embeddings in batch
-    const texts = entries.map((e: any) =>
+    const texts = entries.map((e) =>
       [e.title, e.content, e.example_question].filter(Boolean).join(' ')
     );
 
@@ -202,7 +204,7 @@ export async function embedAllKnowledge(): Promise<{ processed: number; succeede
       const embedding = embeddings[i];
       if (!embedding) continue;
 
-      const { error: updateError } = await (adminClient as any)
+      const { error: updateError } = await adminClient
         .from('flowe_knowledge')
         .update({
           embedding: `[${embedding.embedding.join(',')}]`,

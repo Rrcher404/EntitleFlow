@@ -7,7 +7,7 @@ const DEFAULT_PREFERENCES = {
   email_digest: true
 };
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -40,14 +40,14 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const preferencesMap = preferences.reduce((acc: Record<string, any>, pref: any) => {
-      acc[pref.notification_type] = {
+    const preferencesMap = preferences.reduce((acc: Record<string, unknown>, pref: Record<string, unknown>) => {
+      acc[pref.notification_type as string] = {
         in_app: pref.in_app !== false,
         email: pref.email !== false,
         email_digest: pref.email_digest !== false
       };
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, unknown>);
 
     return NextResponse.json({
       data: {
@@ -88,7 +88,14 @@ export async function PUT(request: NextRequest) {
 
     const adminClient = getSupabaseAdminClient();
 
-    const updateData: any = {
+    if (!adminClient) {
+      return NextResponse.json(
+        { error: 'Service unavailable' },
+        { status: 500 }
+      );
+    }
+
+    const updateData: Record<string, unknown> = {
       profile_id: user.id,
       notification_type,
       updated_at: new Date().toISOString()
@@ -113,18 +120,23 @@ export async function PUT(request: NextRequest) {
 
     let result;
     if (existingPrefs) {
-      result = await (adminClient as any)
+      result = await adminClient!
         .from('notification_preferences')
         .update(updateData)
         .eq('id', existingPrefs.id)
         .select();
     } else {
-      result = await (adminClient as any)
+      const insertData = {
+        profile_id: user.id,
+        notification_type: notification_type as "document_uploaded" | "comment_resolved" | "comment_assigned" | "email_ingested" | "permit_status_changed" | "deadline_approaching" | "team_invitation" | "mention" | "ai_parse_complete",
+        in_app: in_app ?? true,
+        email: email ?? true,
+        email_digest: email_digest ?? true,
+        created_at: new Date().toISOString()
+      };
+      result = await adminClient!
         .from('notification_preferences')
-        .insert({
-          ...updateData,
-          created_at: new Date().toISOString()
-        })
+        .insert(insertData)
         .select();
     }
 

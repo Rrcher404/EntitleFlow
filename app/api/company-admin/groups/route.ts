@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { error, admin, serviceClient } = await verifyCompanyAdmin();
 
@@ -28,11 +28,11 @@ export async function GET(request: NextRequest) {
 
     // Get members for each group
     const groupsWithMembers = await Promise.all(
-      (groups || []).map(async (group: any) => {
+      (groups || []).map(async (group: Record<string, unknown>) => {
         const { data: members } = await serviceClient
           .from('company_group_members')
           .select('profile_id, profiles(id, email, full_name)')
-          .eq('group_id', group.id);
+          .eq('group_id', group.id as string);
 
         return {
           ...group,
@@ -189,7 +189,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update group
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (parent_group_id !== undefined) updateData.parent_group_id = parent_group_id;
@@ -215,7 +215,7 @@ export async function PATCH(request: NextRequest) {
       action: 'group_updated',
       target_type: 'group',
       target_id: id,
-      details: updateData,
+      details: JSON.parse(JSON.stringify(updateData)),
     });
 
     return NextResponse.json(updatedGroup);

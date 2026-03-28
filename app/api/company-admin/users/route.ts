@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       query = query.eq('role', role as Database['public']['Enums']['user_role']);
     }
 
-    const { data: users, error: usersError, count } = await query.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
+    const { data: users, error: usersError, count: _count } = await query.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
 
     if (usersError) {
       return NextResponse.json(
@@ -104,7 +104,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update user
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, unknown> = {};
     if (license_type !== undefined) updateData.license_type = license_type;
     if (role !== undefined) updateData.role = role;
     if (is_active !== undefined) updateData.is_active = is_active;
@@ -124,16 +124,18 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Log to admin_audit_log
+    const auditDetails = { changes: updateData };
     await serviceClient.from('admin_audit_log').insert({
       admin_id: admin.id,
       organization_id: admin.organization_id,
       action: 'user_updated',
       target_type: 'user',
       target_id: user_id,
-      details: { changes: updateData },
+      details: JSON.parse(JSON.stringify(auditDetails)),
     });
 
     // Log to user_activity_tracking
+    const activityMetadata = { changes: updateData };
     await serviceClient.from('user_activity_tracking').insert({
       profile_id: admin.id,
       organization_id: admin.organization_id,
@@ -141,7 +143,7 @@ export async function PATCH(request: NextRequest) {
       resource_type: 'user',
       resource_id: user_id,
       resource_name: updatedUser?.full_name || 'Unknown',
-      metadata: { changes: updateData },
+      metadata: JSON.parse(JSON.stringify(activityMetadata)),
     });
 
     return NextResponse.json(updatedUser);

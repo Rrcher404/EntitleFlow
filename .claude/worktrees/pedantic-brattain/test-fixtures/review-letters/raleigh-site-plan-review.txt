@@ -1,0 +1,141 @@
+CITY OF RALEIGH, NORTH CAROLINA
+DEPARTMENT OF DEVELOPMENT SERVICES
+SITE PLAN REVIEW COMMENTS
+
+===================================================================
+PROJECT INFORMATION
+===================================================================
+Project Name: Tech Park Phase 2 Expansion
+Location: 4750 Falls of Neuse Road, Raleigh, NC 27609
+Applicant: Southpoint Technology Partners
+Site Plan Reference #: 2026-SP-0856
+Review Date: March 12, 2026
+Total Area: 18.5 acres (Phases 1 & 2 combined)
+Proposed Development: 210,000 sq ft Class A office, 850 spaces parking (surface)
+
+===================================================================
+PLANNING AND ZONING REVIEW
+===================================================================
+
+1. SETBACK COMPLIANCE - MAJOR
+   Office building (Phase 2A) encroaches 6 feet into required 75-foot setback
+   from Falls of Neuse Road. Relocate structure or submit setback variance with
+   City Council. Must meet NCGS § 160D-602 variance standards (hardship,
+   consistency with plan, no adverse effect on neighbors).
+
+2. PARKING AREA BUFFER - MAJOR
+   Surface parking on south side lacks screening buffer from adjacent residential
+   (RC zoning). Provide 8-foot berm with opaque fencing and plant material per
+   Raleigh Zoning Code § 27.2.3.1. Buffer must be established before occupancy.
+
+3. TREE PRESERVATION - STANDARD
+   Existing tree stand (42 trees, 12-24 inches DBH) is within Phase 2A footprint.
+   Plan shows removal. Submit Tree Preservation Plan per RZC § 27.2.2.5 detailing
+   protection measures and compensatory planting at 3:1 ratio (126 new trees minimum).
+
+4. BUILDING HEIGHT - STANDARD
+   Phase 2A building height shown as 65 feet. Confirm compliant with 75-foot maximum
+   for this zoning district. Provide architectural elevation and measurement from
+   highest grade point per RZC measurement standards.
+
+5. PEDESTRIAN NETWORK - STANDARD
+   No pedestrian walkway connection shown between Phase 1 (existing) and Phase 2
+   parking areas. Provide continuous 8-foot sidewalk with accessible connections
+   and crosswalk per ADA and NCDOT standards.
+
+===================================================================
+TRANSPORTATION AND TRAFFIC
+===================================================================
+
+6. DRIVEWAY LOCATION - MAJOR
+   Main access driveway is only 210 feet from Falls of Neuse Road traffic signal.
+   Minimum 400 feet required per NCGS § 136-66 and Raleigh Standard Plans. Relocate
+   driveway or request spacing variance with traffic impact justification.
+
+7. SIGHT DISTANCE - STANDARD
+   Service drive sight triangle contains utility box. Remove obstruction or relocate
+   utility. Must maintain 20-foot sight distance on each approach per AASHTO guidelines.
+
+8. PARKING LOT DESIGN - STANDARD
+   Interior drive aisles shown at 30 feet wide for two-way traffic. May reduce to 24
+   feet per RZC § 27.2.4.2 for internal parking only. Saves 2.1 acres impervious area
+   and reduces stormwater treatment costs.
+
+9. LOADING AREA - MINOR
+   Service dock area lacks trash enclosure. Provide screened enclosure per RZC § 27.2.5.4
+   minimum 6 feet height, opaque screening on three sides, 12-foot wide opening minimum.
+
+===================================================================
+STORMWATER AND DRAINAGE
+===================================================================
+
+10. STORMWATER DETENTION - MAJOR
+    Proposed bioretention basin is designed for 25-year storm event per NCAC T15A.02D.
+    Submit calculations showing treatment of 1-inch storm (first flush, water quality)
+    and routing of larger storms to detention. Currently plan shows detention only.
+
+11. DETENTION BASIN OUTLET - STANDARD
+    Outlet structure lacks sediment settling basin. Add forebay (minimum 8 feet x 12
+    feet x 3 feet deep) upstream of outlet to trap sediment and reduce maintenance
+    requirements. Provide cleanout access.
+
+12. OUTFALL PROTECTION - STANDARD
+    Stormwater outfall to unnamed tributary lacks velocity control and erosion
+    protection. Provide 8-foot x 15-foot stabilized riprap apron per NC DWI BMP Manual
+    with geotextile underdrain and vegetated banks downstream.
+
+13. IMPERVIOUS AREA - MINOR
+    Total impervious surface calculated at 76.4%. Provide on revised plan. If over
+    75% of site, may trigger additional water quality requirements per stormwater
+    variance procedures.
+
+===================================================================
+UTILITIES AND INFRASTRUCTURE
+===================================================================
+
+14. WATER SYSTEM IMPACT - MAJOR
+    Water service to Phase 2 will be from 6-inch main on Falls of Neuse. Submit demand
+    calculation (210,000 sq ft x 0.15 gpf per NCPC standard = 31,500 gpd). Coordinate
+    with City of Raleigh Water Department for capacity analysis. May require
+    transmission main upgrade.
+
+15. SANITARY SEWER - STANDARD
+    Phase 2 sanitary sewer connection length is 3,100 feet. Provide lift station design
+    if gravity grade infeasible. Show all lift station components, electrical
+    requirements, and utility coordination with existing Phase 1 sewer service.
+
+16. UTILITY EASEMENTS - STANDARD
+    Power and telecommunications easements shown on plans but not noted as "recorded"
+    or "to be recorded." Clarify status and coordinate with utility providers for
+    approval. Provide utility company letters of support or non-objection.
+
+===================================================================
+ARCHITECTURE AND BUILDING DESIGN
+===================================================================
+
+17. LOADING DOCK SCREENING - STANDARD
+    Service/loading area is visible from Falls of Neuse Road. Provide architectural
+    screening, earth berm, or combination. Minimum 6-foot height opaque screen per
+    architectural guidelines.
+
+18. ENTRY SIGNAGE - MINOR
+    Monument sign shown (8 feet tall). Confirm compliance with Raleigh Zoning Code
+    sign regulations § 27.8. Maximum 50 sq ft per sign, 8 feet height limit, one
+    monument sign per roadway frontage.
+
+===================================================================
+NOTES AND NEXT STEPS
+===================================================================
+
+Applicant shall submit revised site plans within 25 business days addressing all MAJOR
+comments and demonstrating good-faith effort to resolve STANDARD comments. Minor
+comments are recommendations to improve site design quality.
+
+Site Plan Administrator: Laura Mitchell, AICP
+Phone: (919) 996-3030
+Email: lmitchell@raleighnc.gov
+
+Submission address: Department of Development Services, 222 East Hargett Street,
+Raleigh, NC 27601
+
+===================================================================

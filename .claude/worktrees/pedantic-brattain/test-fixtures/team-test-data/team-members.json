@@ -1,0 +1,167 @@
+{
+  "team": [
+    {
+      "id": "TM-001",
+      "name": "David Chen",
+      "email": "dchen@riversidedevelopment.com",
+      "phone": "+1-919-555-0101",
+      "role": "Project Manager",
+      "department": "Planning",
+      "expertise": ["permitting", "zoning", "project coordination", "compliance"],
+      "title": "Senior Project Manager",
+      "company": "Riverside Development Partners LLC",
+      "assignmentPriority": "HIGH",
+      "notificationPreference": "email",
+      "status": "active",
+      "joinedDate": "2026-01-15",
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "TM-002",
+      "name": "Sarah Mitchell",
+      "email": "smitchell@engineeringsolutions-nc.com",
+      "phone": "+1-919-555-0102",
+      "role": "Civil Engineer",
+      "department": "Engineering",
+      "expertise": ["grading", "drainage", "utilities", "site engineering", "erosion control"],
+      "title": "Principal Engineer",
+      "company": "Engineering Solutions, Inc.",
+      "assignmentPriority": "HIGH",
+      "notificationPreference": "email_and_sms",
+      "status": "active",
+      "joinedDate": "2026-01-18",
+      "timezone": "America/Chicago",
+      "licenseNumber": "PE-45782 NC"
+    },
+    {
+      "id": "TM-003",
+      "name": "Marcus Thompson",
+      "email": "mthompson@greenlandscape.com",
+      "phone": "+1-919-555-0103",
+      "role": "Landscape Architect",
+      "department": "Design",
+      "expertise": ["landscape design", "tree preservation", "buffers", "screening", "site aesthetics"],
+      "title": "Landscape Architect, ASLA",
+      "company": "Green Landscape Design",
+      "assignmentPriority": "MEDIUM",
+      "notificationPreference": "email",
+      "status": "active",
+      "joinedDate": "2026-02-01",
+      "timezone": "America/Chicago",
+      "licenseNumber": "ASLA-87365"
+    },
+    {
+      "id": "TM-004",
+      "name": "Jennifer Rodriguez",
+      "email": "jrodriguez@transplan-consulting.com",
+      "phone": "+1-919-555-0104",
+      "role": "Traffic Engineer",
+      "department": "Transportation",
+      "expertise": ["traffic impact studies", "driveway spacing", "sight distance", "parking", "transportation demand"],
+      "title": "Transportation Engineer, PE",
+      "company": "TransPlan Consulting",
+      "assignmentPriority": "HIGH",
+      "notificationPreference": "email",
+      "status": "active",
+      "joinedDate": "2026-01-20",
+      "timezone": "America/Chicago",
+      "licenseNumber": "PE-56403 NC"
+    },
+    {
+      "id": "TM-005",
+      "name": "Robert Williams",
+      "email": "rwilliams@stormwater-tech.com",
+      "phone": "+1-919-555-0105",
+      "role": "Stormwater/Utilities Engineer",
+      "department": "Engineering",
+      "expertise": ["stormwater design", "BMPs", "detention basins", "utilities", "water/sewer coordination"],
+      "title": "Senior Stormwater Engineer, PE",
+      "company": "Stormwater Technology Solutions",
+      "assignmentPriority": "HIGH",
+      "notificationPreference": "email",
+      "status": "active",
+      "joinedDate": "2026-01-22",
+      "timezone": "America/Chicago",
+      "licenseNumber": "PE-48921 NC"
+    },
+    {
+      "id": "TM-006",
+      "name": "Amanda Foster",
+      "email": "afoster@archdesign-partners.com",
+      "phone": "+1-919-555-0106",
+      "role": "Architect",
+      "department": "Architecture",
+      "expertise": ["building design", "setbacks", "facades", "signage", "parking structures", "accessibility"],
+      "title": "AIA Architect",
+      "company": "Architectural Design Partners",
+      "assignmentPriority": "MEDIUM",
+      "notificationPreference": "email",
+      "status": "active",
+      "joinedDate": "2026-01-25",
+      "timezone": "America/Chicago",
+      "licenseNumber": "AIA-72841 NC"
+    }
+  ],
+  "roles": [
+    {
+      "roleId": "ROLE-PM",
+      "name": "Project Manager",
+      "permissions": ["view_all", "assign_comments", "create_responses", "generate_reports", "manage_team", "invite_members"],
+      "canReassignToRole": true,
+      "canApproveResponses": true,
+      "canManageDeadlines": true
+    },
+    {
+      "roleId": "ROLE-CIVIL",
+      "name": "Civil Engineer",
+      "permissions": ["view_assigned", "comment_on_assigned", "create_responses", "attach_documents"],
+      "canReassignToRole": false,
+      "canApproveResponses": false,
+      "canManageDeadlines": false
+    },
+    {
+      "roleId": "ROLE-LANDSCAPE",
+      "name": "Landscape Architect",
+      "permissions": ["view_assigned", "comment_on_assigned", "create_responses", "attach_documents"],
+      "canReassignToRole": false,
+      "canApproveResponses": false,
+      "canManageDeadlines": false
+    },
+    {
+      "roleId": "ROLE-TRAFFIC",
+      "name": "Traffic Engineer",
+      "permissions": ["view_assigned", "comment_on_assigned", "create_responses", "attach_documents"],
+      "canReassignToRole": false,
+      "canApproveResponses": false,
+      "canManageDeadlines": false
+    },
+    {
+      "roleId": "ROLE-STORMWATER",
+      "name": "Stormwater Engineer",
+      "permissions": ["view_assigned", "comment_on_assigned", "create_responses", "attach_documents"],
+      "canReassignToRole": false,
+      "canApproveResponses": false,
+      "canManageDeadlines": false
+    },
+    {
+      "roleId": "ROLE-ARCHITECT",
+      "name": "Architect",
+      "permissions": ["view_assigned", "comment_on_assigned", "create_responses", "attach_documents"],
+      "canReassignToRole": false,
+      "canApproveResponses": false,
+      "canManageDeadlines": false
+    }
+  ],
+  "departmentMapping": {
+    "Transportation": ["ROLE-TRAFFIC"],
+    "Stormwater": ["ROLE-STORMWATER"],
+    "Utilities": ["ROLE-STORMWATER"],
+    "Engineering": ["ROLE-CIVIL", "ROLE-STORMWATER"],
+    "Landscape": ["ROLE-LANDSCAPE"],
+    "Zoning": ["ROLE-PM"],
+    "Fire/Life Safety": ["ROLE-CIVIL"],
+    "Architecture": ["ROLE-ARCHITECT"],
+    "Planning": ["ROLE-PM"],
+    "Environmental": ["ROLE-LANDSCAPE", "ROLE-STORMWATER"]
+  }
+}

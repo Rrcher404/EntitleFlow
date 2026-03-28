@@ -423,6 +423,54 @@ export type Database = {
           },
         ]
       }
+      contract_change_usage: {
+        Row: {
+          change_request_ids: string[] | null
+          changes_used: number
+          contract_id: string
+          created_at: string
+          id: string
+          organization_id: string
+          quarter: string
+          updated_at: string
+        }
+        Insert: {
+          change_request_ids?: string[] | null
+          changes_used?: number
+          contract_id: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          quarter: string
+          updated_at?: string
+        }
+        Update: {
+          change_request_ids?: string[] | null
+          changes_used?: number
+          contract_id?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          quarter?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_change_usage_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "organization_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_change_usage_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deadlines: {
         Row: {
           assigned_to: string | null
@@ -857,6 +905,98 @@ export type Database = {
         }
         Relationships: []
       }
+      license_change_requests: {
+        Row: {
+          applied_at: string | null
+          billing_term: Database["public"]["Enums"]["billing_term"]
+          created_at: string
+          current_license_type: Database["public"]["Enums"]["license_type"]
+          id: string
+          invoice_reference: string | null
+          organization_id: string
+          payment_received: boolean | null
+          request_notes: string | null
+          requested_by: string
+          requested_license_type: Database["public"]["Enums"]["license_type"]
+          requires_prepayment: boolean | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["license_change_status"]
+          target_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          applied_at?: string | null
+          billing_term?: Database["public"]["Enums"]["billing_term"]
+          created_at?: string
+          current_license_type: Database["public"]["Enums"]["license_type"]
+          id?: string
+          invoice_reference?: string | null
+          organization_id: string
+          payment_received?: boolean | null
+          request_notes?: string | null
+          requested_by: string
+          requested_license_type: Database["public"]["Enums"]["license_type"]
+          requires_prepayment?: boolean | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["license_change_status"]
+          target_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          applied_at?: string | null
+          billing_term?: Database["public"]["Enums"]["billing_term"]
+          created_at?: string
+          current_license_type?: Database["public"]["Enums"]["license_type"]
+          id?: string
+          invoice_reference?: string | null
+          organization_id?: string
+          payment_received?: boolean | null
+          request_notes?: string | null
+          requested_by?: string
+          requested_license_type?: Database["public"]["Enums"]["license_type"]
+          requires_prepayment?: boolean | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["license_change_status"]
+          target_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_change_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_change_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_change_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_change_requests_target_user_id_fkey"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       license_definitions: {
         Row: {
           can_access_admin_panel: boolean | null
@@ -1074,6 +1214,59 @@ export type Database = {
             columns: ["recipient_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_contracts: {
+        Row: {
+          billing_term: Database["public"]["Enums"]["billing_term"]
+          contract_end: string | null
+          contract_name: string
+          contract_start: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          organization_id: string
+          quarterly_change_allowance: number | null
+          requires_prepayment_for_changes: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          billing_term?: Database["public"]["Enums"]["billing_term"]
+          contract_end?: string | null
+          contract_name?: string
+          contract_start?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          organization_id: string
+          quarterly_change_allowance?: number | null
+          requires_prepayment_for_changes?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          billing_term?: Database["public"]["Enums"]["billing_term"]
+          contract_end?: string | null
+          contract_name?: string
+          contract_start?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          organization_id?: string
+          quarterly_change_allowance?: number | null
+          requires_prepayment_for_changes?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_contracts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -1904,6 +2097,7 @@ export type Database = {
         | "team_member_role_changed"
         | "team_invitation_sent"
         | "team_invitation_accepted"
+      billing_term: "monthly" | "prepaid" | "contract_allowance"
       comment_category:
         | "parking_access"
         | "stormwater"
@@ -1943,6 +2137,12 @@ export type Database = {
         | "rejection_letter"
         | "other"
       invitation_status: "pending" | "accepted" | "expired" | "revoked"
+      license_change_status:
+        | "pending"
+        | "approved"
+        | "applied"
+        | "rejected"
+        | "cancelled"
       license_type: "admin" | "project_manager" | "contributor" | "guest_viewer"
       notification_type:
         | "comment_assigned"
@@ -2181,6 +2381,7 @@ export const Constants = {
         "team_invitation_sent",
         "team_invitation_accepted",
       ],
+      billing_term: ["monthly", "prepaid", "contract_allowance"],
       comment_category: [
         "parking_access",
         "stormwater",
@@ -2224,6 +2425,13 @@ export const Constants = {
         "other",
       ],
       invitation_status: ["pending", "accepted", "expired", "revoked"],
+      license_change_status: [
+        "pending",
+        "approved",
+        "applied",
+        "rejected",
+        "cancelled",
+      ],
       license_type: ["admin", "project_manager", "contributor", "guest_viewer"],
       notification_type: [
         "comment_assigned",

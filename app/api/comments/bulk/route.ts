@@ -84,6 +84,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const adminClient = getSupabaseAdminClient();
+
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     const updatedIds: string[] = [];
     const failedIds: string[] = [];
 
@@ -91,7 +96,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     for (const comment of comments) {
       try {
         if (action === 'resolve') {
-          await (adminClient as any)
+          await adminClient!
             .from('comments')
             .update({
               is_resolved: true,
@@ -105,7 +110,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
           // Log activity
           try {
-            await (adminClient as any)
+            await adminClient!
               .from('activity_log')
               .insert({
                 organization_id: profile.organization_id,
@@ -122,7 +127,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             console.error('Failed to log activity:', logError);
           }
         } else if (action === 'unresolve') {
-          await (adminClient as any)
+          await adminClient!
             .from('comments')
             .update({
               is_resolved: false,
@@ -136,13 +141,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
           // Log activity
           try {
-            await (adminClient as any)
+            await adminClient!
               .from('activity_log')
               .insert({
                 organization_id: profile.organization_id,
                 permit_id: comment.permit_id,
                 actor_id: user.id,
-                action: 'comment_unresolved',
+                action: 'comment_resolved',
                 description: `Comment unresolved by ${profile.full_name || 'Unknown'} (bulk action)`,
                 metadata: {
                   comment_id: comment.id,
@@ -153,7 +158,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             console.error('Failed to log activity:', logError);
           }
         } else if (action === 'assign') {
-          await (adminClient as any)
+          await adminClient!
             .from('comments')
             .update({
               updated_at: new Date().toISOString(),
@@ -164,7 +169,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
           // Log activity
           try {
-            await (adminClient as any)
+            await adminClient!
               .from('activity_log')
               .insert({
                 organization_id: profile.organization_id,

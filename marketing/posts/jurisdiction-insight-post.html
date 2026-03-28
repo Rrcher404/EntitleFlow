@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EntitleFlow — Jurisdiction Insight Post</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .post {
+    width: 1080px;
+    height: 1080px;
+    background: #f6f5f0;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-bar {
+    background: #0f3c35;
+    padding: 32px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-bar .brand {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: 1.5px;
+  }
+
+  .top-bar .tag {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #25a18e;
+  }
+
+  .content-area {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .post-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: #102034;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 36px;
+    max-width: 700px;
+  }
+
+  .comparison-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .compare-card {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #e2e5e5;
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .compare-city {
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f3c35;
+    margin-bottom: 12px;
+  }
+
+  .compare-detail {
+    font-size: 15px;
+    color: #5a6676;
+    line-height: 1.6;
+  }
+
+  .compare-detail strong {
+    color: #102034;
+    font-weight: 600;
+  }
+
+  .bottom-bar {
+    padding: 24px 60px;
+    background: #edf3f2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .bottom-bar .insight {
+    font-size: 15px;
+    color: #0f3c35;
+    font-weight: 600;
+  }
+
+  .bottom-bar .url {
+    font-size: 14px;
+    color: #5a6676;
+  }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="top-bar">
+    <span class="brand">ENTITLEFLOW</span>
+    <span class="tag">NC Jurisdiction Intelligence</span>
+  </div>
+  <div class="content-area">
+    <h1 class="post-title">Greensboro vs. Raleigh:<br>where the permit workflows diverge</h1>
+    <div class="comparison-row">
+      <div class="compare-card">
+        <div class="compare-city">Greensboro</div>
+        <div class="compare-detail">
+          <strong>Review timeline:</strong> 15-20 business days typical<br><br>
+          <strong>Department routing:</strong> Concurrent multi-department review<br><br>
+          <strong>Comment format:</strong> Consolidated PDF with department sections<br><br>
+          <strong>Resubmittal expectation:</strong> Full response matrix with each package
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-city">Raleigh</div>
+        <div class="compare-detail">
+          <strong>Review timeline:</strong> 10-15 business days typical<br><br>
+          <strong>Department routing:</strong> Sequential review with holdpoints<br><br>
+          <strong>Comment format:</strong> Per-reviewer PDFs via portal<br><br>
+          <strong>Resubmittal expectation:</strong> Itemized response per reviewer comment
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <span class="insight">Generic software treats these the same. We don't.</span>
+    <span class="url">entitleflow.com</span>
+  </div>
+</div>
+</body>
+</html>

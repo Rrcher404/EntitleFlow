@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EntitleFlow — Launch Announcement</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .post-container {
+    width: 1200px;
+    height: 628px;
+    background: #f6f5f0;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .left-panel {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .eyebrow {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #25a18e;
+    margin-bottom: 20px;
+  }
+
+  .headline {
+    font-family: 'Manrope', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: #102034;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .headline .accent {
+    color: #0f3c35;
+  }
+
+  .subline {
+    font-size: 18px;
+    color: #5a6676;
+    line-height: 1.6;
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: #0f3c35;
+    color: #f8fafc;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+  }
+
+  .cta-secondary {
+    font-size: 14px;
+    color: #5a6676;
+    font-weight: 500;
+  }
+
+  .right-panel {
+    width: 440px;
+    background: #0f3c35;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px 40px;
+    position: relative;
+  }
+
+  .right-panel::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: rgba(37, 161, 142, 0.15);
+    border-radius: 50%;
+  }
+
+  .stat-block {
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .stat-number {
+    font-family: 'Manrope', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: #25a18e;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: rgba(248, 250, 252, 0.7);
+    line-height: 1.4;
+  }
+
+  .brand-mark {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(248, 250, 252, 0.4);
+    letter-spacing: 1px;
+  }
+
+  .dot-pattern {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    background-image: radial-gradient(circle, #e2e5e5 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+<div class="post-container">
+  <div class="dot-pattern"></div>
+  <div class="left-panel">
+    <div class="eyebrow">Now Live — NC First</div>
+    <h1 class="headline">Cut permit chaos<br>in <span class="accent">North Carolina.</span></h1>
+    <p class="subline">The operating system for teams managing reviewer comments, resubmittals, and approval workflows across NC jurisdictions.</p>
+    <div class="cta-row">
+      <span class="cta-btn">Book a Walkthrough</span>
+      <span class="cta-secondary">entitleflow.com</span>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="stat-block">
+      <div class="stat-number">10+</div>
+      <div class="stat-label">Hours saved per permit review cycle</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-number">4</div>
+      <div class="stat-label">NC jurisdictions researched</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-number">6</div>
+      <div class="stat-label">FlowE AI agents working for you</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-number">$1.5K</div>
+      <div class="stat-label">Starting monthly — founder-led onboarding</div>
+    </div>
+    <div class="brand-mark">ENTITLEFLOW</div>
+  </div>
+</div>
+</body>
+</html>

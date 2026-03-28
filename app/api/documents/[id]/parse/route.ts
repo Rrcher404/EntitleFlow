@@ -45,10 +45,10 @@ export async function POST(
       return NextResponse.json({ error: 'Database client unavailable' }, { status: 500 });
     }
 
-    // Fetch document record with any type to avoid schema inference issues
-    const { data: document, error: docError } = await (
-      adminClient.from('documents').select() as any
-    )
+    // Fetch document record
+    const { data: document, error: docError } = await adminClient
+      .from('documents')
+      .select()
       .eq('id', documentId)
       .eq('organization_id', profile.organization_id)
       .single();
@@ -81,7 +81,7 @@ export async function POST(
     // Parse document with Document AI
     let parsedDocument;
     try {
-      parsedDocument = await parsePermitDocument(fileBuffer, document.file_type);
+      parsedDocument = await parsePermitDocument(fileBuffer, document.file_type || 'application/pdf');
     } catch (error) {
       console.error('Document AI parsing error:', error);
       return NextResponse.json(
@@ -94,7 +94,7 @@ export async function POST(
     }
 
     // Create comment records from extracted comments
-    const createdComments: Array<any> = [];
+    const createdComments: Array<Record<string, unknown>> = [];
     for (const extractedComment of parsedDocument.comments) {
       // Ensure permit_id is set
       if (!document.permit_id) {
@@ -102,27 +102,27 @@ export async function POST(
         continue;
       }
 
+      const metadataObject = {
+        source: 'document_ai_parse',
+        documentId,
+        pageNumber: extractedComment.pageNumber,
+        confidence: extractedComment.confidence,
+        extractedAt: new Date().toISOString(),
+      };
+
       const commentRecord = {
         organization_id: profile.organization_id,
         permit_id: document.permit_id,
         author_name: 'Document AI Parser',
         author_role: 'system',
         body: extractedComment.content,
-        category: extractedComment.category,
-        source: 'imported',
+        category: extractedComment.category as "parking_access" | "stormwater" | "building_code" | "zoning" | "fire_safety" | "landscaping" | "traffic" | "environmental" | "general" | "other" | null,
+        source: 'imported' as const,
         is_resolved: false,
-        metadata: {
-          source: 'document_ai_parse',
-          documentId,
-          pageNumber: extractedComment.pageNumber,
-          confidence: extractedComment.confidence,
-          extractedAt: new Date().toISOString(),
-        },
+        metadata: JSON.parse(JSON.stringify(metadataObject)),
       };
 
-      const { data: createdComment, error: createError } = await (
-        adminClient as any
-      )
+      const { data: createdComment, error: createError } = await adminClient!
         .from('comments')
         .insert(commentRecord)
         .select()
@@ -141,7 +141,7 @@ export async function POST(
 
     // Log activity
     try {
-      await (adminClient as any).from('activity_log').insert({
+      await adminClient!.from('activity_log').insert({
         organization_id: profile.organization_id,
         action: 'document_parsed',
         description: `Document "${document.file_name}" parsed with Document AI. Extracted ${createdComments.length} comments.`,

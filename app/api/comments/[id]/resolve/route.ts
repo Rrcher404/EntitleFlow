@@ -49,13 +49,17 @@ export async function POST(
 
     const adminClient = getSupabaseAdminClient();
 
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     // Prepare metadata with resolution note if provided
     const metadata = {
-      ...(comment.metadata as any),
+      ...(comment.metadata as Record<string, unknown> || {}),
       resolution_note: resolution_note || null,
     };
 
-    const { data: updatedComment, error: updateError } = await (adminClient as any)
+    const { data: updatedComment, error: updateError } = await adminClient!
       .from('comments')
       .update({
         is_resolved: true,
@@ -78,7 +82,7 @@ export async function POST(
     if (comment.assigned_to === user.id && comment.assigned_to !== null) {
       try {
         // Find who assigned this comment
-        const { data: assignment } = await (adminClient as any)
+        const { data: assignment } = await adminClient!
           .from('comment_assignments')
           .select('assigned_by')
           .eq('comment_id', id)
@@ -96,7 +100,7 @@ export async function POST(
             ? `${permit.permit_number} — ${permit.title}`
             : 'a permit';
 
-          await (adminClient as any)
+          await adminClient!
             .from('notifications')
             .insert({
               recipient_id: assignment.assigned_by,
@@ -121,7 +125,7 @@ export async function POST(
 
     // Log activity
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,

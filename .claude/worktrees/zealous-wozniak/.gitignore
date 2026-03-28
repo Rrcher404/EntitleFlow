@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Next.js build
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+.env*.local
+.env.production.local
+.env.development.local
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Supabase local artifacts
+supabase/.temp/
+supabase/.branches/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Internal planning docs (do not publish)
+*.docx
+*.pptx
+permitpilot_nc_product_page.jsx
+entitleflow_nc_product_page.jsx
+.vercel

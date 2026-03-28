@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (!profile || !profile.organization_id) {
-      const { error: updateProfileError } = await (adminClient as any)
+      const { error: updateProfileError } = await adminClient!
         .from('profiles')
         .update({
           organization_id: invitation.organization_id,
@@ -109,13 +109,12 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (!existingMember) {
-      const { error: memberError } = await (adminClient as any)
+      const { error: memberError } = await adminClient!
         .from('team_members')
         .insert({
-          user_id: user.id,
+          profile_id: user.id,
           organization_id: invitation.organization_id,
           role: invitation.role,
-          joined_at: new Date().toISOString(),
           created_at: new Date().toISOString()
         });
 
@@ -124,7 +123,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { error: updateInvitationError } = await (adminClient as any)
+    const { error: updateInvitationError } = await adminClient!
       .from('team_invitations')
       .update({
         status: 'accepted',
@@ -139,7 +138,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { error: activityError } = await (adminClient as any)
+    const { error: activityError } = await adminClient!
       .from('activity_log')
       .insert({
         organization_id: invitation.organization_id,

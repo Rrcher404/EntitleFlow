@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export interface CTABannerProps {
   eyebrow?: string;
@@ -16,7 +15,7 @@ export interface CTABannerProps {
 }
 
 export function CTABanner({
-  eyebrow,
+  eyebrow: _eyebrow,
   title,
   description,
   primaryHref = '/walkthrough',

@@ -108,7 +108,7 @@ export async function PATCH(
     const orgId = id
     const { storage_limit, max_users, subscription_tier, is_active } = await request.json()
 
-    const updateData: Record<string, any> = {}
+    const updateData: Record<string, unknown> = {}
     if (storage_limit !== undefined) updateData.storage_limit_bytes = storage_limit
     if (max_users !== undefined) updateData.max_users = max_users
     if (subscription_tier !== undefined) updateData.subscription_tier = subscription_tier

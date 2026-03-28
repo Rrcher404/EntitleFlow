@@ -34,17 +34,14 @@ import {
   ArrowLeft, 
   Plus, 
   X, 
-  Edit2, 
+  Edit2,
   FileText,
-  CheckCircle,
   Clock,
-  AlertCircle,
   Calendar,
   MapPin,
   Briefcase,
   DollarSign,
   Home,
-  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -84,7 +81,7 @@ export default function ProjectDetailPage() {
   const projectId = params.id as string;
 
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [_organization, setOrganization] = useState<Organization | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [permits, setPermits] = useState<PermitWithCommentCount[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -257,7 +254,7 @@ export default function ProjectDetailPage() {
     if (!editFormData) return;
 
     const { name, value, type } = e.target;
-    let parsedValue: any = value;
+    let parsedValue: string | number | null = value;
 
     if (type === 'number') {
       parsedValue = value ? parseFloat(value) : null;
@@ -349,7 +346,7 @@ export default function ProjectDetailPage() {
           zoning_district: editFormData.zoning_district,
           estimated_value: editFormData.estimated_value,
           target_completion_date: editFormData.target_completion_date,
-        } as any)
+        } as Database['public']['Tables']['projects']['Update'])
         .eq('id', projectId)
         .eq('organization_id', profile.organization_id ?? '');
 

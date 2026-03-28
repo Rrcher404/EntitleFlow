@@ -2,14 +2,13 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { StatusBadge } from './status-badge';
 
 export function DashboardPreview() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
-  const [isHovered, setIsHovered] = useState(false);
+  const [_isHovered, setIsHovered] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 40 },

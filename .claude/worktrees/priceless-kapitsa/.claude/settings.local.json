@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Skill(commit-commands:commit-push-pr)",
+      "Skill(commit-commands:commit-push-pr:*)"
+    ]
+  }
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EntitleFlow — Pain Point Carousel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 40px;
+    background: #e2e5e5;
+    justify-content: center;
+  }
+
+  .slide {
+    width: 1080px;
+    height: 1080px;
+    background: #f6f5f0;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 80px;
+  }
+
+  .slide-cover {
+    background: #0f3c35;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slide-cover .cover-eyebrow {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #25a18e;
+    margin-bottom: 32px;
+  }
+
+  .slide-cover .cover-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    max-width: 700px;
+    margin-bottom: 28px;
+  }
+
+  .slide-cover .cover-sub {
+    font-size: 20px;
+    color: rgba(248, 250, 252, 0.6);
+    max-width: 540px;
+    line-height: 1.6;
+  }
+
+  .slide-cover .slide-number {
+    position: absolute;
+    bottom: 60px;
+    right: 80px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(248, 250, 252, 0.3);
+    letter-spacing: 2px;
+  }
+
+  /* Content slides */
+  .slide-content {
+    justify-content: space-between;
+  }
+
+  .slide-top {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .slide-number-light {
+    font-family: 'Manrope', sans-serif;
+    font-size: 80px;
+    font-weight: 800;
+    color: #dff2ef;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .slide-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: #102034;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .slide-body {
+    font-size: 22px;
+    color: #5a6676;
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  .slide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    border-top: 2px solid #e2e5e5;
+  }
+
+  .brand-tag {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f3c35;
+    letter-spacing: 1.5px;
+  }
+
+  .swipe-cue {
+    font-size: 13px;
+    color: #5a6676;
+    font-weight: 500;
+  }
+
+  /* CTA slide */
+  .slide-cta {
+    background: #0f3c35;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cta-headline {
+    font-family: 'Manrope', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    max-width: 640px;
+  }
+
+  .cta-sub {
+    font-size: 18px;
+    color: rgba(248, 250, 252, 0.6);
+    margin-bottom: 40px;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    padding: 18px 40px;
+    background: #25a18e;
+    color: #f8fafc;
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .accent-circle {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(37, 161, 142, 0.08);
+    border-radius: 50%;
+    top: -120px;
+    right: -120px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Cover -->
+<div class="slide slide-cover">
+  <div class="cover-eyebrow">The Problem Nobody Budgets For</div>
+  <h1 class="cover-title">5 reasons your permit tracker is already broken</h1>
+  <p class="cover-sub">And what NC firms can do about the post-submission chaos</p>
+  <div class="slide-number">01 / 06</div>
+</div>
+
+<!-- Slide 2 -->
+<div class="slide slide-content">
+  <div class="accent-circle"></div>
+  <div class="slide-top">
+    <div class="slide-number-light">01</div>
+    <h2 class="slide-title">Reviewer comments arrive as unstructured PDFs</h2>
+    <p class="slide-body">25 comments from 6 different departments. Scattered across redlines, markups, and email attachments. No single system tracks them. Your PM copies them into a spreadsheet that is already a version behind.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="brand-tag">ENTITLEFLOW</span>
+    <span class="swipe-cue">Swipe for more &rarr;</span>
+  </div>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide slide-content">
+  <div class="accent-circle"></div>
+  <div class="slide-top">
+    <div class="slide-number-light">02</div>
+    <h2 class="slide-title">Ownership is a guessing game</h2>
+    <p class="slide-body">Which discipline lead owns which comment? Who is responsible for the fire reviewer's concern about egress width? Who already answered the planning note about setback compliance? Nobody knows without checking three email threads.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="brand-tag">ENTITLEFLOW</span>
+    <span class="swipe-cue">Swipe for more &rarr;</span>
+  </div>
+</div>
+
+<!-- Slide 4 -->
+<div class="slide slide-content">
+  <div class="accent-circle"></div>
+  <div class="slide-top">
+    <div class="slide-number-light">03</div>
+    <h2 class="slide-title">Resubmittals happen reactively</h2>
+    <p class="slide-body">The deadline is Thursday. What changed since the last cycle? What is still open? What needs to travel in the package? The answers live in someone's head, their inbox, and a spreadsheet tab nobody has updated since Tuesday.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="brand-tag">ENTITLEFLOW</span>
+    <span class="swipe-cue">Swipe for more &rarr;</span>
+  </div>
+</div>
+
+<!-- Slide 5 -->
+<div class="slide slide-content">
+  <div class="accent-circle"></div>
+  <div class="slide-top">
+    <div class="slide-number-light">04</div>
+    <h2 class="slide-title">Status is reconstructed, not visible</h2>
+    <p class="slide-body">When a principal or client asks "where are we?" — the PM has to pause real work, open four tabs, piece together the current state, and write a status email. Every single time. There is no live view.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="brand-tag">ENTITLEFLOW</span>
+    <span class="swipe-cue">Swipe for more &rarr;</span>
+  </div>
+</div>
+
+<!-- Slide 6: CTA -->
+<div class="slide slide-cta">
+  <h2 class="cta-headline">There is a better operating layer for NC permit teams.</h2>
+  <p class="cta-sub">EntitleFlow turns reviewer comments into structured workflows with owners, statuses, and cleaner resubmittals.</p>
+  <span class="cta-button">Book a Walkthrough</span>
+</div>
+
+</body>
+</html>

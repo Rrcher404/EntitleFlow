@@ -1,9 +1,12 @@
 import { getSupabaseAdminClient } from '@/lib/supabase/server';
+import type { Database } from '@/lib/database.types';
+
+type NotificationType = Database['public']['Enums']['notification_type'];
 
 export interface CreateNotificationParams {
   recipientId: string;
   organizationId: string;
-  type: string;
+  type: NotificationType;
   title: string;
   body?: string;
   actionUrl?: string;
@@ -25,17 +28,17 @@ export async function createNotification(
   }
 
   try {
-    await (adminClient as any).from('notifications').insert({
+    await adminClient.from('notifications').insert({
       recipient_id: params.recipientId,
       organization_id: params.organizationId,
-      type: params.type,
+      type: params.type as NotificationType,
       title: params.title,
       body: params.body || null,
       action_url: params.actionUrl || null,
-      metadata: params.metadata || {},
+      metadata: params.metadata as Record<string, unknown> | null || null,
       is_read: false,
       created_at: new Date().toISOString(),
-    });
+    } as Database['public']['Tables']['notifications']['Insert']);
   } catch (error) {
     console.error('Failed to create notification:', error);
     // Don't throw - notification failures should not break the main operation
@@ -59,16 +62,16 @@ export async function createBulkNotifications(
     const notifications = params.recipientIds.map((recipientId) => ({
       recipient_id: recipientId,
       organization_id: params.organizationId,
-      type: params.type,
+      type: params.type as NotificationType,
       title: params.title,
       body: params.body || null,
       action_url: params.actionUrl || null,
-      metadata: params.metadata || {},
+      metadata: params.metadata as Record<string, unknown> | null || null,
       is_read: false,
       created_at: new Date().toISOString(),
-    }));
+    } as Database['public']['Tables']['notifications']['Insert']));
 
-    await (adminClient as any).from('notifications').insert(notifications);
+    await adminClient.from('notifications').insert(notifications);
   } catch (error) {
     console.error('Failed to create bulk notifications:', error);
   }
@@ -89,7 +92,7 @@ export async function createOrganizationNotification(
 
   try {
     // Fetch all team members in the organization
-    let query = (adminClient as any)
+    let query = adminClient
       .from('profiles')
       .select('id')
       .eq('organization_id', params.organizationId);
@@ -111,16 +114,16 @@ export async function createOrganizationNotification(
     const notifications = members.map((member: { id: string }) => ({
       recipient_id: member.id,
       organization_id: params.organizationId,
-      type: params.type,
+      type: params.type as NotificationType,
       title: params.title,
       body: params.body || null,
       action_url: params.actionUrl || null,
-      metadata: params.metadata || {},
+      metadata: params.metadata as Record<string, unknown> | null || null,
       is_read: false,
       created_at: new Date().toISOString(),
-    }));
+    } as Database['public']['Tables']['notifications']['Insert']));
 
-    await (adminClient as any).from('notifications').insert(notifications);
+    await adminClient.from('notifications').insert(notifications);
   } catch (error) {
     console.error('Failed to create organization notification:', error);
   }
@@ -140,7 +143,7 @@ export async function markNotificationsAsRead(
   }
 
   try {
-    await (adminClient as any)
+    await adminClient
       .from('notifications')
       .update({
         is_read: true,
@@ -166,7 +169,7 @@ export async function markAllNotificationsAsRead(
   }
 
   try {
-    await (adminClient as any)
+    await adminClient
       .from('notifications')
       .update({
         is_read: true,
@@ -191,7 +194,7 @@ export async function deleteNotification(notificationId: string): Promise<void> 
   }
 
   try {
-    await (adminClient as any)
+    await adminClient
       .from('notifications')
       .delete()
       .eq('id', notificationId);
@@ -214,7 +217,7 @@ export async function deleteNotifications(
   }
 
   try {
-    await (adminClient as any)
+    await adminClient
       .from('notifications')
       .delete()
       .in('id', notificationIds);
@@ -240,7 +243,7 @@ export async function deleteOldNotifications(
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
 
-    await (adminClient as any)
+    await adminClient
       .from('notifications')
       .delete()
       .lt('created_at', cutoffDate.toISOString())
@@ -266,7 +269,7 @@ export async function notifyCommentCreated(
     if (!adminClient) return;
 
     // Get all organization members except the author
-    const { data: members, error } = await (adminClient as any)
+    const { data: members, error } = await adminClient
       .from('profiles')
       .select('id')
       .eq('organization_id', organizationId)
@@ -277,16 +280,16 @@ export async function notifyCommentCreated(
     const notifications = members.map((member: { id: string }) => ({
       recipient_id: member.id,
       organization_id: organizationId,
-      type: 'comment_created',
+      type: 'comment_assigned' as NotificationType,
       title: 'New comment',
       body: `${authorName} commented on a permit`,
       action_url: `/app/permits/${permitId}#comment-${commentId}`,
       metadata: { comment_id: commentId, permit_id: permitId, author_id: authorId },
       is_read: false,
       created_at: new Date().toISOString(),
-    }));
+    } as Database['public']['Tables']['notifications']['Insert']));
 
-    await (adminClient as any).from('notifications').insert(notifications);
+    await adminClient.from('notifications').insert(notifications);
   } catch (error) {
     console.error('Failed to notify comment created:', error);
   }
@@ -308,7 +311,7 @@ export async function notifyPermitStatusChanged(
     if (!adminClient) return;
 
     // Get all organization members except the trigger user
-    let query = (adminClient as any)
+    let query = adminClient
       .from('profiles')
       .select('id')
       .eq('organization_id', organizationId);
@@ -324,16 +327,16 @@ export async function notifyPermitStatusChanged(
     const notifications = members.map((member: { id: string }) => ({
       recipient_id: member.id,
       organization_id: organizationId,
-      type: 'permit_status_changed',
+      type: 'permit_status_changed' as NotificationType,
       title: 'Permit status updated',
       body: `Permit ${permitNumber} status changed to ${newStatus}`,
       action_url: `/app/permits/${permitId}`,
       metadata: { permit_id: permitId, new_status: newStatus },
       is_read: false,
       created_at: new Date().toISOString(),
-    }));
+    } as Database['public']['Tables']['notifications']['Insert']));
 
-    await (adminClient as any).from('notifications').insert(notifications);
+    await adminClient.from('notifications').insert(notifications);
   } catch (error) {
     console.error('Failed to notify permit status changed:', error);
   }
@@ -352,7 +355,7 @@ export async function notifyTeamMemberAdded(
     await createNotification({
       recipientId: newMemberId,
       organizationId,
-      type: 'team_member_added',
+      type: 'team_invitation',
       title: 'Welcome to the team',
       body: `You've been invited to the organization by ${invitedByName}`,
       actionUrl: '/app/dashboard',

@@ -130,7 +130,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Build update object with only provided fields
-    const updateData: any = { updated_at: new Date().toISOString() };
+    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
     if (active !== undefined) updateData.active = active;
     if (title !== undefined) updateData.title = title;
     if (bodyText !== undefined) updateData.body = bodyText;
@@ -156,7 +156,7 @@ export async function PATCH(request: NextRequest) {
       action: 'update_announcement',
       target_type: 'announcements',
       target_id: id,
-      details: updateData,
+      details: JSON.parse(JSON.stringify(updateData)),
     });
 
     return NextResponse.json({

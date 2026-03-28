@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle, MapPin, Calendar, CheckCircle2, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -212,7 +212,7 @@ export default function PermitsPage() {
   const allStatuses = Array.from(new Set(permits.map((p) => p.status)));
 
   const filteredPermits = useMemo(() => {
-    let result = permits.filter((p) => {
+    const result = permits.filter((p) => {
       const matchesSearch =
         p.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -226,7 +226,7 @@ export default function PermitsPage() {
     return result;
   }, [permits, searchQuery, statusTab]);
 
-  const handleReply = (permitId: string, commentId: string) => {
+  const handleReply = (permitId: string, _commentId: string) => {
     if (!replyText.trim()) return;
 
     setPermits(
@@ -275,11 +275,11 @@ export default function PermitsPage() {
     );
   };
 
-  const changePermitStatus = (permitId: string, newStatus: string) => {
+  const changePermitStatus = (permitId: string, newStatus: 'Under Review' | 'Approved' | 'Resubmittal Required' | 'Pending') => {
     setPermits(
       permits.map((permit) => {
         if (permit.id === permitId) {
-          return { ...permit, status: newStatus as any };
+          return { ...permit, status: newStatus };
         }
         return permit;
       })
@@ -354,7 +354,7 @@ export default function PermitsPage() {
                         </Badge>
                         <select
                           value={permit.status}
-                          onChange={(e) => changePermitStatus(permit.id, e.target.value)}
+                          onChange={(e) => changePermitStatus(permit.id, e.target.value as 'Under Review' | 'Approved' | 'Resubmittal Required' | 'Pending')}
                           className="text-xs px-2 py-1 rounded border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                         >
                           {['Under Review', 'Approved', 'Resubmittal Required', 'Pending'].map((s) => (

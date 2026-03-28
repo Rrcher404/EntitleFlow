@@ -41,16 +41,16 @@ export async function GET() {
     }
 
     // Transform data to include counts
-    const enrichedOrgs = (orgs || []).map((org: any) => ({
+    const enrichedOrgs = (orgs || []).map((org: Record<string, unknown>) => ({
       id: org.id,
       name: org.name,
       slug: org.slug,
       company_type: org.company_type,
       created_at: org.created_at,
       updated_at: org.updated_at,
-      member_count: org.profiles?.length || 0,
-      project_count: org.projects?.length || 0,
-      permit_count: org.permits?.length || 0,
+      member_count: (org.profiles as unknown[])?.length || 0,
+      project_count: (org.projects as unknown[])?.length || 0,
+      permit_count: (org.permits as unknown[])?.length || 0,
     }));
 
     return NextResponse.json(enrichedOrgs);

@@ -16,7 +16,6 @@ import {
   FolderKanban,
   Search,
   Calendar,
-  ArrowUpDown,
   Sparkles,
   ChevronRight,
   CircleDot,
@@ -343,7 +342,7 @@ function TaskCard({
 
 export default function TasksPage() {
   const router = useRouter();
-  const supabase = createClient();
+  const _supabase = createClient();
 
   // State
   const [tasks, setTasks] = useState<TaskComment[]>([]);
@@ -378,9 +377,9 @@ export default function TasksPage() {
       setTasks(json.data || []);
       setDeadlines(json.deadlines || []);
       setSummary(json.summary || { open: 0, resolved: 0, total: 0 });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Tasks fetch error:', err);
-      setError(err.message || 'Failed to load tasks');
+      setError((err instanceof Error ? err.message : String(err)) || 'Failed to load tasks');
     } finally {
       setLoading(false);
     }
@@ -711,13 +710,13 @@ export default function TasksPage() {
                   </span>
 
                   {/* Permit view: show deadline badge in header */}
-                  {viewMode === 'permit' && (group as any).permitMeta?.deadline && (
+                  {viewMode === 'permit' && !!(group as Record<string, unknown>).permitMeta && !!((group as Record<string, unknown>).permitMeta as Record<string, string | Record<string, string>>)?.deadline && (
                     <span className={cn(
                       'ml-auto inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium',
-                      STATUS_COLORS[getDeadlineUrgency((group as any).permitMeta.deadline.due_date)]
+                      STATUS_COLORS[getDeadlineUrgency((((group as Record<string, unknown>).permitMeta as Record<string, Record<string, string>>).deadline).due_date)]
                     )}>
                       <Clock className="h-3 w-3" />
-                      {formatRelativeDate((group as any).permitMeta.deadline.due_date)}
+                      {formatRelativeDate((((group as Record<string, unknown>).permitMeta as Record<string, Record<string, string>>).deadline).due_date)}
                     </span>
                   )}
                 </div>

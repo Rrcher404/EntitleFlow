@@ -9,10 +9,6 @@ import { Badge } from '@/components/ui/badge'
 import {
   ArrowLeft,
   Users,
-  Database,
-  Calendar,
-  Package,
-  AlertCircle,
 } from 'lucide-react'
 
 interface OrganizationDetail {

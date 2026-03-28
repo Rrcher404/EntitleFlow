@@ -106,12 +106,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function formatAsCSV(logs: any[]): string {
+function formatAsCSV(logs: Record<string, unknown>[]): string {
   const headers = ['ID', 'Admin', 'Email', 'Action', 'Target Type', 'Target ID', 'Details', 'Created At'];
-  const rows = logs.map((log: any) => [
+  const rows = logs.map((log: Record<string, unknown>) => [
     log.id,
-    log.profiles?.full_name || 'Unknown',
-    log.profiles?.email || 'Unknown',
+    (log.profiles as { full_name: string })?.full_name || 'Unknown',
+    (log.profiles as { email: string })?.email || 'Unknown',
     log.action,
     log.target_type || '',
     log.target_id || '',
@@ -127,20 +127,20 @@ function formatAsCSV(logs: any[]): string {
   return csvContent;
 }
 
-function formatAsMarkdown(logs: any[]): string {
+function formatAsMarkdown(logs: Record<string, unknown>[]): string {
   let md = '# Audit Log Export\n\n';
   md += `Generated: ${new Date().toISOString()}\n\n`;
   md += '## Entries\n\n';
 
-  logs.forEach((log: any, index: number) => {
+  logs.forEach((log: Record<string, unknown>, index: number) => {
     md += `### ${index + 1}. ${log.action}\n`;
-    md += `- **Admin**: ${log.profiles?.full_name || 'Unknown'} (${log.profiles?.email || 'Unknown'})\n`;
+    md += `- **Admin**: ${(log.profiles as { full_name: string })?.full_name || 'Unknown'} (${(log.profiles as { email: string })?.email || 'Unknown'})\n`;
     md += `- **Target Type**: ${log.target_type || 'N/A'}\n`;
     md += `- **Target ID**: ${log.target_id || 'N/A'}\n`;
     md += `- **Created At**: ${log.created_at}\n`;
     if (log.details && Object.keys(log.details).length > 0) {
       md += `- **Details**:\n`;
-      Object.entries(log.details).forEach(([key, value]: [string, any]) => {
+      Object.entries(log.details).forEach(([key, value]: [string, unknown]) => {
         md += `  - ${key}: ${JSON.stringify(value)}\n`;
       });
     }

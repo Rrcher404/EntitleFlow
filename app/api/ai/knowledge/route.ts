@@ -22,8 +22,12 @@ export async function GET(request: NextRequest) {
 
     const adminClient = getSupabaseAdminClient();
 
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     // Build the query — combine keyword matching with full-text search
-    let dbQuery = (adminClient as any)
+    let dbQuery = adminClient!
       .from('flowe_knowledge')
       .select('id, category, title, content, keywords, tags, example_question, example_response, confidence, source')
       .eq('is_active', true)
@@ -50,7 +54,7 @@ export async function GET(request: NextRequest) {
 
       const keywords = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
 
-      let fallbackQuery = (adminClient as any)
+      let fallbackQuery = adminClient!
         .from('flowe_knowledge')
         .select('id, category, title, content, keywords, tags, example_question, example_response, confidence, source')
         .eq('is_active', true)
@@ -143,7 +147,11 @@ export async function POST(request: NextRequest) {
 
     const adminClient = getSupabaseAdminClient();
 
-    const { data: entry, error } = await (adminClient as any)
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
+    const { data: entry, error } = await adminClient!
       .from('flowe_knowledge')
       .insert({
         category,

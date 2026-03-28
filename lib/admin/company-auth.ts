@@ -1,5 +1,4 @@
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
-import type { Database } from '../database.types';
 
 export interface CompanyAdminVerifyResult {
   error: string | null;

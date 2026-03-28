@@ -88,7 +88,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Filter by category
     if (category) {
-      query = query.eq('category', category as any);
+      query = query.eq('category', category as "parking_access" | "stormwater" | "building_code" | "zoning" | "fire_safety" | "landscaping" | "traffic" | "environmental" | "general" | "other");
     }
 
     // Sorting
@@ -129,9 +129,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Also fetch deadlines for the permits that have assigned comments
     // This powers the "By Deadline" view grouping
-    const permitIds = [...new Set((tasks || []).map((t: any) => t.permit_id))];
+    const permitIds = [...new Set((tasks || []).map((t: Record<string, unknown>) => t.permit_id).filter((id): id is string => typeof id === 'string'))];
 
-    let deadlines: any[] = [];
+    let deadlines: Record<string, unknown>[] = [];
     if (permitIds.length > 0) {
       const { data: deadlineData } = await supabase
         .from('deadlines')

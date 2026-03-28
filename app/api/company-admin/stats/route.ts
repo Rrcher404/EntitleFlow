@@ -17,7 +17,7 @@ export async function GET() {
       { count: totalUsers },
       { count: activeUsers },
       { count: totalProjects },
-      { count: totalPermits },
+      { count: _totalPermits },
       { data: organization },
       { data: licenseBreakdown },
       { data: recentActivity },

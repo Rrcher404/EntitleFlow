@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EntitleFlow — Product Feature Cards</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 40px;
+    background: #e2e5e5;
+    justify-content: center;
+  }
+
+  .card {
+    width: 1080px;
+    height: 1080px;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 80px;
+  }
+
+  /* Reviewer Comments card */
+  .card-comments {
+    background: linear-gradient(160deg, #0f3c35 0%, #0a2b26 100%);
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(37, 161, 142, 0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .card-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: #25a18e;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .card-eyebrow {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #25a18e;
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 28px;
+    max-width: 700px;
+  }
+
+  .card-desc {
+    font-size: 20px;
+    color: rgba(248, 250, 252, 0.65);
+    line-height: 1.7;
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 17px;
+    color: rgba(248, 250, 252, 0.8);
+    line-height: 1.5;
+  }
+
+  .feature-list .check {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: rgba(37, 161, 142, 0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .feature-list .check::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #25a18e;
+    border-radius: 2px;
+  }
+
+  .card-brand {
+    position: absolute;
+    bottom: 60px;
+    right: 80px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(248, 250, 252, 0.25);
+    letter-spacing: 2px;
+  }
+
+  .glow {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: rgba(37, 161, 142, 0.06);
+    border-radius: 50%;
+    bottom: -200px;
+    right: -150px;
+  }
+
+  /* Light variant */
+  .card-light {
+    background: #f6f5f0;
+  }
+
+  .card-light .card-title {
+    color: #102034;
+  }
+
+  .card-light .card-desc {
+    color: #5a6676;
+  }
+
+  .card-light .feature-list li {
+    color: #102034;
+  }
+
+  .card-light .card-brand {
+    color: rgba(15, 60, 53, 0.2);
+  }
+</style>
+</head>
+<body>
+
+<!-- Card 1: Reviewer Comment Management -->
+<div class="card card-comments">
+  <div class="glow"></div>
+  <div class="card-icon">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="card-eyebrow">Core Module</div>
+  <h2 class="card-title">Reviewer comment management</h2>
+  <p class="card-desc">Turn unstructured reviewer comments into organized issues with owners, statuses, and response language — all in one workspace.</p>
+  <ul class="feature-list">
+    <li><span class="check"></span>Organize comments by discipline, cycle, and status</li>
+    <li><span class="check"></span>Assign owners and track response prep</li>
+    <li><span class="check"></span>AI-assisted response language suggestions</li>
+    <li><span class="check"></span>Full cycle history per comment</li>
+  </ul>
+  <div class="card-brand">ENTITLEFLOW</div>
+</div>
+
+<!-- Card 2: Resubmittal Coordination -->
+<div class="card card-comments">
+  <div class="glow"></div>
+  <div class="card-icon">
+    <svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+  </div>
+  <div class="card-eyebrow">Core Module</div>
+  <h2 class="card-title">Resubmittal coordination</h2>
+  <p class="card-desc">See what changed, what is still open, and what must travel in the next package. Make resubmittals proactive instead of reactive.</p>
+  <ul class="feature-list">
+    <li><span class="check"></span>Track resolved vs. open comments per cycle</li>
+    <li><span class="check"></span>Map supporting memos and attachments by issue</li>
+    <li><span class="check"></span>Cleaner handoff between reviewers, PMs, and leads</li>
+    <li><span class="check"></span>Package readiness status at a glance</li>
+  </ul>
+  <div class="card-brand">ENTITLEFLOW</div>
+</div>
+
+<!-- Card 3: NC Jurisdiction Intelligence (Light variant) -->
+<div class="card card-light">
+  <div class="card-icon" style="background: rgba(15, 60, 53, 0.08);">
+    <svg viewBox="0 0 24 24" style="stroke: #0f3c35;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+  </div>
+  <div class="card-eyebrow" style="color: #0f3c35;">Core Module</div>
+  <h2 class="card-title">NC jurisdiction intelligence</h2>
+  <p class="card-desc">Search jurisdiction workflows, departments, portals, and known friction for Greensboro, Raleigh, Charlotte, and beyond.</p>
+  <ul class="feature-list">
+    <li><span class="check"></span>Track official systems by jurisdiction</li>
+    <li><span class="check"></span>Keep local process notes tied to projects</li>
+    <li><span class="check"></span>Build repeatable NC knowledge across your team</li>
+    <li><span class="check"></span>Research-backed, not guesswork</li>
+  </ul>
+  <div class="card-brand">ENTITLEFLOW</div>
+</div>
+
+</body>
+</html>

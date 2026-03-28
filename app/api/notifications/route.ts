@@ -83,7 +83,7 @@ export async function PATCH(request: NextRequest) {
     let updatedCount = 0;
 
     if (mark_all_read) {
-      const { count, error } = await (adminClient as any)
+      const { count, error } = await adminClient!
         .from('notifications')
         .update({
           is_read: true,
@@ -101,7 +101,7 @@ export async function PATCH(request: NextRequest) {
 
       updatedCount = count || 0;
     } else if (notification_ids && Array.isArray(notification_ids) && notification_ids.length > 0) {
-      const { count, error } = await (adminClient as any)
+      const { count, error } = await adminClient!
         .from('notifications')
         .update({
           is_read: true,

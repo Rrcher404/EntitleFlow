@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Mail, Building2, Bell, Check } from 'lucide-react';
+import { User, Building2, Bell } from 'lucide-react';
 
 const NOTIFICATION_PREFERENCES = [
   { type: 'Comments', inApp: true, email: true, digest: false },

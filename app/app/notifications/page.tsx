@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -229,7 +229,7 @@ const PREFERENCE_SETTINGS: Array<{
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [_profile, setProfile] = useState<Profile | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(
     null
@@ -244,7 +244,7 @@ export default function NotificationsPage() {
 
   const supabase = createClient();
 
-  const loadNotifications = async (pageNum: number = 0) => {
+  const loadNotifications = useCallback(async (pageNum: number = 0) => {
     if (!supabase) {
       setLoading(false);
       return;
@@ -281,7 +281,7 @@ export default function NotificationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const loadPreferences = async () => {
     try {
@@ -298,7 +298,7 @@ export default function NotificationsPage() {
   useEffect(() => {
     loadNotifications();
     loadPreferences();
-  }, [supabase]);
+  }, [loadNotifications]);
 
   const handleNotificationClick = async (notification: Notification) => {
     if (notification.action_url) {

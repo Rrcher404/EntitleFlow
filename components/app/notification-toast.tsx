@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { X, Bell, CheckCircle, FileText, Clock, Upload, Zap, Users, Mail } from 'lucide-react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
@@ -49,6 +50,7 @@ export function NotificationToastContainer() {
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const supabase = createClient();
+  const router = useRouter();
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -108,7 +110,7 @@ export function NotificationToastContainer() {
 
   const handleToastClick = (toast: ToastNotification) => {
     if (toast.action_url) {
-      window.location.href = toast.action_url;
+      router.push(toast.action_url);
     }
     removeToast(toast.id);
   };

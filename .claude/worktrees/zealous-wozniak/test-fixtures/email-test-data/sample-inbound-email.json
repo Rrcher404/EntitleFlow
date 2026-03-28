@@ -1,0 +1,72 @@
+{
+  "webhook_event": "email.received",
+  "timestamp": "2026-03-16T14:30:45Z",
+  "email": {
+    "messageId": "CADc-_xZq+5kL9m2p3q@mail.gmail.com",
+    "from": {
+      "email": "john.developer@riversidedev.com",
+      "name": "John Thompson"
+    },
+    "to": [
+      {
+        "email": "permitting@riversidedev.com",
+        "name": "Riverside Development"
+      }
+    ],
+    "cc": [
+      {
+        "email": "smitchell@engineeringsolutions-nc.com",
+        "name": "Sarah Mitchell"
+      }
+    ],
+    "subject": "RE: Comment T-1 - Driveway Spacing Question",
+    "inReplyTo": "CADc-_xYp+3kL8m2p1q@mail.gmail.com",
+    "references": "CADc-_xYp+3kL8m2p1q@mail.gmail.com",
+    "body": {
+      "text": "Hi Riverside Team,\n\nI've reviewed the Greensboro TRC comments and have a question about Comment T-1 (driveway spacing).\n\nThe current plan shows the primary retail entrance driveway at approximately 285 feet from the Riverside Drive intersection. The TRC requires 350 feet minimum per NCGS § 136-66.\n\nOur site constraints make it difficult to locate at 350 feet without significantly reducing retail building footprint. A few questions:\n\n1. Is there any flexibility in the 350-foot requirement? (e.g., can we request a variance?)\n2. If we improve the sight distance at the driveway, could that address the underlying concern?\n3. What is the TRC's primary safety concern - is it intersection queuing, or sight distance at the driveway itself?\n\nWe have preliminary revised plans showing the driveway at 330 feet with enhanced sight triangles and improved left-turn lane configuration. Would the TRC be open to reviewing these as an alternative to full 350-foot spacing?\n\nI've attached our preliminary traffic analysis and revised driveway plan for your reference.\n\nThanks,\nJohn Thompson\nRiverside Development\nPhone: (919) 555-0201",
+      "html": "<div dir=\"ltr\">Hi Riverside Team,<br><br>I've reviewed the Greensboro TRC comments and have a question about Comment T-1 (driveway spacing).<br><br>The current plan shows the primary retail entrance driveway at approximately 285 feet from the Riverside Drive intersection. The TRC requires 350 feet minimum per NCGS § 136-66.<br><br>Our site constraints make it difficult to locate at 350 feet without significantly reducing retail building footprint. A few questions:<br><br>1. Is there any flexibility in the 350-foot requirement? (e.g., can we request a variance?)<br>2. If we improve the sight distance at the driveway, could that address the underlying concern?<br>3. What is the TRC's primary safety concern - is it intersection queuing, or sight distance at the driveway itself?<br><br>We have preliminary revised plans showing the driveway at 330 feet with enhanced sight triangles and improved left-turn lane configuration. Would the TRC be open to reviewing these as an alternative to full 350-foot spacing?<br><br>I've attached our preliminary traffic analysis and revised driveway plan for your reference.<br><br>Thanks,<br>John Thompson<br>Riverside Development<br>Phone: (919) 555-0201<br></div>"
+    },
+    "attachments": [
+      {
+        "filename": "revised-driveway-plan.pdf",
+        "mimeType": "application/pdf",
+        "size": 2048000,
+        "contentId": "f123abc456@mail.gmail.com",
+        "downloadUrl": "https://example.com/attachments/email/123/revised-driveway-plan.pdf"
+      },
+      {
+        "filename": "traffic-analysis-revised.pdf",
+        "mimeType": "application/pdf",
+        "size": 3145728,
+        "contentId": "f123abc457@mail.gmail.com",
+        "downloadUrl": "https://example.com/attachments/email/123/traffic-analysis-revised.pdf"
+      }
+    ],
+    "threadId": "1234567890abcdef",
+    "labels": ["INBOX", "UNREAD"],
+    "headers": {
+      "Date": "Mon, 16 Mar 2026 09:30:45 -0500",
+      "In-Reply-To": "<CADc-_xYp+3kL8m2p1q@mail.gmail.com>",
+      "User-Agent": "Gmail/Gmail API v1"
+    }
+  },
+  "project_context": {
+    "project_id": "PRJ-2026-0001",
+    "project_name": "Riverside Mixed-Use Development",
+    "permit_number": "SP-2026-0142",
+    "location": "1234 Riverside Drive, Greensboro, NC 27401",
+    "relevant_comments": ["T-1", "T-2", "T-3"],
+    "auto_detection_confidence": 0.94,
+    "suggested_association": "Comment T-1 (driveway spacing)"
+  },
+  "processing": {
+    "processed_at": "2026-03-16T14:30:50Z",
+    "status": "success",
+    "actions_taken": [
+      "email_linked_to_comment_T-1",
+      "attachments_indexed",
+      "notification_sent_to_assignee"
+    ],
+    "notification_sent_to": "jrodriguez@transplan-consulting.com"
+  }
+}

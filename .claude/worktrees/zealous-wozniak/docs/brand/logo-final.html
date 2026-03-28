@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EntitleFlow — Logo Final (Concept 2)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #f6f5f0;
+      --primary: #0f3c35;
+      --teal:    #25a18e;
+      --accent:  #dff2ef;
+      --navy:    #102034;
+      --muted:   #5a6676;
+      --border:  #e2e5e5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      padding: 48px 40px;
+    }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 8px;
+    }
+    .page-title { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+    .page-sub { font-size: 14px; color: var(--muted); margin-bottom: 48px; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+    }
+    .section { margin-bottom: 40px; }
+
+    /* usage grid */
+    .usage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .swatch {
+      border-radius: 14px;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border: 1px solid var(--border);
+    }
+    .swatch.light-bg { background: var(--bg); }
+    .swatch.white-bg { background: #fff; }
+    .swatch.dark-bg  { background: var(--primary); border-color: transparent; }
+    .swatch.teal-bg  { background: var(--teal); border-color: transparent; }
+    .swatch-name {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .swatch.dark-bg .swatch-name,
+    .swatch.teal-bg .swatch-name { color: rgba(255,255,255,0.55); }
+
+    /* size strip */
+    .size-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding: 24px 28px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .size-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .size-item span {
+      font-size: 10px; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* favicon strip */
+    .favicon-row {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      padding: 24px 28px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .favicon-item {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .favicon-item span {
+      font-size: 10px; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* nav mockup */
+    .nav-mockup {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-links {
+      display: flex; gap: 28px;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none;
+    }
+    .nav-cta {
+      background: var(--primary); color: #fff;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px; font-weight: 700;
+      border: none; border-radius: 8px;
+      padding: 8px 18px; cursor: pointer;
+    }
+
+    /* dark nav mockup */
+    .nav-mockup-dark {
+      background: var(--primary);
+      border-radius: 14px;
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    .nav-mockup-dark .nav-links a { color: rgba(255,255,255,0.55); }
+    .nav-cta-dark {
+      background: var(--teal); color: #fff;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px; font-weight: 700;
+      border: none; border-radius: 8px;
+      padding: 8px 18px; cursor: pointer;
+    }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="eyebrow">EntitleFlow · Brand</div>
+  <p class="page-title">Logo — Locked (Concept 2: Flow Lines)</p>
+  <p class="page-sub">Production-ready assets · All variants · Usage contexts</p>
+
+  <!-- ── Background variants ── -->
+  <div class="section">
+    <p class="section-label">Background variants — Full Lockup</p>
+    <div class="usage-grid">
+
+      <div class="swatch light-bg">
+        <svg width="160" height="40" viewBox="0 0 200 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- icon -->
+          <rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/>
+          <line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="38" cy="33" r="3" fill="#25a18e"/>
+          <!-- wordmark -->
+          <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#102034">Entitle</text>
+          <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#25a18e">Flow</text>
+        </svg>
+        <span class="swatch-name">Cream bg (default)</span>
+      </div>
+
+      <div class="swatch white-bg">
+        <svg width="160" height="40" viewBox="0 0 200 48" fill="none">
+          <rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/>
+          <line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="38" cy="33" r="3" fill="#25a18e"/>
+          <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#102034">Entitle</text>
+          <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#25a18e">Flow</text>
+        </svg>
+        <span class="swatch-name">White bg</span>
+      </div>
+
+      <div class="swatch dark-bg">
+        <svg width="160" height="40" viewBox="0 0 200 48" fill="none">
+          <rect x="1" y="1" width="46" height="46" rx="12" fill="#25a18e"/>
+          <line x1="10" y1="15" x2="38" y2="15" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="10" y1="33" x2="24" y2="33" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="38" cy="33" r="3" fill="#fff"/>
+          <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#f8fafc">Entitle</text>
+          <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#6ee7d8">Flow</text>
+        </svg>
+        <span class="swatch-name">Forest dark bg</span>
+      </div>
+
+      <div class="swatch teal-bg">
+        <svg width="160" height="40" viewBox="0 0 200 48" fill="none">
+          <rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/>
+          <line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="38" cy="33" r="3" fill="#25a18e"/>
+          <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#fff">Entitle</text>
+          <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#dff2ef">Flow</text>
+        </svg>
+        <span class="swatch-name">Teal accent bg</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Size scale ── -->
+  <div class="section">
+    <p class="section-label">Size scale — Icon mark only</p>
+    <div class="size-row">
+      <div class="size-item">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>16px favicon</span>
+      </div>
+      <div class="size-item">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>24px nav</span>
+      </div>
+      <div class="size-item">
+        <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>32px tab</span>
+      </div>
+      <div class="size-item">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>48px card</span>
+      </div>
+      <div class="size-item">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>64px hero</span>
+      </div>
+      <div class="size-item">
+        <svg width="96" height="96" viewBox="0 0 48 48" fill="none"><rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/><line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/><path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/><line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/><circle cx="38" cy="33" r="3" fill="#25a18e"/></svg>
+        <span>96px splash</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── In context: nav bar ── -->
+  <div class="section">
+    <p class="section-label">In context — Navigation bar</p>
+
+    <div class="nav-mockup">
+      <svg width="130" height="32" viewBox="0 0 200 48" fill="none">
+        <rect x="1" y="1" width="46" height="46" rx="12" fill="#0f3c35"/>
+        <line x1="10" y1="15" x2="38" y2="15" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#25a18e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <line x1="10" y1="33" x2="24" y2="33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+        <circle cx="38" cy="33" r="3" fill="#25a18e"/>
+        <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#102034">Entitle</text>
+        <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#25a18e">Flow</text>
+      </svg>
+      <nav class="nav-links">
+        <a href="#">Product</a>
+        <a href="#">How it works</a>
+        <a href="#">Pricing</a>
+        <a href="#">Resources</a>
+      </nav>
+      <button class="nav-cta">Get early access</button>
+    </div>
+
+    <div class="nav-mockup-dark">
+      <svg width="130" height="32" viewBox="0 0 200 48" fill="none">
+        <rect x="1" y="1" width="46" height="46" rx="12" fill="#25a18e"/>
+        <line x1="10" y1="15" x2="38" y2="15" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M10 24 L26 24 Q32 24 34 28 L38 33" stroke="#dff2ef" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <line x1="10" y1="33" x2="24" y2="33" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+        <circle cx="38" cy="33" r="3" fill="#fff"/>
+        <text x="58" y="27" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#f8fafc">Entitle</text>
+        <text x="58" y="43" font-family="Manrope,sans-serif" font-weight="800" font-size="13" letter-spacing="-0.3" fill="#6ee7d8">Flow</text>
+      </svg>
+      <nav class="nav-links">
+        <a href="#">Product</a>
+        <a href="#">How it works</a>
+        <a href="#">Pricing</a>
+        <a href="#">Resources</a>
+      </nav>
+      <button class="nav-cta-dark">Get early access</button>
+    </div>
+  </div>
+
+  <!-- ── Usage code snippet ── -->
+  <div class="section">
+    <p class="section-label">Drop-in usage (React component)</p>
+    <div style="background:#102034;border-radius:12px;padding:20px 24px;">
+      <pre style="font-family:'Courier New',monospace;font-size:13px;line-height:1.7;color:#dff2ef;overflow-x:auto;"><span style="color:#6ee7d8">import</span> { Logo } <span style="color:#6ee7d8">from</span> <span style="color:#a5f3e8">"@/components/site/Logo"</span>;
+
+<span style="color:#5a8a82">// Full lockup, light bg (nav default)</span>
+&lt;<span style="color:#25a18e">Logo</span> /&gt;
+
+<span style="color:#5a8a82">// Full lockup, dark bg (dark nav / footer)</span>
+&lt;<span style="color:#25a18e">Logo</span> <span style="color:#dff2ef">theme</span>=<span style="color:#a5f3e8">"dark"</span> /&gt;
+
+<span style="color:#5a8a82">// Icon only, 24px (sidebar / mobile nav)</span>
+&lt;<span style="color:#25a18e">Logo</span> <span style="color:#dff2ef">variant</span>=<span style="color:#a5f3e8">"icon"</span> <span style="color:#dff2ef">height</span>={24} /&gt;
+
+<span style="color:#5a8a82">// Scaled up for a hero/splash screen</span>
+&lt;<span style="color:#25a18e">Logo</span> <span style="color:#dff2ef">height</span>={56} /&gt;</pre>
+    </div>
+  </div>
+
+</body>
+</html>

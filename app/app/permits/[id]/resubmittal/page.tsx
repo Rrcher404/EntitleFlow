@@ -9,10 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   ArrowLeft,
   FileText,
-  Download,
   RefreshCw,
   CheckCircle,
-  AlertCircle,
   Clock,
   Zap,
   ChevronDown,
@@ -34,7 +32,7 @@ interface Comment {
   ai_suggested_response?: string;
   ai_confidence?: number;
   assigned_to?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface Permit {
@@ -137,7 +135,7 @@ export default function ResubmittalPage() {
           .eq('id', permitId)
           .single();
 
-        if (permitData) setPermit(permitData as any);
+        if (permitData) setPermit(permitData as Permit);
 
         // Fetch comments for this permit
         const { data: commentData } = await supabase
@@ -146,7 +144,7 @@ export default function ResubmittalPage() {
           .eq('permit_id', permitId)
           .order('created_at', { ascending: true });
 
-        if (commentData) setComments(commentData as any);
+        if (commentData) setComments(commentData as Comment[]);
       } catch (err) {
         console.error('Failed to load data:', err);
       } finally {
@@ -357,7 +355,7 @@ export default function ResubmittalPage() {
               <Zap className="w-10 h-10 text-gray-300 mx-auto mb-3" />
               <h3 className="text-lg font-medium text-gray-700">No plan generated yet</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Click "Generate AI Plan" to create a prioritized resubmittal strategy
+                Click &quot;Generate AI Plan&quot; to create a prioritized resubmittal strategy
               </p>
             </Card>
           ) : (
@@ -533,8 +531,8 @@ export default function ResubmittalPage() {
               <FileText className="w-10 h-10 text-gray-300 mx-auto mb-3" />
               <h3 className="text-lg font-medium text-gray-700">No response letter yet</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Edit individual responses in the "Comment Responses" tab, then click
-                "Generate Response Letter" to compile them into a formal letter.
+                Edit individual responses in the &quot;Comment Responses&quot; tab, then click
+                &quot;Generate Response Letter&quot; to compile them into a formal letter.
               </p>
             </Card>
           ) : (

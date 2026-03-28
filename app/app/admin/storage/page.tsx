@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 interface StorageStats {
   used: number;
@@ -69,7 +69,7 @@ export default function StoragePage() {
         <h1 className="text-3xl font-bold text-[#1B3B2D]" style={{ fontFamily: 'var(--font-display, sans-serif)' }}>
           Storage & File Management
         </h1>
-        <p className="text-gray-600 mt-2">Monitor your organization's storage usage</p>
+        <p className="text-gray-600 mt-2">Monitor your organization&apos;s storage usage</p>
       </div>
 
       {/* Storage Overview Cards */}

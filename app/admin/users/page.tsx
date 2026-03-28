@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -145,7 +144,7 @@ export default function UsersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, idx) => (
+                  {users.map((user, _idx) => (
                     <div key={user.id}>
                       <tr
                         onClick={() => toggleExpanded(user.id)}

@@ -174,16 +174,12 @@ const SlideIllustration = ({ slideIndex, darkColor, lightColor }: { slideIndex: 
 };
 
 export function OnboardingDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem('entitleflow-onboarding-seen');
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
-
-  useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('entitleflow-onboarding-seen');
-    if (!hasSeenOnboarding) {
-      setIsOpen(true);
-    }
-  }, []);
 
   const onNext = () => {
     if (emblaApi) {
@@ -191,7 +187,7 @@ export function OnboardingDialog() {
     }
   };
 
-  const onPrev = () => {
+  const _onPrev = () => {
     if (emblaApi) {
       emblaApi.scrollPrev();
     }

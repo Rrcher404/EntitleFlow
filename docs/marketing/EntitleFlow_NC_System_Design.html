@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EntitleFlow NC — System Design & Implementation Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #FDFBF7;
+    color: #1a1a1a;
+    line-height: 1.65;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+
+  h1 { font-size: 28px; font-weight: 700; color: #1B3B2D; margin-bottom: 4px; }
+  h2 { font-size: 22px; font-weight: 700; color: #1B3B2D; margin-top: 48px; margin-bottom: 16px; border-bottom: 2px solid #D4C9A8; padding-bottom: 8px; }
+  h3 { font-size: 17px; font-weight: 600; color: #2D5741; margin-top: 28px; margin-bottom: 10px; }
+  h4 { font-size: 15px; font-weight: 600; color: #3A3A3A; margin-top: 20px; margin-bottom: 8px; }
+
+  .subtitle { color: #6B6B6B; font-size: 14px; margin-bottom: 32px; }
+  .date { color: #999; font-size: 13px; }
+
+  p { margin-bottom: 12px; font-size: 15px; }
+
+  .section-card {
+    background: white;
+    border: 1px solid #E8E0D0;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .status-item {
+    background: white;
+    border: 1px solid #E8E0D0;
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .status-item.done { border-left: 4px solid #2D5741; }
+  .status-item.partial { border-left: 4px solid #D4A937; }
+  .status-item.planned { border-left: 4px solid #B0B0B0; }
+
+  .status-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .status-label.done { color: #2D5741; }
+  .status-label.partial { color: #D4A937; }
+  .status-label.planned { color: #999; }
+
+  .status-title { font-size: 14px; font-weight: 600; }
+  .status-desc { font-size: 13px; color: #666; margin-top: 4px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  th {
+    background: #F5F0E8;
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #1B3B2D;
+    border-bottom: 2px solid #D4C9A8;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #E8E0D0;
+  }
+
+  code {
+    background: #F0EDE6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  pre {
+    background: #1B3B2D;
+    color: #E8E0D0;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  pre code { background: none; color: inherit; padding: 0; }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  .phase-badge {
+    background: #1B3B2D;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .phase-title { font-size: 18px; font-weight: 600; color: #1B3B2D; }
+  .phase-time { font-size: 13px; color: #999; margin-left: auto; }
+
+  .task-list { list-style: none; padding: 0; margin: 12px 0; }
+  .task-list li {
+    padding: 8px 0;
+    padding-left: 28px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px solid #F0EDE6;
+  }
+  .task-list li:before {
+    content: '○';
+    position: absolute;
+    left: 4px;
+    color: #B0B0B0;
+    font-size: 16px;
+  }
+  .task-list li.done:before { content: '●'; color: #2D5741; }
+
+  .arch-box {
+    border: 2px solid #D4C9A8;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    background: white;
+  }
+
+  .arch-box.primary { border-color: #1B3B2D; background: #F0F7F3; }
+  .arch-box.secondary { border-color: #D4A937; background: #FFFBF0; }
+
+  .flow-arrow { text-align: center; font-size: 20px; color: #B0B0B0; padding: 4px 0; }
+
+  .metric-row { display: flex; gap: 16px; margin: 16px 0; }
+  .metric-box {
+    flex: 1;
+    background: white;
+    border: 1px solid #E8E0D0;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .metric-value { font-size: 28px; font-weight: 700; color: #1B3B2D; }
+  .metric-label { font-size: 12px; color: #999; margin-top: 4px; }
+
+  .divider { border: none; border-top: 1px solid #E8E0D0; margin: 32px 0; }
+
+  .callout {
+    background: #F0F7F3;
+    border-left: 4px solid #2D5741;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .warning-callout {
+    background: #FFFBF0;
+    border-left: 4px solid #D4A937;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .toc { margin: 24px 0; }
+  .toc a { color: #2D5741; text-decoration: none; font-size: 14px; display: block; padding: 4px 0; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>EntitleFlow NC</h1>
+<p class="subtitle">System Design Document — Platform Inventory, Admin Backend, and Implementation Roadmap</p>
+<p class="date">March 19, 2026 &middot; Prepared for Jyece Maybury, SolHous / EntitleFlow NC</p>
+
+<hr class="divider">
+
+<nav class="toc">
+  <strong>Contents</strong>
+  <a href="#part1">Part 1 — What We've Built (Current State)</a>
+  <a href="#part2">Part 2 — Database Status & Migration Gap</a>
+  <a href="#part3">Part 3 — System Design: Admin Dashboard + Settings Backend</a>
+  <a href="#part4">Part 4 — Architecture & Data Flow</a>
+  <a href="#part5">Part 5 — Implementation Plan (Phased Roadmap)</a>
+  <a href="#part6">Part 6 — Trade-offs & Decisions</a>
+</nav>
+
+<hr class="divider">
+
+<!-- ======================== PART 1 ======================== -->
+<h2 id="part1">Part 1 — What We've Built (Current State)</h2>
+
+<div class="metric-row">
+  <div class="metric-box"><div class="metric-value">32+</div><div class="metric-label">Pages & Routes</div></div>
+  <div class="metric-box"><div class="metric-value">50+</div><div class="metric-label">Components</div></div>
+  <div class="metric-box"><div class="metric-value">11</div><div class="metric-label">DB Tables (Schema)</div></div>
+  <div class="metric-box"><div class="metric-value">13</div><div class="metric-label">Custom Enums</div></div>
+</div>
+
+<h3>Layer 1 — Marketing Site (Public)</h3>
+<div class="section-card">
+  <div class="status-grid">
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Homepage & Hero</div>
+      <div class="status-desc">V3 Anthropic aesthetic, animated hero, reviewer comment cards, stats row</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Product Page</div>
+      <div class="status-desc">Feature grid, workflow explanation, dashboard preview</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Pricing & Compare</div>
+      <div class="status-desc">Pricing tiers, comparison table vs manual/generic PM tools</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Lead Capture Forms</div>
+      <div class="status-desc">Walkthrough request + early-access signup → Supabase marketing_leads</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">NC Jurisdictions</div>
+      <div class="status-desc">Dynamic [slug] pages for 10 NC cities (Greensboro, Raleigh, etc.)</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Supporting Pages</div>
+      <div class="status-desc">How It Works, Resources, Privacy Policy, Walkthrough, Early Access</div>
+    </div>
+  </div>
+</div>
+
+<h3>Layer 2 — Demo Portal (Public, Mock Data)</h3>
+<div class="section-card">
+  <p>Fully interactive demo at <code>/demo/*</code> with client-side React state. No database required — all data is mock.</p>
+  <div class="status-grid">
+    <div class="status-item done">
+      <div class="status-label done">Functional</div>
+      <div class="status-title">Demo Dashboard</div>
+      <div class="status-desc">Time range filters (7d/30d/90d), animated stat cards, clickable activity feed</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Functional</div>
+      <div class="status-title">Demo Projects</div>
+      <div class="status-desc">Search, status tabs, sortable columns, inline detail panel, "New Project" modal, pagination (10 mock projects)</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Functional</div>
+      <div class="status-title">Demo Permits</div>
+      <div class="status-desc">Search, status tabs, add/resolve comments, status change dropdown (6 mock permits)</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Functional</div>
+      <div class="status-title">Demo Analytics</div>
+      <div class="status-desc">Time range + jurisdiction filters, expandable rows, animated bars, processing speed trend</div>
+    </div>
+  </div>
+</div>
+
+<h3>Layer 3 — Auth System (Supabase)</h3>
+<div class="section-card">
+  <div class="status-grid">
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Login Page</div>
+      <div class="status-desc">Email/password + magic link (OTP), redirect support via ?redirect= param</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Signup Page</div>
+      <div class="status-desc">Full name, email, password, company name, company type → supabase.auth.signUp()</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">Middleware</div>
+      <div class="status-desc">Edge-compatible, protects /app/*, redirects auth pages if logged in, graceful null fallback</div>
+    </div>
+    <div class="status-item done">
+      <div class="status-label done">Complete</div>
+      <div class="status-title">OAuth Callback</div>
+      <div class="status-desc">/auth/callback route for email confirmation & OAuth code exchange</div>
+    </div>
+  </div>
+</div>
+
+<h3>Layer 4 — Authenticated App Shell (Scaffold)</h3>
+<div class="section-card">
+  <div class="status-grid">
+    <div class="status-item partial">
+      <div class="status-label partial">Scaffold Only</div>
+      <div class="status-title">App Dashboard, Projects, Permits, Analytics, Documents, Settings</div>
+      <div class="status-desc">Routes exist at /app/*, sidebar + topbar layout built, placeholder content — not yet wired to Supabase data</div>
+    </div>
+  </div>
+</div>
+
+<h3>Layer 5 — Database Schema (SQL Written, Not Yet Applied)</h3>
+<div class="section-card">
+  <div class="status-grid">
+    <div class="status-item done">
+      <div class="status-label done">Written</div>
+      <div class="status-title">Migration SQL</div>
+      <div class="status-desc">00001_initial_schema.sql — 11 tables, 13 enums, 3 functions, 35+ RLS policies, 35+ indexes, seed data</div>
+    </div>
+    <div class="status-item partial">
+      <div class="status-label partial">Partial</div>
+      <div class="status-title">Applied to Supabase</div>
+      <div class="status-desc">Only marketing_leads exists. The other 10 tables still need to be created via SQL Editor.</div>
+    </div>
+  </div>
+  <div class="warning-callout">
+    <strong>Critical next step:</strong> Run <code>00001_initial_schema.sql</code> in Supabase SQL Editor to create all 10 remaining tables. This unlocks the entire backend.
+  </div>
+</div>
+
+<h3>Layer 6 — Infrastructure & Deployment</h3>
+<div class="section-card">
+  <table>
+    <tr><th>Component</th><th>Status</th><th>Details</th></tr>
+    <tr><td>Vercel (EntitleFlow-NC team)</td><td>✅ Live</td><td>entitle-flow.vercel.app, Next.js preset, Pro Trial</td></tr>
+    <tr><td>Supabase (EntitleFlow project)</td><td>✅ Connected</td><td>Vercel integration active, env vars set, Free tier</td></tr>
+    <tr><td>GitHub (Rrcher404/EntitleFlow)</td><td>✅ Connected</td><td>Auto-deploy on push to main</td></tr>
+    <tr><td>Vercel Analytics</td><td>✅ Active</td><td>@vercel/analytics integrated in root layout</td></tr>
+    <tr><td>Supabase Storage</td><td>⬜ Not Set Up</td><td>project-documents bucket needs to be created</td></tr>
+    <tr><td>Custom Domain</td><td>⬜ Not Set Up</td><td>Currently using entitle-flow.vercel.app</td></tr>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- ======================== PART 2 ======================== -->
+<h2 id="part2">Part 2 — Database Status & Migration Gap</h2>
+
+<div class="section-card">
+  <h3 style="margin-top:0">What Exists in Supabase Right Now</h3>
+  <table>
+    <tr><th>Table</th><th>Status</th></tr>
+    <tr><td>marketing_leads</td><td style="color:#2D5741">✅ Exists (accepting form submissions)</td></tr>
+    <tr><td>organizations</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>profiles</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>projects</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>permits</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>permit_status_history</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>comments</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>documents</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>activity_log</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>deadlines</td><td style="color:#999">⬜ Not created</td></tr>
+    <tr><td>jurisdictions</td><td style="color:#999">⬜ Not created</td></tr>
+  </table>
+  <div class="callout">
+    The SQL for all tables is already written in <code>supabase/migrations/00001_initial_schema.sql</code>. You just need to paste it into Supabase → SQL Editor → Run.
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================== PART 3 ======================== -->
+<h2 id="part3">Part 3 — System Design: Admin Dashboard + Settings Backend</h2>
+
+<h3>3.1 Requirements</h3>
+
+<h4>Functional Requirements</h4>
+<div class="section-card">
+  <table>
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td><strong>Admin Dashboard</strong></td><td>Real-time overview of platform usage — signups, active orgs, projects, permits, leads</td></tr>
+    <tr><td><strong>User Management</strong></td><td>View/search all users, disable accounts, impersonate for debugging</td></tr>
+    <tr><td><strong>Org Management</strong></td><td>View all organizations, their members, projects, usage stats</td></tr>
+    <tr><td><strong>Lead Pipeline</strong></td><td>View/filter marketing_leads, update status (new → contacted → converted → archived), add notes</td></tr>
+    <tr><td><strong>Settings Backend</strong></td><td>Platform-wide config: feature flags, email templates, jurisdiction data, pricing toggles</td></tr>
+    <tr><td><strong>Analytics</strong></td><td>Signup trends, permit volume by jurisdiction, avg approval times, churn indicators</td></tr>
+    <tr><td><strong>Push Updates</strong></td><td>Trigger maintenance mode, push announcements to all users, force cache invalidation</td></tr>
+    <tr><td><strong>Audit Log</strong></td><td>Admin action history — who changed what, when</td></tr>
+  </table>
+</div>
+
+<h4>Non-Functional Requirements</h4>
+<div class="section-card">
+  <table>
+    <tr><th>Requirement</th><th>Target</th></tr>
+    <tr><td>Access Control</td><td>Only platform owner (you) — single super-admin role</td></tr>
+    <tr><td>Latency</td><td>Dashboard loads in < 2s, data queries < 500ms</td></tr>
+    <tr><td>Data Freshness</td><td>Near-real-time (Supabase Realtime subscriptions)</td></tr>
+    <tr><td>Design Language</td><td>Same Anthropic cream/forest aesthetic as EntitleFlow</td></tr>
+    <tr><td>Deployment</td><td>Same Vercel project, protected route at /admin/*</td></tr>
+  </table>
+</div>
+
+<h3>3.2 New Database Tables (Admin-Specific)</h3>
+
+<div class="section-card">
+<pre><code>-- Admin-specific tables to ADD to existing schema
+
+-- Platform configuration (key-value store)
+CREATE TABLE platform_config (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key TEXT UNIQUE NOT NULL,
+  value JSONB NOT NULL DEFAULT '{}',
+  description TEXT,
+  updated_by UUID REFERENCES profiles(id),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Feature flags
+CREATE TABLE feature_flags (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT UNIQUE NOT NULL,
+  enabled BOOLEAN DEFAULT false,
+  description TEXT,
+  target_orgs UUID[] DEFAULT '{}',  -- empty = all orgs
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Platform announcements
+CREATE TABLE announcements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  type TEXT CHECK (type IN ('info', 'warning', 'maintenance', 'feature')),
+  active BOOLEAN DEFAULT true,
+  starts_at TIMESTAMPTZ DEFAULT now(),
+  ends_at TIMESTAMPTZ,
+  created_by UUID REFERENCES profiles(id),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Admin audit log
+CREATE TABLE admin_audit_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_id UUID REFERENCES profiles(id),
+  action TEXT NOT NULL,
+  target_type TEXT,  -- 'user', 'org', 'lead', 'config', etc.
+  target_id UUID,
+  details JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Profiles table: add is_super_admin column
+ALTER TABLE profiles ADD COLUMN is_super_admin BOOLEAN DEFAULT false;</code></pre>
+</div>
+
+<h3>3.3 Admin Route Structure</h3>
+
+<div class="section-card">
+<pre><code>app/
+  admin/
+    layout.tsx          ← Admin layout (sidebar + topbar, super-admin guard)
+    page.tsx            ← Dashboard overview (redirect to /admin/dashboard)
+    dashboard/
+      page.tsx          ← KPI cards, charts, recent activity
+    users/
+      page.tsx          ← User table with search/filter
+      [id]/page.tsx     ← User detail + org memberships
+    organizations/
+      page.tsx          ← Org list with member counts, project counts
+      [id]/page.tsx     ← Org detail, members, usage
+    leads/
+      page.tsx          ← Marketing leads pipeline (kanban or table)
+    permits/
+      page.tsx          ← Platform-wide permit overview, bottleneck view
+    analytics/
+      page.tsx          ← Signup trends, jurisdiction heatmap, funnel
+    settings/
+      page.tsx          ← Feature flags, platform config, email templates
+    announcements/
+      page.tsx          ← Create/manage platform announcements
+    audit/
+      page.tsx          ← Admin action history</code></pre>
+</div>
+
+<h3>3.4 Admin API Routes</h3>
+
+<div class="section-card">
+<pre><code>app/
+  api/
+    admin/
+      stats/route.ts           ← GET dashboard KPIs (uses service_role)
+      users/route.ts           ← GET all users, PATCH disable/enable
+      users/[id]/route.ts      ← GET user detail, PATCH update
+      organizations/route.ts   ← GET all orgs with aggregates
+      leads/route.ts           ← GET/PATCH leads pipeline
+      leads/[id]/route.ts      ← PATCH lead status, POST add note
+      config/route.ts          ← GET/PUT platform configuration
+      flags/route.ts           ← GET/POST/PATCH feature flags
+      announcements/route.ts   ← CRUD announcements
+      analytics/route.ts       ← GET aggregated analytics data</code></pre>
+  <p>All admin API routes use <code>SUPABASE_SERVICE_ROLE_KEY</code> (bypasses RLS) and verify <code>is_super_admin</code> on the calling user before executing.</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======================== PART 4 ======================== -->
+<h2 id="part4">Part 4 — Architecture & Data Flow</h2>
+
+<h3>4.1 High-Level Component Diagram</h3>
+
+<div class="section-card">
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                        VERCEL (Next.js 16)                  │
+│                                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
+│  │  Marketing   │  │  Demo Portal │  │   Auth Pages     │  │
+│  │  (public)    │  │  (public)    │  │   /login /signup  │  │
+│  │  /(marketing)│  │  /demo/*     │  │   /(auth)        │  │
+│  └──────────────┘  └──────────────┘  └──────────────────┘  │
+│                                                             │
+│  ┌──────────────────────┐  ┌────────────────────────────┐  │
+│  │  User App (authed)   │  │  Admin Dashboard (super)   │  │
+│  │  /app/*              │  │  /admin/*                   │  │
+│  │  • Dashboard         │  │  • Platform KPIs           │  │
+│  │  • Projects          │  │  • User/Org Management     │  │
+│  │  • Permits           │  │  • Lead Pipeline           │  │
+│  │  • Documents         │  │  • Feature Flags           │  │
+│  │  • Analytics         │  │  • Announcements           │  │
+│  │  • Settings          │  │  • Audit Log               │  │
+│  └──────────┬───────────┘  └──────────┬─────────────────┘  │
+│             │                          │                     │
+│  ┌──────────┴──────────────────────────┴─────────────────┐  │
+│  │               Middleware (Edge)                        │  │
+│  │  • /app/* → require auth, redirect to /login          │  │
+│  │  • /admin/* → require auth + is_super_admin           │  │
+│  │  • /login, /signup → redirect to /app if authed       │  │
+│  └───────────────────────┬───────────────────────────────┘  │
+│                          │                                   │
+│  ┌───────────────────────┴───────────────────────────────┐  │
+│  │                 API Routes (/api/*)                    │  │
+│  │  • /api/leads (public - form submissions)             │  │
+│  │  • /api/admin/* (super-admin, service_role key)       │  │
+│  └───────────────────────┬───────────────────────────────┘  │
+└──────────────────────────┼───────────────────────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              │     SUPABASE            │
+              │                         │
+              │  ┌───────────────────┐  │
+              │  │  Auth (GoTrue)    │  │
+              │  │  Email/Password   │  │
+              │  │  Magic Link       │  │
+              │  │  OAuth (future)   │  │
+              │  └───────────────────┘  │
+              │                         │
+              │  ┌───────────────────┐  │
+              │  │  PostgreSQL       │  │
+              │  │  15 tables        │  │
+              │  │  13 enums         │  │
+              │  │  35+ RLS policies │  │
+              │  │  35+ indexes      │  │
+              │  └───────────────────┘  │
+              │                         │
+              │  ┌───────────────────┐  │
+              │  │  Storage          │  │
+              │  │  project-documents│  │
+              │  └───────────────────┘  │
+              │                         │
+              │  ┌───────────────────┐  │
+              │  │  Realtime         │  │
+              │  │  (admin live      │  │
+              │  │   subscriptions)  │  │
+              │  └───────────────────┘  │
+              └─────────────────────────┘</code></pre>
+</div>
+
+<h3>4.2 Admin Auth Flow</h3>
+
+<div class="section-card">
+  <div class="arch-box primary">User logs in via /login (standard Supabase Auth)</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box">Middleware checks session on /admin/* routes</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box">Server component queries profiles table: is_super_admin = true?</div>
+  <div class="flow-arrow">↓ Yes → Render admin page &nbsp;&nbsp;&nbsp; ↓ No → Redirect to /app/dashboard</div>
+  <div class="arch-box secondary">Admin API routes verify super-admin before every operation using service_role client</div>
+</div>
+
+<h3>4.3 Settings Backend Data Flow</h3>
+
+<div class="section-card">
+  <div class="arch-box primary">Admin UI: toggle feature flag / update config</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box">POST /api/admin/flags or PUT /api/admin/config</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box">API validates super-admin → writes to platform_config / feature_flags tables</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box secondary">admin_audit_log entry created automatically</div>
+  <div class="flow-arrow">↓</div>
+  <div class="arch-box">User-facing app reads flags on server render → conditionally enables features</div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================== PART 5 ======================== -->
+<h2 id="part5">Part 5 — Implementation Plan (Phased Roadmap)</h2>
+
+<div class="callout">
+  <strong>Execution strategy:</strong> Multi-agent parallel build. Each phase launches 2-3 simultaneous workstreams targeting independent systems, merged and tested at the end of each phase.
+</div>
+
+<!-- Phase 0 -->
+<div class="phase-header">
+  <span class="phase-badge">Phase 0</span>
+  <span class="phase-title">Database Foundation</span>
+  <span class="phase-time">~30 minutes</span>
+</div>
+
+<div class="section-card">
+  <p><strong>Objective:</strong> Get all tables live in Supabase. Everything else depends on this.</p>
+  <ul class="task-list">
+    <li>Run 00001_initial_schema.sql in Supabase SQL Editor (creates 10 tables, enums, functions, RLS, indexes, jurisdiction seeds)</li>
+    <li>Verify all 11 tables exist via Table Editor</li>
+    <li>Create Storage bucket: project-documents (private)</li>
+    <li>Set your profile's is_super_admin = true (after adding the column)</li>
+    <li>Run admin-specific migration (platform_config, feature_flags, announcements, admin_audit_log)</li>
+  </ul>
+</div>
+
+<!-- Phase 1 -->
+<div class="phase-header">
+  <span class="phase-badge">Phase 1</span>
+  <span class="phase-title">Core User Workflows</span>
+  <span class="phase-time">Agent Workstream A + B + C in parallel</span>
+</div>
+
+<div class="section-card">
+  <h4>Agent A — Onboarding Flow</h4>
+  <ul class="task-list">
+    <li>Signup → auto-create profile (trigger or post-signup API call)</li>
+    <li>First-login onboarding: create organization → set company name/type → invite members</li>
+    <li>Profile completion: avatar upload, notification preferences</li>
+  </ul>
+
+  <h4>Agent B — Project & Permit CRUD</h4>
+  <ul class="task-list">
+    <li>Wire /app/projects to Supabase: list, create, update, archive</li>
+    <li>Wire /app/permits to Supabase: submit, track status, view history</li>
+    <li>Comment system: add, reply, resolve, mark category</li>
+    <li>Document upload: connect to Supabase Storage bucket</li>
+  </ul>
+
+  <h4>Agent C — Dashboard & Analytics (User-Facing)</h4>
+  <ul class="task-list">
+    <li>Wire /app/dashboard to real data: active projects count, pending permits, upcoming deadlines</li>
+    <li>Activity feed from activity_log table</li>
+    <li>Wire /app/analytics: permit volume by jurisdiction, approval rate, avg review time</li>
+  </ul>
+</div>
+
+<!-- Phase 2 -->
+<div class="phase-header">
+  <span class="phase-badge">Phase 2</span>
+  <span class="phase-title">Admin Dashboard & Settings</span>
+  <span class="phase-time">Agent Workstream D + E in parallel</span>
+</div>
+
+<div class="section-card">
+  <h4>Agent D — Admin Layout & Dashboard</h4>
+  <ul class="task-list">
+    <li>Admin layout with sidebar (same Anthropic aesthetic: cream/forest/gold)</li>
+    <li>Super-admin middleware guard</li>
+    <li>Dashboard KPI cards: total users, total orgs, active projects, permit volume, lead count</li>
+    <li>Signup trend chart (daily/weekly signups over time)</li>
+    <li>Recent activity feed (platform-wide)</li>
+  </ul>
+
+  <h4>Agent E — Admin CRUD Pages</h4>
+  <ul class="task-list">
+    <li>User management: search/filter, view detail, disable account</li>
+    <li>Org management: list with aggregate stats, drill into members</li>
+    <li>Lead pipeline: table view with status updates, inline notes, filter by intent/status</li>
+    <li>Feature flags UI: toggle on/off, target specific orgs</li>
+    <li>Platform config: key-value editor for site-wide settings</li>
+    <li>Announcements: create/edit/deactivate platform banners</li>
+    <li>Audit log: searchable table of admin actions</li>
+  </ul>
+</div>
+
+<!-- Phase 3 -->
+<div class="phase-header">
+  <span class="phase-badge">Phase 3</span>
+  <span class="phase-title">User Settings & Notifications</span>
+  <span class="phase-time">Agent Workstream F</span>
+</div>
+
+<div class="section-card">
+  <h4>Agent F — Settings Backend (User-Facing)</h4>
+  <ul class="task-list">
+    <li>Wire /app/settings: profile editing, password change, avatar upload</li>
+    <li>Organization settings: rename, update type, manage members, role assignment</li>
+    <li>Notification preferences: email on permit status change, comment reply, deadline due</li>
+    <li>Danger zone: delete account, leave organization</li>
+  </ul>
+</div>
+
+<!-- Phase 4 -->
+<div class="phase-header">
+  <span class="phase-badge">Phase 4</span>
+  <span class="phase-title">Polish & Production Hardening</span>
+  <span class="phase-time">Final pass</span>
+</div>
+
+<div class="section-card">
+  <ul class="task-list">
+    <li>Error boundaries on all data-fetching pages</li>
+    <li>Loading skeletons (use existing skeleton.tsx component)</li>
+    <li>Supabase Realtime subscriptions for live permit status updates</li>
+    <li>Email notifications via Supabase Edge Functions (permit approved, comment added)</li>
+    <li>Rate limiting on public API routes (/api/leads)</li>
+    <li>Custom domain setup (entitleflow.com or similar)</li>
+    <li>Supabase Pro upgrade (if needed — backups, larger storage, more auth users)</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ======================== PART 6 ======================== -->
+<h2 id="part6">Part 6 — Trade-offs & Decisions</h2>
+
+<div class="section-card">
+  <table>
+    <tr><th>Decision</th><th>Chosen</th><th>Alternative</th><th>Reasoning</th></tr>
+    <tr>
+      <td>Admin in same Next.js app</td>
+      <td><strong>/admin/* route group</strong></td>
+      <td>Separate admin app</td>
+      <td>Simpler deployment, shared components, single Vercel project. Separate later if scale demands it.</td>
+    </tr>
+    <tr>
+      <td>Admin auth</td>
+      <td><strong>is_super_admin column</strong></td>
+      <td>Separate admin auth / RBAC system</td>
+      <td>You're the only admin for now. Add RBAC later when you hire a team.</td>
+    </tr>
+    <tr>
+      <td>Feature flags storage</td>
+      <td><strong>Supabase table</strong></td>
+      <td>Vercel Edge Config / LaunchDarkly</td>
+      <td>No additional service, queryable in SQL, auditable. Move to Edge Config for sub-ms reads at scale.</td>
+    </tr>
+    <tr>
+      <td>Admin API auth</td>
+      <td><strong>service_role key + user check</strong></td>
+      <td>Custom JWT middleware</td>
+      <td>Bypasses RLS intentionally — admin needs to see all orgs. Guard is the is_super_admin check.</td>
+    </tr>
+    <tr>
+      <td>Analytics engine</td>
+      <td><strong>Supabase SQL aggregations</strong></td>
+      <td>PostHog / Mixpanel</td>
+      <td>All data already in Supabase. SQL gives full flexibility. Add PostHog for user behavior tracking later.</td>
+    </tr>
+    <tr>
+      <td>Notifications</td>
+      <td><strong>Supabase Edge Functions</strong></td>
+      <td>Resend / SendGrid</td>
+      <td>Edge Functions can call any email API. Start with Supabase's built-in email, upgrade to Resend for custom templates.</td>
+    </tr>
+  </table>
+</div>
+
+<h3>What to Revisit as the System Grows</h3>
+<div class="section-card">
+  <table>
+    <tr><th>Trigger</th><th>Action</th></tr>
+    <tr><td>10+ admin users</td><td>Implement proper RBAC with roles table (viewer, editor, admin, super-admin)</td></tr>
+    <tr><td>1000+ concurrent users</td><td>Add Redis caching layer for dashboard stats, move feature flags to Vercel Edge Config</td></tr>
+    <tr><td>100+ orgs</td><td>Add database connection pooling (Supabase Supavisor), consider read replicas</td></tr>
+    <tr><td>Complex email workflows</td><td>Move from Edge Functions to dedicated email service (Resend + react-email)</td></tr>
+    <tr><td>Compliance requirements</td><td>Add data retention policies, GDPR deletion flows, SOC 2 audit trail hardening</td></tr>
+  </table>
+</div>
+
+<hr class="divider">
+
+<div class="section-card" style="text-align: center; background: #F0F7F3;">
+  <h3 style="margin-top: 0;">Immediate Next Action</h3>
+  <p style="font-size: 16px; margin-bottom: 16px;">Run the migration SQL → Phase 0 completes → Phase 1 & 2 can begin in parallel</p>
+  <p style="font-size: 14px; color: #666;">Supabase → SQL Editor → paste 00001_initial_schema.sql → Run</p>
+</div>
+
+<p class="date" style="margin-top: 32px; text-align: center;">EntitleFlow NC &middot; System Design v1.0 &middot; March 2026</p>
+
+</body>
+</html>

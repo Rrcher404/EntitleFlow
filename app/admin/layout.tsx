@@ -55,7 +55,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [_loading, setLoading] = useState(true)
   const [pendingLicenseRequests, setPendingLicenseRequests] = useState(0)
   const supabase = createClient()
 
@@ -108,7 +108,7 @@ export default function AdminLayout({
 
     getUser()
     getPendingLicenseRequests()
-  }, [])
+  }, [supabase])
 
   const handleLogout = async () => {
     await supabase?.auth.signOut()

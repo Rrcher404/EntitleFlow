@@ -70,14 +70,17 @@ export async function GET(
     ]);
 
     // Merge default and override permissions
-    const permissionSet = new Set(defaultPermissions?.map(p => p.permission) || []);
-    
+    type PermissionType = "project.create" | "project.read" | "project.update" | "project.delete" | "subproject.create" | "subproject.read" | "subproject.update" | "subproject.delete" | "permit.create" | "permit.read" | "permit.update" | "permit.delete" | "comment.create" | "comment.read" | "comment.update" | "comment.delete" | "document.create" | "document.read" | "document.delete" | "team.manage" | "user.invite" | "user.manage" | "billing.view" | "billing.manage" | "settings.manage" | "password.reset_own" | "password.reset_others";
+
+    const permissionSet = new Set<PermissionType>(defaultPermissions?.map(p => p.permission as PermissionType) || []);
+
     if (userOverrides) {
-      userOverrides.forEach((override: any) => {
+      userOverrides.forEach((override: Record<string, unknown>) => {
+        const permission = override.permission as PermissionType;
         if (override.granted) {
-          permissionSet.add(override.permission);
+          permissionSet.add(permission);
         } else {
-          permissionSet.delete(override.permission);
+          permissionSet.delete(permission);
         }
       });
     }
@@ -149,19 +152,19 @@ export async function PATCH(
     }
 
     // Get the organization's active contract to determine billing terms
-    const { data: contract } = await (serviceClient
-      .from('organization_contracts' as any)
+    const { data: contract } = await serviceClient
+      .from('organization_contracts')
       .select('billing_term, requires_prepayment_for_changes')
       .eq('organization_id', admin.organization_id)
       .eq('is_active', true)
-      .single() as any) as { data: any; error: any };
+      .single();
 
     const billingTerm = contract?.billing_term || 'monthly';
     const requiresPrepayment = contract?.requires_prepayment_for_changes || false;
 
     // Create a license_change_request instead of directly updating
-    const { data: changeRequest, error: createError } = await (serviceClient
-      .from('license_change_requests' as any)
+    const { data: changeRequest, error: createError } = await serviceClient
+      .from('license_change_requests')
       .insert({
         organization_id: admin.organization_id,
         requested_by: admin.id,
@@ -174,7 +177,7 @@ export async function PATCH(
         request_notes,
       })
       .select()
-      .single() as any) as { data: any; error: any };
+      .single();
 
     if (createError) {
       return NextResponse.json(
@@ -184,19 +187,20 @@ export async function PATCH(
     }
 
     // Log the request to activity_log
+    const logMetadata = {
+      type: 'license_change_requested',
+      current_license_type: targetUser.license_type || 'contributor',
+      requested_license_type: license_type,
+      request_id: changeRequest?.id,
+      billing_term: billingTerm,
+      requires_prepayment: requiresPrepayment,
+    };
     await serviceClient.from('activity_log').insert({
       organization_id: admin.organization_id,
-      action: 'status_changed' as any,
+      action: 'status_changed',
       description: `License change requested for ${targetUser.full_name || 'Unknown'}: ${targetUser.license_type || 'contributor'} → ${license_type}`,
-      metadata: {
-        type: 'license_change_requested',
-        current_license_type: targetUser.license_type || 'contributor',
-        requested_license_type: license_type,
-        request_id: changeRequest?.id,
-        billing_term: billingTerm,
-        requires_prepayment: requiresPrepayment,
-      },
-    } as any);
+      metadata: JSON.parse(JSON.stringify(logMetadata)),
+    });
 
     // Fetch org name for the email notification
     const { data: org } = await serviceClient

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Loader2, CheckCircle, AlertCircle, Clock, Zap, RotateCw } from 'lucide-react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
@@ -81,7 +81,7 @@ export function DocumentParseStatus({
   const isActive = statusInfo.parse_status === 'queued' || statusInfo.parse_status === 'processing';
 
   // Fetch current status
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     try {
       const res = await fetch(`/api/documents/${documentId}/status`);
       if (!res.ok) return;
@@ -105,7 +105,7 @@ export function DocumentParseStatus({
     } catch (err) {
       console.warn('[ParseStatus] Fetch failed:', err);
     }
-  };
+  }, [documentId]);
 
   // Subscribe to Realtime changes on the document record
   useEffect(() => {
@@ -123,12 +123,11 @@ export function DocumentParseStatus({
           filter: `id=eq.${documentId}`,
         },
         (payload) => {
-          const updated = payload.new as any;
+          const updated = payload.new as Record<string, unknown>;
           if (updated.parse_status) {
             setStatusInfo((prev) => ({
               ...prev,
-              parse_status: updated.parse_status,
-              parsed_at: updated.parsed_at,
+              parse_status: updated.parse_status as ParseStatus,
             }));
 
             if (updated.parse_status === 'completed') {

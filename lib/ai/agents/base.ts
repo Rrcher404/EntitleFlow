@@ -20,7 +20,6 @@ async function vertexComplete(
   systemPrompt: string,
   userPrompt: string,
   model: ModelConfig,
-  _jsonMode: boolean,
 ): Promise<{ content: string; latencyMs: number }> {
   const { VertexAI } = await import('@google-cloud/vertexai');
   const projectId = process.env.GCP_PROJECT_ID || 'gravityclaw-488910';
@@ -93,7 +92,6 @@ export async function executeAgent<T>(
         persona.systemPrompt,
         userPrompt,
         model,
-        jsonMode,
       );
 
       content = result.content;

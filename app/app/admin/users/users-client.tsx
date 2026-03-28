@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, MoreHorizontal, ChevronDown, Check, X, Clock, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, MoreHorizontal, ChevronDown, Check, X, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,6 @@ import {
 
 type LicenseType = 'admin' | 'project_manager' | 'contributor' | 'guest_viewer';
 type UserRole = 'admin' | 'manager' | 'contributor' | 'viewer';
-type UserStatus = 'active' | 'inactive' | 'pending';
 type RequestStatus = 'pending' | 'approved' | 'rejected' | 'applied';
 
 interface User {

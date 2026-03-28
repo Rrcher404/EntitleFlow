@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bell, Search, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -111,8 +112,8 @@ export function PortalTopbar() {
     return [...projects, ...permits].slice(0, 8);
   }, [searchQuery]);
 
-  const handleSearchSelect = (item: any) => {
-    router.push(item.href);
+  const handleSearchSelect = (item: Record<string, unknown>) => {
+    router.push(item.href as string);
     setSearchQuery('');
     setSearchOpen(false);
   };
@@ -239,12 +240,12 @@ export function PortalTopbar() {
             <button className="w-full px-4 py-2.5 hover:bg-secondary transition-colors text-left border-b border-border/30 text-sm text-foreground font-medium">
               Settings
             </button>
-            <a
+            <Link
               href="/"
               className="block w-full px-4 py-2.5 hover:bg-secondary transition-colors text-left text-sm text-foreground font-medium"
             >
               Sign out
-            </a>
+            </Link>
           </Popover.Content>
         </Popover.Root>
       </div>

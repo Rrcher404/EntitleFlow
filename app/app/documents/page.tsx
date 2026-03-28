@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,8 @@ import {
   Image,
   File,
   Upload,
-  ChevronDown,
   X,
   Loader2,
-  Zap,
   Trash2,
   FolderPlus,
   Eye,
@@ -249,18 +247,14 @@ export default function DocumentsPage() {
   const [formData, setFormData] = useState({
     file: null as File | null,
     name: '',
-    documentType: 'other' as any,
+    documentType: 'other' as Database['public']['Enums']['document_type'],
     projectId: '',
     permitId: '',
   });
 
   const supabase = createClient();
 
-  useEffect(() => {
-    loadDocuments();
-  }, [supabase]);
-
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     if (!supabase) {
       setLoading(false);
       return;
@@ -329,7 +323,11 @@ export default function DocumentsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -487,7 +485,7 @@ export default function DocumentsPage() {
                     file:text-sm file:font-semibold
                     file:text-white
                     hover:file:opacity-80"
-                  style={{ '--file-bg': '#1B3B2D' } as any}
+                  style={{ '--file-bg': '#1B3B2D' } as React.CSSProperties}
                   required
                 />
                 {formData.file && (
@@ -507,7 +505,7 @@ export default function DocumentsPage() {
                   value={formData.name}
                   onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full px-3 py-2 border border-input rounded-md text-sm bg-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-offset-2"
-                  style={{ '--ring-color': '#1B3B2D' } as any}
+                  style={{ '--ring-color': '#1B3B2D' } as React.CSSProperties}
                   required
                 />
               </div>
@@ -518,9 +516,9 @@ export default function DocumentsPage() {
                 </label>
                 <select
                   value={formData.documentType}
-                  onChange={e => setFormData(prev => ({ ...prev, documentType: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, documentType: e.target.value as Database['public']['Enums']['document_type'] }))}
                   className="w-full px-3 py-2 border border-input rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-2"
-                  style={{ '--ring-color': '#1B3B2D' } as any}
+                  style={{ '--ring-color': '#1B3B2D' } as React.CSSProperties}
                   required
                 >
                   <option value="">Select document type</option>
@@ -548,7 +546,7 @@ export default function DocumentsPage() {
                     value={formData.projectId}
                     onChange={e => setFormData(prev => ({ ...prev, projectId: e.target.value }))}
                     className="w-full px-3 py-2 border border-input rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    style={{ '--ring-color': '#1B3B2D' } as any}
+                    style={{ '--ring-color': '#1B3B2D' } as React.CSSProperties}
                   >
                     <option value="">No project</option>
                     {projects.map(project => (
@@ -567,7 +565,7 @@ export default function DocumentsPage() {
                     value={formData.permitId}
                     onChange={e => setFormData(prev => ({ ...prev, permitId: e.target.value }))}
                     className="w-full px-3 py-2 border border-input rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    style={{ '--ring-color': '#1B3B2D' } as any}
+                    style={{ '--ring-color': '#1B3B2D' } as React.CSSProperties}
                   >
                     <option value="">No permit</option>
                     {permits.map(permit => (
@@ -640,7 +638,7 @@ export default function DocumentsPage() {
                         </span>
                         <DocumentParseStatus
                           documentId={doc.id}
-                          initialStatus={doc.parse_status as any}
+                          initialStatus={doc.parse_status as Database['public']['Enums']['parse_job_status'] | null}
                           variant="badge"
                           onParseComplete={() => loadDocuments()}
                         />

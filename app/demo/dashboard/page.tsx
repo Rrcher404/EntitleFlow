@@ -23,7 +23,7 @@ type TimeRange = 'today' | '7d' | '30d' | '90d';
 
 interface StatData {
   label: string;
-  icon: any;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   today: { value: string; change: string; trend: 'up' | 'down' };
   '7d': { value: string; change: string; trend: 'up' | 'down' };
   '30d': { value: string; change: string; trend: 'up' | 'down' };

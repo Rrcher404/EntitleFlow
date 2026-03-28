@@ -84,9 +84,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for deduplication using message_id if provided
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSONB path filters aren't in generated types
     if (payload.message_id) {
-      const { data: existingRows } = await (supabase as any)
+      const { data: existingRows } = await supabase!
         .from('comments')
         .select('id')
         .filter('metadata->>message_id', 'eq', payload.message_id)
@@ -94,7 +93,7 @@ export async function POST(request: NextRequest) {
 
       if (existingRows && existingRows.length > 0) {
         return NextResponse.json(
-          { message: 'Email already processed', comment_id: (existingRows[0] as any).id },
+          { message: 'Email already processed', comment_id: (existingRows[0] as Record<string, unknown>).id },
           { status: 200 }
         );
       }

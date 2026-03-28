@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
 import {
-  Project,
   PROJECT_STATUS_LABELS,
   PROJECT_STATUS_COLORS,
   ProjectStatus,
+  Project,
 } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
 import { MapPin, Filter, ArrowLeft } from 'lucide-react';
@@ -31,14 +30,14 @@ interface MapProjectMarker {
 }
 
 export default function ProjectMapPage() {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [projects, setProjects] = useState<ProjectWithCoords[]>([]);
+  const [_profile, setProfile] = useState<Profile | null>(null);
+  const [_projects, setProjects] = useState<ProjectWithCoords[]>([]);
   const [mapProjects, setMapProjects] = useState<MapProjectMarker[]>([]);
   const [noLocationProjects, setNoLocationProjects] = useState<ProjectWithCoords[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | 'all'>('all');
   const [showFilter, setShowFilter] = useState(false);
-  const router = useRouter();
+  const _router = useRouter();
 
   const supabase = createClient();
 
@@ -46,7 +45,7 @@ export default function ProjectMapPage() {
     loadProjects();
   }, [supabase]);
 
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     if (!supabase) {
       setLoading(false);
       return;
@@ -85,7 +84,7 @@ export default function ProjectMapPage() {
         const withCoords: MapProjectMarker[] = [];
         const withoutCoords: ProjectWithCoords[] = [];
 
-        (projectsData || []).forEach((project) => {
+        (projectsData || []).forEach((project: ProjectWithCoords) => {
           // Try to extract latitude/longitude from metadata or address
           let lat: number | undefined;
           let lng: number | undefined;
@@ -121,7 +120,7 @@ export default function ProjectMapPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   const filteredMapProjects = selectedStatus === 'all'
     ? mapProjects
@@ -292,7 +291,8 @@ export default function ProjectMapPage() {
 
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {noLocationProjects.map((project) => {
-                const colors = PROJECT_STATUS_COLORS[project.status || 'draft'];
+                const status = (project.status as ProjectStatus | null) || 'draft';
+                const colors = PROJECT_STATUS_COLORS[status];
                 return (
                   <Link key={project.id} href={`/app/projects/${project.id}`}>
                     <button
@@ -307,7 +307,7 @@ export default function ProjectMapPage() {
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${colors.bg} ${colors.text}`}
                       >
-                        {PROJECT_STATUS_LABELS[project.status || 'draft']}
+                        {PROJECT_STATUS_LABELS[status]}
                       </span>
                     </button>
                   </Link>

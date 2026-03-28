@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Linkedin, Twitter, Mail } from "lucide-react";
 
 import { footerNav } from "@/data/site";

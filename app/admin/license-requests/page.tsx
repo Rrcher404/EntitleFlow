@@ -13,7 +13,6 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Calendar,
   Mail,
   Building2,
   Zap,

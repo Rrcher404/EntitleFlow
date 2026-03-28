@@ -17,19 +17,18 @@ import {
   ActivityLogEntry,
   Profile,
 } from '@/lib/types/index';
+import type { Database, Json } from '@/lib/database.types';
 import { cn } from '@/lib/utils';
 import {
   ArrowLeft,
   Clock,
   AlertCircle,
-  CheckCircle,
   MessageSquare,
   FileText,
   Calendar,
   MapPin,
   ChevronDown,
   Search,
-  Filter,
   Check,
   Mail,
   Sparkles,
@@ -238,7 +237,7 @@ function CommentCard({
     }
   };
 
-  const resolvedBgColor = comment.is_resolved ? 'bg-green-50' : 'bg-white';
+  const _resolvedBgColor = comment.is_resolved ? 'bg-green-50' : 'bg-white';
 
   return (
     <Card
@@ -274,9 +273,9 @@ function CommentCard({
               )}
 
               {/* Priority indicator */}
-              {(comment as any).priority && (
-                <span className={cn('px-2 py-1 text-xs rounded font-medium', getPriorityColor((comment as any).priority))}>
-                  {(comment as any).priority.charAt(0).toUpperCase() + (comment as any).priority.slice(1)}
+              {!!(comment.metadata && typeof comment.metadata === 'object' && !Array.isArray(comment.metadata) && (comment.metadata as Record<string, unknown>).priority) && (
+                <span className={cn('px-2 py-1 text-xs rounded font-medium', getPriorityColor(String((comment.metadata as Record<string, unknown>).priority)))}>
+                  {String((comment.metadata as Record<string, unknown>).priority).charAt(0).toUpperCase() + String((comment.metadata as Record<string, unknown>).priority).slice(1)}
                 </span>
               )}
 
@@ -313,11 +312,11 @@ function CommentCard({
             </div>
 
             {/* Assigned to info */}
-            {(comment as any).metadata?.assigned_to && (
+            {!!(comment.metadata && typeof comment.metadata === 'object' && !Array.isArray(comment.metadata) && (comment.metadata as Record<string, unknown>).assigned_to) && (
               <div className="text-xs text-gray-500 mb-3">
                 Assigned to:{' '}
                 <span className="font-medium text-gray-700">
-                  {allProfiles.find((p) => p.id === (comment as any).metadata?.assigned_to)?.full_name ||
+                  {allProfiles.find((p) => p.id === String((comment.metadata as Record<string, unknown>).assigned_to))?.full_name ||
                     'Unknown'}
                 </span>
               </div>
@@ -524,7 +523,7 @@ function DocumentsTab({
                   </div>
                 </div>
               </div>
-              <a href={(doc as any).file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
+              <a href={(doc as Record<string, unknown>).file_url as string} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
                 Download
               </a>
             </div>
@@ -609,7 +608,7 @@ export default function PermitDetailPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [statusHistory, setStatusHistory] = useState<PermitStatusHistory[]>([]);
   const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>([]);
-  const [deadlines, setDeadlines] = useState<Deadline[]>([]);
+  const [_deadlines, setDeadlines] = useState<Deadline[]>([]);
   const [teamMembers, setTeamMembers] = useState<Profile[]>([]);
 
   const [activeTab, setActiveTab] = useState<'comments' | 'documents' | 'timeline' | 'details'>('comments');
@@ -623,7 +622,7 @@ export default function PermitDetailPage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isChangingStatus, setIsChangingStatus] = useState(false);
+  const [_isChangingStatus, setIsChangingStatus] = useState(false);
 
   // Edit modal state
   const [showEditModal, setShowEditModal] = useState(false);
@@ -756,9 +755,9 @@ export default function PermitDetailPage() {
           .from('permit_status_history')
           .insert({
             permit_id: permit.id,
-            from_status: permit.status,
+            from_status: permit.status as Database['public']['Enums']['permit_status'],
             to_status: newStatus,
-          } as any);
+          });
 
         if (historyError) throw historyError;
 
@@ -814,7 +813,7 @@ export default function PermitDetailPage() {
       try {
         const { error } = await supabase
           .from('comments')
-          .update({ assigned_to: profileId } as any)
+          .update({ assigned_to: profileId } as Database['public']['Tables']['comments']['Update'])
           .eq('id', commentId);
 
         if (error) throw error;
@@ -828,7 +827,7 @@ export default function PermitDetailPage() {
                   metadata: {
                     ...(typeof c.metadata === 'object' && c.metadata !== null ? c.metadata : {}),
                     assigned_to: profileId,
-                  } as any,
+                  } as Record<string, Json | undefined>,
                 }
               : c
           )

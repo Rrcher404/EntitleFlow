@@ -3,7 +3,6 @@ import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supaba
 import type { Database } from '@/lib/database.types';
 
 type CommentInsert = Database['public']['Tables']['comments']['Insert'];
-type Comment = Database['public']['Tables']['comments']['Row'];
 
 /**
  * GET /api/comments
@@ -83,7 +82,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Apply filters
     if (category) {
-      query = query.eq('category', category as any);
+      query = query.eq('category', category as "parking_access" | "stormwater" | "building_code" | "zoning" | "fire_safety" | "landscaping" | "traffic" | "environmental" | "general" | "other");
     }
 
     if (isResolved !== null && isResolved !== undefined) {
@@ -101,7 +100,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const sortField = validSortFields.includes(sort) ? sort : 'created_at';
     const orderDir = order === 'asc' ? { ascending: true } : { ascending: false };
 
-    query = query.order(sortField as any, orderDir);
+    query = query.order(sortField, orderDir);
 
     // Apply pagination
     const offset = (page - 1) * limit;
@@ -217,6 +216,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Use admin client for database writes
     const adminClient = getSupabaseAdminClient();
 
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     // Prepare comment insert data
     const commentInsert: CommentInsert = {
       permit_id,
@@ -230,7 +233,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     };
 
     // Insert comment
-    const { data: comment, error: insertError } = await (adminClient as any)
+    const { data: comment, error: insertError } = await adminClient!
       .from('comments')
       .insert(commentInsert)
       .select()
@@ -246,13 +249,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Log activity (non-fatal)
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,
           permit_id,
           actor_id: user.id,
-          action: 'comment_created',
+          action: 'comment_added',
           description: `Comment created by ${profile.full_name || 'Unknown'}`,
           metadata: {
             comment_id: comment.id,

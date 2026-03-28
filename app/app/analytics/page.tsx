@@ -1,21 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Activity,
-  Award,
-  BarChart3,
-  CheckCircle2,
   Clock,
   FolderOpen,
   MessageSquare,
   TrendingUp,
-  Users,
 } from 'lucide-react';
-import type { Comment, Project, Permit, ActivityLogEntry } from '@/lib/types/index';
 import {
   type ProjectStatus,
   type PermitStatus,
@@ -51,7 +46,7 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [_profile, setProfile] = useState<Profile | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     projectsByStatus: {},
     permitsByStatus: {},
@@ -73,11 +68,7 @@ export default function AnalyticsPage() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    loadAnalytics();
-  }, [supabase]);
-
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     if (!supabase) {
       setLoading(false);
       return;
@@ -104,7 +95,7 @@ export default function AnalyticsPage() {
         const orgId = profileData.organization_id;
 
         // Fetch all data in parallel
-        const [projectsRes, permitsRes, commentsRes, activityRes, jurisdictionsRes] = await Promise.all([
+        const [projectsRes, permitsRes, commentsRes, activityRes, _jurisdictionsRes] = await Promise.all([
           supabase
             .from('projects')
             .select('status')
@@ -290,7 +281,11 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    loadAnalytics();
+  }, [loadAnalytics]);
 
   if (loading) {
     return (

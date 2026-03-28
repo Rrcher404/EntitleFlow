@@ -26,11 +26,6 @@ const NOTIFICATION_TYPES = [
 const DIGEST_FREQUENCIES = ['immediate', 'daily', 'weekly', 'never'] as const;
 
 /**
- * Notification channel enum
- */
-const NOTIFICATION_CHANNELS = ['in_app', 'email'] as const;
-
-/**
  * Schema for updating notification preferences for a single notification type
  */
 export const updateNotificationPreferencesSchema = z.object({

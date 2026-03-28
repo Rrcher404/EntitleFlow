@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string | null>(null);
   const [expandedJurisdiction, setExpandedJurisdiction] = useState<string | null>(null);
-  const [jurisdictionMetrics, setJurisdictionMetrics] = useState(jurisdictionMetricsData);
+  const [jurisdictionMetrics, _setJurisdictionMetrics] = useState(jurisdictionMetricsData);
 
   const monthlyData = useMemo(() => {
     return monthlyDataConfig.map((data) => ({
@@ -284,8 +284,8 @@ export default function AnalyticsPage() {
                 Permit Types in {expandedJurisdiction}
               </h4>
               {jurisdictionMetrics
-                .find((m) => m.name === expandedJurisdiction)
-                ?.permitTypeBreakdown?.map((item) => (
+                .find((m: JurisdictionMetric) => m.name === expandedJurisdiction)
+                ?.permitTypeBreakdown?.map((item: { type: string; count: number }) => (
                   <div key={item.type} className="flex items-center justify-between">
                     <span className="text-sm text-foreground">{item.type}</span>
                     <Badge variant="outline">{item.count}</Badge>

@@ -17,7 +17,7 @@ import {
   PROJECT_TYPE_LABELS,
 } from '@/lib/types/index';
 import type { Database } from '@/lib/database.types';
-import { Plus, X, ChevronRight } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -46,7 +46,7 @@ const initialFormData: FormData = {
 
 export default function ProjectsClient() {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [_organization, setOrganization] = useState<Organization | null>(null);
   const [projects, setProjects] = useState<ProjectWithPermitCount[]>([]);
   const [jurisdictions, setJurisdictions] = useState<Jurisdiction[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, X } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -285,7 +285,7 @@ export function NotificationBell() {
                 <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">No notifications yet</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  You'll see updates when comments are assigned or resolved
+                  You&apos;ll see updates when comments are assigned or resolved
                 </p>
               </div>
             ) : (

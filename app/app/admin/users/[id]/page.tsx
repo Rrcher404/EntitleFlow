@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Mail, Key, Shield } from 'lucide-react';
+import { ArrowLeft, Key, Shield } from 'lucide-react';
 import Link from 'next/link';
 
 interface UserDetail {

@@ -6,7 +6,6 @@
  */
 
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
-import type { Database } from '@/lib/database.types';
 import type {
   PermissionAction,
   PermissionCheckResult,
@@ -25,7 +24,7 @@ let cachedPermissionContext: UserPermissionContext | null = null;
 /**
  * Clear the cached permission context (called at start of each request)
  */
-function clearPermissionCache() {
+function _clearPermissionCache() {
   cachedPermissionContext = null;
 }
 
@@ -365,7 +364,7 @@ export async function verifyCompanyAdmin(): Promise<{
     organization_id: string;
     license_type: string;
   } | null;
-  client: any;
+  client: ReturnType<typeof getSupabaseAdminClient>;
 }> {
   try {
     const client = await createServerSupabaseClient();

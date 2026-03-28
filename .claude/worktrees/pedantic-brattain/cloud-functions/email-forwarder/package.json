@@ -1,0 +1,23 @@
+{
+  "name": "email-forwarder",
+  "version": "1.0.0",
+  "description": "Cloud Function for forwarding Gmail messages to EntitleFlow via Pub/Sub",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=emailForwarder --debug",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.5.0",
+    "@google-cloud/storage": "^7.0.1",
+    "googleapis": "^118.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

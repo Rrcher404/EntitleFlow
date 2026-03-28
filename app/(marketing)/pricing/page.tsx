@@ -45,7 +45,7 @@ export default function PricingPage() {
               Enhance your platform with AI capabilities
             </h2>
             <p className="text-base leading-7 text-muted-foreground sm:text-lg max-w-2xl mx-auto">
-              Add specialized AI agents to any plan to augment your team's capabilities.
+              Add specialized AI agents to any plan to augment your team&apos;s capabilities.
             </p>
           </div>
 

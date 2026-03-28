@@ -344,7 +344,7 @@ export function useCommentActions(
                 id: optimisticId,
                 permit_id: permitId,
                 body,
-                category: category as any,
+                category: category || null,
                 is_resolved: false,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),

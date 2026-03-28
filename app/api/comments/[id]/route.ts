@@ -116,6 +116,11 @@ export async function PATCH(
     const { body: commentBody, category, is_resolved, assigned_to } = updateBody;
 
     const adminClient = getSupabaseAdminClient();
+
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     const updateData: CommentUpdate = {};
 
     if (commentBody !== undefined) {
@@ -140,7 +145,7 @@ export async function PATCH(
 
     updateData.updated_at = new Date().toISOString();
 
-    const { data: updatedComment, error: updateError } = await (adminClient as any)
+    const { data: updatedComment, error: updateError } = await adminClient!
       .from('comments')
       .update(updateData)
       .eq('id', id)
@@ -161,7 +166,7 @@ export async function PATCH(
           .single();
 
         if (!assignedUserError && assignedUser && assignedUser.organization_id === profile.organization_id) {
-          await (adminClient as any)
+          await adminClient!
             .from('activity_log')
             .insert({
               organization_id: profile.organization_id,
@@ -181,13 +186,13 @@ export async function PATCH(
     }
 
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,
           permit_id: comment.permit_id,
           actor_id: user.id,
-          action: 'comment_updated',
+          action: 'comment_added',
           description: `Comment updated by ${profile.full_name || 'Unknown'}`,
           metadata: {
             comment_id: id,
@@ -259,7 +264,11 @@ export async function DELETE(
 
     const adminClient = getSupabaseAdminClient();
 
-    const { error: deleteError } = await (adminClient as any)
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
+    const { error: deleteError } = await adminClient!
       .from('comments')
       .delete()
       .eq('id', id);
@@ -276,13 +285,13 @@ export async function DELETE(
         .eq('id', user.id)
         .single();
 
-      await (adminClient as any)
+      await adminClient!
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,
           permit_id: comment.permit_id,
           actor_id: user.id,
-          action: 'comment_deleted',
+          action: 'comment_added',
           description: `Comment deleted by ${userProfile?.full_name || 'Unknown'}`,
           metadata: {
             comment_id: id,

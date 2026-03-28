@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCompanyAdmin } from '@/lib/admin/company-auth';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { error, admin, serviceClient } = await verifyCompanyAdmin();
 
@@ -13,11 +13,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Get or create password reset config
-    let { data: config, error: configError } = await serviceClient
+    const { data: initialConfig, error: configError } = await serviceClient
       .from('password_reset_config')
       .select('*')
       .eq('organization_id', admin.organization_id)
       .single();
+
+    let config = initialConfig;
 
     // If not found, create default config
     if (configError && configError.code === 'PGRST116') {
@@ -34,7 +36,7 @@ export async function GET(request: NextRequest) {
         .select()
         .single();
       config = newConfig;
-    } else if (configError) {
+    } else if (configError && configError.code !== 'PGRST116') {
       return NextResponse.json(
         { error: configError.message },
         { status: 400 }
@@ -99,7 +101,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Build update data
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, unknown> = {};
     if (reset_link_duration_hours !== undefined) updateData.reset_link_duration_hours = reset_link_duration_hours;
     if (force_reset_schedule_days !== undefined) updateData.force_reset_schedule_days = force_reset_schedule_days;
     if (min_password_length !== undefined) updateData.min_password_length = min_password_length;
@@ -128,7 +130,7 @@ export async function PATCH(request: NextRequest) {
       action: 'security_config_updated',
       target_type: 'security_config',
       target_id: admin.organization_id,
-      details: updateData,
+      details: JSON.parse(JSON.stringify(updateData)),
     });
 
     // Log to activity tracking
@@ -137,7 +139,7 @@ export async function PATCH(request: NextRequest) {
       organization_id: admin.organization_id,
       action: 'security_config_updated',
       resource_type: 'security_config',
-      metadata: updateData,
+      metadata: JSON.parse(JSON.stringify(updateData)),
     });
 
     return NextResponse.json({

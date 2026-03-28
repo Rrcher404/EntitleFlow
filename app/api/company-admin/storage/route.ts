@@ -28,8 +28,8 @@ export async function GET() {
 
     // Get storage breakdown by project (simplified - would need document tracking)
     // For now returning empty arrays as the schema doesn't have direct file size tracking
-    const breakdownByProject: any[] = [];
-    const breakdownByUser: any[] = [];
+    const breakdownByProject: Record<string, unknown>[] = [];
+    const _breakdownByUser: Record<string, unknown>[] = [];
     const fileTypeDistribution: Record<string, number> = {};
 
     // Get projects in organization for context
@@ -40,7 +40,7 @@ export async function GET() {
 
     // If documents table exists and has file tracking, populate breakdowns
     // This is a placeholder for future file tracking implementation
-    projects?.forEach((project: any) => {
+    projects?.forEach((project: Record<string, unknown>) => {
       breakdownByProject.push({
         project_id: project.id,
         project_name: project.name,

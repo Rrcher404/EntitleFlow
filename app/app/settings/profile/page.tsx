@@ -11,9 +11,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<Record<string, unknown> | null>(null);
   const [stats, setStats] = useState({ projects: 0, comments_resolved: 0, documents: 0 });
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditable, setIsEditable] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -57,7 +57,7 @@ export default function ProfilePage() {
           };
           setUser(defaultProfile);
         } else {
-          const pd = profileData as any;
+          const pd = profileData as Record<string, unknown>;
           setUser({
             id: authUser.id,
             full_name: pd?.full_name || authUser.email?.split('@')[0] || 'User',
@@ -109,7 +109,7 @@ export default function ProfilePage() {
 
           if (activityData) {
             setRecentActivity(
-              activityData.map((activity: any) => ({
+              activityData.map((activity: Record<string, unknown>) => ({
                 id: activity.id,
                 description: activity.description || activity.action,
                 timestamp: activity.created_at,
@@ -156,16 +156,16 @@ export default function ProfilePage() {
 
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: avatarUrl } as any)
+        .update({ avatar_url: avatarUrl } as Record<string, unknown>)
         .eq('id', authUser.id);
 
       if (updateError) throw updateError;
 
-      setUser((prev: any) => ({ ...prev, avatar_url: avatarUrl }));
+      setUser((prev: Record<string, unknown> | null) => prev ? { ...prev, avatar_url: avatarUrl } : null);
       showToast('success', 'Profile picture updated');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Upload error:', error);
-      showToast('error', error.message || 'Failed to upload avatar');
+      showToast('error', (error instanceof Error ? error.message : String(error)) || 'Failed to upload avatar');
     } finally {
       setIsSaving(false);
     }
@@ -180,16 +180,16 @@ export default function ProfilePage() {
 
       const { error } = await supabase
         .from('profiles')
-        .update({ bio } as any)
+        .update({ bio } as Record<string, unknown>)
         .eq('id', authUser.id);
 
       if (error) throw error;
 
-      setUser((prev: any) => ({ ...prev, bio }));
+      setUser((prev: Record<string, unknown> | null) => prev ? { ...prev, bio } : null);
       showToast('success', 'Bio updated successfully');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Bio update error:', error);
-      showToast('error', error.message || 'Failed to update bio');
+      showToast('error', (error instanceof Error ? error.message : String(error)) || 'Failed to update bio');
     } finally {
       setIsSaving(false);
     }
@@ -204,16 +204,16 @@ export default function ProfilePage() {
 
       const { error } = await supabase
         .from('profiles')
-        .update({ is_active: isActive } as any)
+        .update({ is_active: isActive } as Record<string, unknown>)
         .eq('id', authUser.id);
 
       if (error) throw error;
 
-      setUser((prev: any) => ({ ...prev, is_active: isActive }));
+      setUser((prev: Record<string, unknown> | null) => prev ? { ...prev, is_active: isActive } : null);
       showToast('success', isActive ? 'Status set to Active' : 'Status set to Away');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Status update error:', error);
-      showToast('error', error.message || 'Failed to update status');
+      showToast('error', (error instanceof Error ? error.message : String(error)) || 'Failed to update status');
     } finally {
       setIsSaving(false);
     }
@@ -264,9 +264,9 @@ export default function ProfilePage() {
         ) : user ? (
           <div className="mb-8">
             <UserProfileCard
-              user={user}
+              user={user as Parameters<typeof UserProfileCard>[0]['user']}
               stats={stats}
-              recentActivity={recentActivity}
+              recentActivity={recentActivity as Parameters<typeof UserProfileCard>[0]['recentActivity']}
               isEditable={isEditable}
               onAvatarUpload={handleAvatarUpload}
               onBioUpdate={handleBioUpdate}

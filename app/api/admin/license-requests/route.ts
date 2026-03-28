@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/admin/auth';
-import type { Database } from '@/lib/database.types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +17,7 @@ export async function GET(request: NextRequest) {
     const statusFilter = url.searchParams.get('status');
 
     let query = serviceClient
-      .from('license_change_requests' as any)
+      .from('license_change_requests')
       .select(`
         id,
         organization_id,
@@ -44,7 +43,7 @@ export async function GET(request: NextRequest) {
       `);
 
     if (statusFilter) {
-      query = query.eq('status', statusFilter);
+      query = query.eq('status', statusFilter as "cancelled" | "pending" | "approved" | "applied" | "rejected");
     }
 
     const { data: requests, error: queryError } = await query.order('created_at', {
@@ -59,16 +58,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Format response with joined data
-    const formattedRequests = (requests || []).map((req: any) => ({
+    const formattedRequests = (requests || []).map((req: Record<string, unknown>) => ({
       id: req.id,
       organization_id: req.organization_id,
-      organization_name: req.organizations?.name,
+      organization_name: (req.organizations as { name: string })?.name,
       requested_by_id: req.requested_by,
-      requested_by_name: req.requested_by_profile?.full_name,
-      requested_by_email: req.requested_by_profile?.email,
+      requested_by_name: (req.requested_by_profile as { full_name: string })?.full_name,
+      requested_by_email: (req.requested_by_profile as { email: string })?.email,
       target_user_id: req.target_user_id,
-      target_user_name: req.target_user?.full_name,
-      target_user_email: req.target_user?.email,
+      target_user_name: (req.target_user as { full_name: string })?.full_name,
+      target_user_email: (req.target_user as { email: string })?.email,
       current_license_type: req.current_license_type,
       requested_license_type: req.requested_license_type,
       status: req.status,
@@ -127,11 +126,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Fetch the change request
-    const { data: changeRequest, error: fetchError } = await (serviceClient
-      .from('license_change_requests' as any)
+    const { data: changeRequest, error: fetchError } = await serviceClient
+      .from('license_change_requests')
       .select('*')
       .eq('id', request_id)
-      .single() as any) as { data: any; error: any };
+      .single();
 
     if (fetchError || !changeRequest) {
       return NextResponse.json(
@@ -143,7 +142,7 @@ export async function PATCH(request: NextRequest) {
     if (action === 'approve') {
       // Update request status to 'approved'
       const { data: updatedRequest, error: updateError } = await serviceClient
-        .from('license_change_requests' as any)
+        .from('license_change_requests')
         .update({
           status: 'approved',
           reviewed_by: admin.id,
@@ -181,7 +180,7 @@ export async function PATCH(request: NextRequest) {
 
         // Update request status to 'applied' with applied_at timestamp
         const { error: applyError } = await serviceClient
-          .from('license_change_requests' as any)
+          .from('license_change_requests')
           .update({
             status: 'applied',
             applied_at: new Date().toISOString(),
@@ -216,7 +215,7 @@ export async function PATCH(request: NextRequest) {
     if (action === 'reject') {
       // Update request status to 'rejected'
       const { data: rejectedRequest, error: rejectError } = await serviceClient
-        .from('license_change_requests' as any)
+        .from('license_change_requests')
         .update({
           status: 'rejected',
           reviewed_by: admin.id,

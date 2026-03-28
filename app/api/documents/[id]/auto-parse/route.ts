@@ -54,7 +54,7 @@ export async function POST(
     }
 
     // Fetch document record and verify organization ownership
-    const { data: document, error: docError } = await (adminClient as any)
+    const { data: document, error: docError } = await adminClient
       .from('documents')
       .select('*')
       .eq('id', documentId)
@@ -70,7 +70,7 @@ export async function POST(
 
     // Update document parse_status to 'processing' immediately for UI feedback
     try {
-      await (adminClient as any)
+      await adminClient
         .from('documents')
         .update({ parse_status: 'processing', updated_at: new Date().toISOString() })
         .eq('id', documentId);
@@ -81,7 +81,7 @@ export async function POST(
     // Create parse_job record in the database
     const parseJobId = crypto.randomUUID();
     try {
-      await (adminClient as any)
+      await adminClient
         .from('parse_jobs')
         .insert({
           id: parseJobId,
@@ -109,9 +109,9 @@ export async function POST(
       console.error('File download error:', downloadError);
       // Mark parse as failed
       try {
-        await (adminClient as any).from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
-        await (adminClient as any).from('parse_jobs').update({ status: 'failed', error_message: 'Failed to download document', completed_at: new Date().toISOString() }).eq('id', parseJobId);
-      } catch (_) { /* non-fatal */ }
+        await adminClient.from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
+        await adminClient.from('parse_jobs').update({ status: 'failed', error_message: 'Failed to download document', completed_at: new Date().toISOString() }).eq('id', parseJobId);
+      } catch (_downloadError) { /* non-fatal */ }
       return NextResponse.json(
         {
           success: false,
@@ -123,7 +123,7 @@ export async function POST(
     }
 
     // Parse with Document AI
-    let extractedComments: Array<{ text: string; confidence?: number }> = [];
+    const extractedComments: Array<{ text: string; confidence?: number }> = [];
     try {
       // Mock Document AI parsing - in production, this would call Google Document AI
       // For now, we'll simulate extracted comments based on file content
@@ -164,9 +164,9 @@ export async function POST(
       // Update parse_job and document to failed status
       const failureMsg = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
       try {
-        await (adminClient as any).from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
-        await (adminClient as any).from('parse_jobs').update({ status: 'failed', error_message: failureMsg, completed_at: new Date().toISOString() }).eq('id', parseJobId);
-      } catch (_) { /* non-fatal */ }
+        await adminClient.from('documents').update({ parse_status: 'failed' }).eq('id', documentId);
+        await adminClient.from('parse_jobs').update({ status: 'failed', error_message: failureMsg, completed_at: new Date().toISOString() }).eq('id', parseJobId);
+      } catch (_parseJobError) { /* non-fatal */ }
       return NextResponse.json(
         {
           success: false,
@@ -207,7 +207,7 @@ export async function POST(
         let permitId: string | null = document.permit_id;
         if (!permitId && document.project_id) {
           // Try to get a permit from the project
-          const { data: permits } = await (adminClient as any)
+          const { data: permits } = await adminClient
             .from('permits')
             .select('id')
             .eq('project_id', document.project_id)
@@ -227,7 +227,7 @@ export async function POST(
             is_resolved: false,
           };
 
-          const { error: insertError } = await (adminClient as any)
+          const { error: insertError } = await adminClient
             .from('comments')
             .insert(commentRecord);
 
@@ -246,7 +246,7 @@ export async function POST(
 
     // Update document parse_status to 'completed' and record parsed_at
     try {
-      await (adminClient as any)
+      await adminClient
         .from('documents')
         .update({
           parse_status: 'completed',
@@ -260,7 +260,7 @@ export async function POST(
 
     // Update parse_job record to completed
     try {
-      await (adminClient as any)
+      await adminClient
         .from('parse_jobs')
         .update({
           status: 'completed',
@@ -275,7 +275,7 @@ export async function POST(
 
     // Log activity
     try {
-      await (adminClient as any)
+      await adminClient
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,

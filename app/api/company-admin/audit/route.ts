@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       query = query.lte('created_at', date_to);
     }
 
-    const { data: logs, count, error: logsError } = await query
+    const { data: logs, count: _count, error: logsError } = await query
       .order('created_at', { ascending: false })
       .range(offset, offset + per_page - 1);
 

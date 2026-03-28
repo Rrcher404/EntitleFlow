@@ -71,8 +71,12 @@ export async function POST(
 
     const adminClient = getSupabaseAdminClient();
 
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Service unavailable' }, { status: 500 });
+    }
+
     // 1. Update comment's assigned_to column
-    const { data: updatedComment, error: updateError } = await (adminClient as any)
+    const { data: updatedComment, error: updateError } = await adminClient!
       .from('comments')
       .update({
         assigned_to: assigned_to,
@@ -90,7 +94,7 @@ export async function POST(
     // 2. Upsert comment_assignments record
     //    First, unassign any previous assignee
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('comment_assignments')
         .update({ unassigned_at: new Date().toISOString() })
         .eq('comment_id', id)
@@ -101,7 +105,7 @@ export async function POST(
 
     //    Then create new assignment
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('comment_assignments')
         .insert({
           comment_id: id,
@@ -127,7 +131,7 @@ export async function POST(
           ? `${permit.permit_number} — ${permit.title}`
           : 'a permit';
 
-        await (adminClient as any)
+        await adminClient!
           .from('notifications')
           .insert({
             recipient_id: assigned_to,
@@ -152,7 +156,7 @@ export async function POST(
 
     // 4. Log activity
     try {
-      await (adminClient as any)
+      await adminClient!
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,

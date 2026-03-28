@@ -1,6 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../database.types';
 
@@ -31,7 +30,6 @@ export async function verifyAdmin(): Promise<AdminVerifyResult> {
       getAll() {
         return cookieStore.getAll();
       },
-      setAll() {},
     },
   });
 

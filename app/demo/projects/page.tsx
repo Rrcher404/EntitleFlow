@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -169,6 +169,18 @@ const mockProjectsData: Project[] = [
 type SortKey = 'name' | 'jurisdiction' | 'status' | 'permits' | 'comments' | 'lead' | 'activity';
 type SortOrder = 'asc' | 'desc';
 
+interface SortArrowProps {
+  columnKey: SortKey;
+  sortKey: SortKey | null;
+  sortOrder: 'asc' | 'desc';
+}
+
+const SortArrow = ({ columnKey, sortKey, sortOrder }: SortArrowProps) => {
+  if (sortKey !== columnKey) return null;
+  return <span className="ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
+};
+
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(mockProjectsData);
   const [searchQuery, setSearchQuery] = useState('');
@@ -189,7 +201,7 @@ export default function ProjectsPage() {
   const allStatuses = Array.from(new Set(projects.map((p) => p.status)));
 
   const filteredProjects = useMemo(() => {
-    let result = projects.filter((p) => {
+    const result = projects.filter((p) => {
       const matchesSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.jurisdiction.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -203,7 +215,7 @@ export default function ProjectsPage() {
 
     // Sorting
     result.sort((a, b) => {
-      let aVal: any, bVal: any;
+      let aVal: string | number, bVal: string | number;
 
       switch (sortKey) {
         case 'name':
@@ -236,10 +248,10 @@ export default function ProjectsPage() {
           break;
       }
 
-      if (typeof aVal === 'string') {
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
         return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+      return sortOrder === 'asc' ? Number(aVal) - Number(bVal) : Number(bVal) - Number(aVal);
     });
 
     return result;
@@ -297,10 +309,6 @@ export default function ProjectsPage() {
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
-  const SortArrow = ({ columnKey }: { columnKey: SortKey }) => {
-    if (sortKey !== columnKey) return null;
-    return <span className="ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -484,43 +492,43 @@ export default function ProjectsPage() {
                 onClick={() => handleSort('name')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Project Name <SortArrow columnKey="name" />
+                Project Name <SortArrow columnKey="name" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('jurisdiction')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Jurisdiction <SortArrow columnKey="jurisdiction" />
+                Jurisdiction <SortArrow columnKey="jurisdiction" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('status')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Status <SortArrow columnKey="status" />
+                Status <SortArrow columnKey="status" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('permits')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Permits <SortArrow columnKey="permits" />
+                Permits <SortArrow columnKey="permits" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('comments')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Comments <SortArrow columnKey="comments" />
+                Comments <SortArrow columnKey="comments" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('lead')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Lead <SortArrow columnKey="lead" />
+                Lead <SortArrow columnKey="lead" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
               <th
                 onClick={() => handleSort('activity')}
                 className="px-6 py-3 text-left font-semibold text-foreground cursor-pointer hover:bg-secondary/70"
               >
-                Last Activity <SortArrow columnKey="activity" />
+                Last Activity <SortArrow columnKey="activity" sortKey={sortKey} sortOrder={sortOrder} />
               </th>
             </tr>
           </thead>

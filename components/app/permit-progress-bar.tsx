@@ -17,8 +17,8 @@ export function PermitProgressBar({ comments, className }: PermitProgressBarProp
 
   // Calculate percentages
   const resolvedPercent = total > 0 ? Math.round((resolved / total) * 100) : 0;
-  const inProgressPercent = total > 0 ? Math.round((inProgress / total) * 100) : 0;
-  const openPercent = total > 0 ? Math.round((open / total) * 100) : 0;
+  const _inProgressPercent = total > 0 ? Math.round((inProgress / total) * 100) : 0;
+  const _openPercent = total > 0 ? Math.round((open / total) * 100) : 0;
 
   // Empty state
   if (total === 0) {

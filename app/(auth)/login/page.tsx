@@ -42,7 +42,7 @@ function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const email = watch('email');
+  const _email = watch('email');
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
     setIsLoading(true);

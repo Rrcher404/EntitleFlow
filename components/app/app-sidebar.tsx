@@ -12,7 +12,6 @@ import {
   LogOut,
   MapPin,
   Bell,
-  Users,
   Sparkles,
   ClipboardCheck,
 } from 'lucide-react';
@@ -23,7 +22,6 @@ import { createClient } from '@/lib/supabase/client';
 import {
   Sidebar,
   SidebarBody,
-  SidebarLink,
   DesktopSidebar,
   MobileSidebar,
   useSidebar,

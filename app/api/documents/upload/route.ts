@@ -103,7 +103,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       version: 1,
     };
 
-    const { data: insertedDoc, error: insertError } = await (adminClient as any)
+    const { data: insertedDoc, error: insertError } = await adminClient
       .from('documents')
       .insert(documentRecord)
       .select()
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Log activity
     try {
-      await (adminClient as any)
+      await adminClient
         .from('activity_log')
         .insert({
           organization_id: profile.organization_id,

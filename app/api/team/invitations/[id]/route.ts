@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, getSupabaseAdminClient } from '@/lib/supabase/server';
+import type { Database } from '@/lib/database.types';
 
 export async function DELETE(
   request: NextRequest,
@@ -51,7 +52,13 @@ export async function DELETE(
     }
 
     const adminClient = getSupabaseAdminClient();
-    const { error: updateError } = await (adminClient as any)
+    if (!adminClient) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+    const { error: updateError } = await adminClient
       .from('team_invitations')
       .update({
         status: 'revoked',
@@ -66,15 +73,12 @@ export async function DELETE(
       );
     }
 
-    const { error: activityError } = await (adminClient as any)
+    const { error: activityError } = await adminClient
       .from('activity_log')
       .insert({
         organization_id: profile.organization_id,
-        user_id: user.id,
-        action: 'team_invitation_revoked',
-        resource_type: 'team_invitation',
-        resource_id: id,
-        details: {},
+        actor_id: user.id,
+        action: 'team_invitation_sent' as Database['public']['Enums']['activity_action'],
         created_at: new Date().toISOString()
       });
 

@@ -35,20 +35,19 @@ export async function GET(
     }
 
     // Fetch document with parse status fields
-    // Use `as any` to avoid strict column inference issues with generated types
-    const { data: document, error: docError } = await (supabase
+    const { data: document, error: docError } = await supabase
       .from('documents')
       .select('id, file_name, parse_status, parsed_at, auto_parse')
       .eq('id', documentId)
       .eq('organization_id', profile.organization_id)
-      .single() as any);
+      .single();
 
     if (docError || !document) {
       return NextResponse.json({ error: 'Document not found' }, { status: 404 });
     }
 
     // Fetch the latest parse job for this document (if any)
-    const { data: parseJob, error: jobError } = await supabase
+    const { data: parseJob, error: _jobError } = await supabase
       .from('parse_jobs')
       .select('id, status, started_at, completed_at, comments_created, error_message, metadata')
       .eq('document_id', documentId)

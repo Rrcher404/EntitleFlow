@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -v \"^total\\\\|^\\\\.$\\\\|^\\\\.\\\\.$\")",
+      "Bash(git mv:*)",
+      "Bash(git -C /Users/jyecemaybury/PermitPilot ls-files docs/entitleflow-roadmap.jsx)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npx next:*)"
+    ]
+  }
+}

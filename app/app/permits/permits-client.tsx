@@ -12,7 +12,6 @@ import {
   PermitStatus,
   PermitType,
   Priority,
-  Project,
   PERMIT_STATUS_LABELS,
   PERMIT_STATUS_COLORS,
   PERMIT_TYPE_LABELS,
@@ -61,7 +60,7 @@ const PERMIT_STATUS_TABS: { value: PermitStatus | 'all'; label: string }[] = [
 
 export default function PermitsClient() {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [_organization, setOrganization] = useState<Organization | null>(null);
   const [permits, setPermits] = useState<PermitWithProject[]>([]);
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);

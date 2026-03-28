@@ -129,27 +129,27 @@ export async function retrieveKnowledge(
     try {
       const queryEmbedding = await generateEmbedding(message);
       if (queryEmbedding) {
-        const { data: vectorResults, error: vectorError } = await (adminClient as any)
+        const { data: vectorResults, error: vectorError } = await adminClient
           .rpc('match_flowe_knowledge', {
             query_embedding: `[${queryEmbedding.embedding.join(',')}]`,
             match_threshold: 0.65,
             match_count: maxEntries + maxFewShot + 3,
-            filter_category: categories && categories.length === 1 ? categories[0] : null,
-            filter_org_id: organizationId || null,
+            filter_category: categories && categories.length === 1 ? categories[0] : undefined,
+            filter_org_id: organizationId || undefined,
           });
 
         if (!vectorError && vectorResults && vectorResults.length > 0) {
           entries = vectorResults;
         }
       }
-    } catch (vectorSearchError) {
+    } catch (_vectorSearchError) {
       // Vector search failed — fall back to keyword search
       // This is expected when embeddings haven't been generated yet
     }
 
     // Fallback: Keyword overlap match
     if (!entries) {
-      let keywordQuery = (adminClient as any)
+      let keywordQuery = adminClient
         .from('flowe_knowledge')
         .select('id, category, title, content, keywords, tags, example_question, example_response, confidence, source')
         .eq('is_active', true)
@@ -175,7 +175,11 @@ export async function retrieveKnowledge(
         return { knowledgeBlocks: '', fewShotExamples: '', corrections: '', totalEntries: 0 };
       }
 
-      entries = keywordEntries || [];
+      entries = (keywordEntries || []).map((entry: Record<string, unknown>) => ({
+        ...entry,
+        example_question: entry.example_question || undefined,
+        example_response: entry.example_response || undefined,
+      } as KnowledgeEntry));
     } // end fallback
 
     if (!entries || entries.length === 0) {

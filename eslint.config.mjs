@@ -16,6 +16,19 @@ const eslintConfig = [
   },
   ...nextCoreWebVitals,
   ...nextTypeScript,
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

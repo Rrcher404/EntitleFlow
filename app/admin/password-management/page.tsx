@@ -70,7 +70,7 @@ export default function PasswordManagementPage() {
         throw new Error(errorData.error || 'Failed to send password reset')
       }
 
-      const data = await res.json()
+      const _data = await res.json()
       setSendSuccess(`Password reset link sent to ${email}`)
       setEmail('')
 

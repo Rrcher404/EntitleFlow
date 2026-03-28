@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Calendar, Filter, Download, ChevronDown } from 'lucide-react';
+import { Filter, Download } from 'lucide-react';
 
 interface AuditLog {
   id: string;

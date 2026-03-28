@@ -12,7 +12,6 @@ import { createClient } from '@/lib/supabase/client';
 import type {
   PermissionAction,
   LicenseType,
-  UserPermissionContext,
   UserRole,
 } from './types';
 import { DEFAULT_LICENSE_PERMISSIONS } from './constants';
