@@ -267,6 +267,7 @@ export function AppTopbar() {
                   width={32}
                   height={32}
                   className="h-8 w-8 rounded-full object-cover"
+                  onError={() => setAvatarUrl(null)}
                 />
               ) : (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-medium text-primary">
