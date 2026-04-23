@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Shell — Product Opportunity Matrix</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #f6f5f0;
+    --fg: #102034;
+    --card: #ffffff;
+    --primary: #0f3c35;
+    --primary-light: #dff2ef;
+    --secondary: #edf3f2;
+    --muted: #f0f2f4;
+    --muted-fg: #5a6676;
+    --accent: #25a18e;
+    --border: #e2e5e5;
+    --red: #dc2626;
+    --amber: #d97706;
+    --green: #16a34a;
+    --blue: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  h1, h2, h3 { font-family: 'Manrope', sans-serif; letter-spacing: -0.02em; }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header .eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    color: var(--muted-fg);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Shell inventory */
+  .shell-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .shell-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .shell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .shell-chip {
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .shell-chip .reuse {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 0.2rem;
+  }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Instrument Sans', sans-serif;
+    color: var(--fg);
+  }
+
+  .filter-btn:hover { border-color: var(--accent); }
+  .filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  /* Sort controls */
+  .sort-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .sort-row label { color: var(--muted-fg); font-weight: 600; }
+
+  .sort-row select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--card);
+    cursor: pointer;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .opp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .opp-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-color: var(--accent);
+  }
+
+  .opp-card .rank-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem 0.3rem 0.6rem;
+    border-radius: 0 1rem 0 0.5rem;
+  }
+
+  .opp-card.top-pick { border-left: 4px solid var(--accent); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 0.6rem;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .card-title-area h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+  }
+
+  .card-title-area .pitch {
+    font-size: 0.82rem;
+    color: var(--muted-fg);
+  }
+
+  .card-title-area .target {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 0.3rem;
+  }
+
+  /* Metrics bar */
+  .metrics-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric {
+    text-align: center;
+    background: var(--muted);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.3rem;
+  }
+
+  .metric .value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--fg);
+  }
+
+  .metric .label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-fg);
+    font-weight: 600;
+  }
+
+  /* Score bar */
+  .score-section {
+    margin-bottom: 1rem;
+  }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.75rem;
+  }
+
+  .score-label {
+    width: 90px;
+    text-align: right;
+    color: var(--muted-fg);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .score-bar-bg {
+    flex: 1;
+    height: 8px;
+    background: var(--muted);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .score-num {
+    width: 28px;
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--fg);
+    flex-shrink: 0;
+  }
+
+  /* Verdict */
+  .verdict-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .v-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .v-tag.crowding-low { background: #dcfce7; color: #166534; }
+  .v-tag.crowding-med { background: #fef9c3; color: #854d0e; }
+  .v-tag.crowding-high { background: #fee2e2; color: #991b1b; }
+  .v-tag.fit-high { background: var(--primary-light); color: var(--primary); }
+  .v-tag.fit-med { background: #dbeafe; color: #1e40af; }
+
+  .risk-line {
+    font-size: 0.78rem;
+    color: var(--muted-fg);
+    padding: 0.5rem 0.75rem;
+    background: #fef3c7;
+    border-radius: 0.5rem;
+    border-left: 3px solid var(--amber);
+  }
+
+  /* Expandable detail */
+  .detail-toggle {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    display: inline-block;
+    user-select: none;
+  }
+
+  .detail-toggle:hover { text-decoration: underline; }
+
+  .detail-body {
+    display: none;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--muted-fg);
+    line-height: 1.7;
+  }
+
+  .detail-body.open { display: block; }
+
+  .detail-body strong { color: var(--fg); }
+
+  /* Comparison table */
+  .compare-section {
+    margin-top: 2.5rem;
+  }
+
+  .compare-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .compare-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--card);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+
+  th {
+    background: var(--secondary);
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+
+  td {
+    padding: 0.5rem 0.8rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:hover td { background: var(--muted); }
+
+  .highlight-row td {
+    background: var(--primary-light);
+    font-weight: 500;
+  }
+
+  /* Bottom section */
+  .bottom-insight {
+    margin-top: 2.5rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+
+  .bottom-insight h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: white;
+  }
+
+  .bottom-insight p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .bottom-insight .callout {
+    background: rgba(255,255,255,0.12);
+    border-radius: 0.6rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+    .shell-grid { grid-template-columns: repeat(2, 1fr); }
+    body { padding: 1rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="eyebrow">Strategic Analysis</div>
+    <h1>Platform Shell Opportunity Matrix</h1>
+    <p>10 product ideas ranked by opportunity score — built on your existing EntitleFlow infrastructure</p>
+  </div>
+
+  <!-- Shell inventory -->
+  <div class="shell-section">
+    <h2>Your Platform Shell — What's Reusable</h2>
+    <div class="shell-grid">
+      <div class="shell-chip">Auth + RBAC (4 roles)<span class="reuse">95% reuse</span></div>
+      <div class="shell-chip">License Tier System<span class="reuse">95% reuse</span></div>
+      <div class="shell-chip">Dashboard Shell<span class="reuse">95% reuse</span></div>
+      <div class="shell-chip">AI Agent Layer (6 agents)<span class="reuse">100% reuse (swap prompts)</span></div>
+      <div class="shell-chip">Model Registry<span class="reuse">100% reuse</span></div>
+      <div class="shell-chip">Document Pipeline<span class="reuse">85% reuse</span></div>
+      <div class="shell-chip">Admin Panel<span class="reuse">90% reuse</span></div>
+      <div class="shell-chip">Notification System<span class="reuse">95% reuse</span></div>
+      <div class="shell-chip">Marketing Site<span class="reuse">80% reuse (rebrand)</span></div>
+      <div class="shell-chip">Lead Capture + Forms<span class="reuse">90% reuse</span></div>
+      <div class="shell-chip">30+ UI Components<span class="reuse">100% reuse</span></div>
+      <div class="shell-chip">Settings + Profile<span class="reuse">95% reuse</span></div>
+    </div>
+    <p style="margin-top:1rem; font-size:0.82rem; color:var(--muted-fg);">Estimated reskin time for a new vertical: <strong style="color:var(--fg);">140–220 hours (2–3 weeks)</strong>. The integration pattern (auth-first architecture) is the real moat — each new product ships 50% faster than the last.</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All Ideas</button>
+    <button class="filter-btn" data-filter="top">Top 3 Picks</button>
+    <button class="filter-btn" data-filter="low-crowd">Low Competition</button>
+    <button class="filter-btn" data-filter="high-wtp">High WTP ($150+)</button>
+    <button class="filter-btn" data-filter="fast-build">Fast Build (&lt;160hr)</button>
+  </div>
+
+  <div class="sort-row">
+    <label>Sort by:</label>
+    <select id="sortSelect">
+      <option value="score">Opportunity Score</option>
+      <option value="tam">TAM (Largest First)</option>
+      <option value="wtp">Willingness to Pay</option>
+      <option value="effort">Build Effort (Fastest First)</option>
+      <option value="competition">Least Competition</option>
+    </select>
+  </div>
+
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- Comparison table -->
+  <div class="compare-section">
+    <h2>Side-by-Side Comparison</h2>
+    <div class="compare-table-wrap">
+      <table id="compareTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>TAM</th>
+            <th>WTP/seat</th>
+            <th>Shell Fit</th>
+            <th>Competition</th>
+            <th>Solo Viable?</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Strategic insight -->
+  <div class="bottom-insight">
+    <h2>The Strategic Takeaway</h2>
+    <p>Your platform shell is not just reusable scaffolding — it's a competitive moat. The auth-first architecture, model-agnostic AI layer, and enterprise RBAC would take a competitor 12+ weeks to rebuild from scratch. Every new vertical you launch on this shell ships in 2–3 weeks instead of 3–4 months.</p>
+    <p>The pattern that wins: <strong>"Upload document → AI extracts structured data → Teams collaborate on responses"</strong> is strongest in verticals where analysis is manual, incumbents are enterprise-only, and collaboration (not just extraction) is the value.</p>
+    <div class="callout">
+      <strong>Recommended path:</strong> Keep building EntitleFlow (it's a strong vertical with real demand). When you're ready for product #2, ContractFlow (SMB legal) or ComplianceFlow (startup SOC 2/ISO) are the fastest to market — both reuse 90%+ of your shell and target segments where incumbents charge $50K+/year.
+    </div>
+  </div>
+</div>
+
+<script>
+const opportunities = [
+  {
+    rank: 1,
+    name: "ContractFlow",
+    icon: "📜",
+    pitch: "AI contract review and redline collaboration for SMBs and startups",
+    target: "Small law firms, startup legal ops, real estate attorneys",
+    tam: "$12B",
+    tamNum: 12,
+    wtp: "$250–400",
+    wtpNum: 325,
+    shellFit: 20,
+    competition: 16,
+    soloViable: 18,
+    feasibility: 17,
+    score: 108,
+    effort: 180,
+    crowding: "med",
+    fitLabel: "high",
+    topPick: true,
+    tags: ["top", "high-wtp"],
+    risk: "Ironclad dominates enterprise; you'd need to own SMB distribution through communities and content marketing",
+    competitors: "Ironclad ($3.2B), ContractPodAI, SpotDraft — all enterprise-focused, $50K+/year",
+    detail: "The legal contract review market is heating up but SMB is wide open. Ironclad raised $333M but only serves enterprises at $50K+/year. Millions of small businesses, solo lawyers, and startup founders still review contracts manually. Your shell maps perfectly: upload contract → AI extracts key terms, flags risks, highlights unusual clauses → team discusses redlines → generate response. The RBAC system handles reviewer/approver/viewer roles naturally. Path to $100K MRR: 67 customers at $1.5K/month by Year 2."
+  },
+  {
+    rank: 2,
+    name: "ClaimFlow",
+    icon: "🏥",
+    pitch: "AI-powered insurance claims review and dispute resolution tracker",
+    target: "Health insurance claims teams, TPAs, independent adjusters",
+    tam: "$18B",
+    tamNum: 18,
+    wtp: "$200–350",
+    wtpNum: 275,
+    shellFit: 19,
+    competition: 14,
+    soloViable: 15,
+    feasibility: 15,
+    score: 106,
+    effort: 220,
+    crowding: "med",
+    fitLabel: "high",
+    topPick: true,
+    tags: ["top", "high-wtp"],
+    risk: "P&C claims are locked by Snapsheet/Tractable; health claims have slower enterprise sales cycles and compliance requirements",
+    competitors: "Snapsheet (top 20 P&C), Tractable (computer vision), Curacel — focused on auto/property, health claims underserved",
+    detail: "Largest TAM on the list ($18B) but also the most nuanced. P&C auto claims are owned by Snapsheet and Tractable. The real gap is health insurance claims processing — prior authorization review, claims dispute resolution, and workers' comp are still heavily manual. 100M+ claims processed annually in the US. Your document pipeline maps directly: upload EOB/claim form → AI extracts diagnosis codes, charges, coverage details → assign to reviewer → draft appeal letter. The risk is enterprise sales cycles and HIPAA compliance overhead."
+  },
+  {
+    rank: 3,
+    name: "ComplianceFlow",
+    icon: "✅",
+    pitch: "Affordable SOC 2 / ISO 27001 compliance tracking for startups and SMBs",
+    target: "Startup CTOs, compliance managers, growing SaaS companies",
+    tam: "$8B",
+    tamNum: 8,
+    wtp: "$120–200",
+    wtpNum: 160,
+    shellFit: 19,
+    competition: 17,
+    soloViable: 19,
+    feasibility: 19,
+    score: 92,
+    effort: 150,
+    crowding: "low",
+    fitLabel: "high",
+    topPick: true,
+    tags: ["top", "low-crowd", "high-wtp", "fast-build"],
+    risk: "Vanta is emerging fast in this space; need to differentiate on price and simplicity vs their automation depth",
+    competitors: "AuditBoard (Fortune 500), Workiva, Vanta (emerging) — all $20K+/year, startup pricing gap exists",
+    detail: "Every startup that sells to enterprises needs SOC 2 compliance, but AuditBoard costs $50K+ and even Vanta is $20K+/year. Massive gap for a $120–200/seat/month tool that handles evidence collection, policy document management, and audit prep. Your shell is a near-perfect match: upload policies/evidence → AI classifies against control frameworks → assign gaps to team → track remediation → generate audit-ready reports. Distribution through startup communities (YC, Stripe Atlas, Mercury ecosystem). Lowest domain expertise required of all ideas."
+  },
+  {
+    rank: 4,
+    name: "GrantFlow",
+    icon: "🎓",
+    pitch: "AI grant proposal review and scoring platform for universities and foundations",
+    target: "University research offices, grant-making foundations, federal program officers",
+    tam: "$4B",
+    tamNum: 4,
+    wtp: "$80–150",
+    wtpNum: 115,
+    shellFit: 18,
+    competition: 19,
+    soloViable: 17,
+    feasibility: 17,
+    score: 88,
+    effort: 160,
+    crowding: "low",
+    fitLabel: "high",
+    tags: ["low-crowd", "fast-build"],
+    risk: "Nonprofit/education buyers have tight budgets and long procurement cycles; seasonal demand around grant deadlines",
+    competitors: "SoPact (early), Peak Proposals (writing tool) — no dominant player for review/scoring workflow",
+    detail: "An emerging market with virtually no incumbent. Grant application review is a massive bottleneck: 300 proposals × 15 min per review = 300+ reviewer hours. Universities and foundations still use spreadsheets and email. AI pre-scoring with human review could cut this by 60%. Your shell maps well: upload proposals → AI scores against criteria → assign to reviewers → collect feedback → generate funding decisions. First-mover advantage is real. The $50M FIPSE allocation for AI in education signals growing demand."
+  },
+  {
+    rank: 5,
+    name: "InspectFlow",
+    icon: "🏠",
+    pitch: "AI-powered real estate inspection and transaction document review",
+    target: "Real estate agents, title companies, property managers",
+    tam: "$6B",
+    tamNum: 6,
+    wtp: "$50–120",
+    wtpNum: 85,
+    shellFit: 18,
+    competition: 16,
+    soloViable: 18,
+    feasibility: 18,
+    score: 86,
+    effort: 140,
+    crowding: "med",
+    fitLabel: "high",
+    tags: ["fast-build"],
+    risk: "Real estate agents are price-sensitive; need viral distribution through brokerages or MLS integrations",
+    competitors: "Dotloop (~50% market), SkySlope, ListedKit AI (emerging) — transaction management, not AI-native",
+    detail: "Real estate transaction management is a $6B market where Dotloop and SkySlope dominate but haven't invested in AI. ListedKit is the only AI-native entrant. Agents still manually review inspection reports, contracts, and disclosures. Your shell maps naturally: upload inspection report → AI extracts deficiencies and repair items → flag compliance issues → generate closing checklists. Fastest build of all ideas (140 hours) because real estate documents are more standardized than legal contracts. Challenge is getting $50–120/month from price-sensitive agents."
+  },
+  {
+    rank: 6,
+    name: "AuditTrail",
+    icon: "📊",
+    pitch: "Document-driven internal audit workpaper management with AI extraction",
+    target: "Internal audit teams, Big 4 support staff, SOX compliance officers",
+    tam: "$5B",
+    tamNum: 5,
+    wtp: "$150–250",
+    wtpNum: 200,
+    shellFit: 17,
+    competition: 13,
+    soloViable: 14,
+    feasibility: 14,
+    score: 82,
+    effort: 200,
+    crowding: "med",
+    fitLabel: "med",
+    tags: ["high-wtp"],
+    risk: "Seasonal revenue (audit seasons) is dangerous for bootstrapped economics; AuditBoard has deep enterprise moats",
+    competitors: "AuditBoard (50%+ of Fortune 500), Workiva, IDEA, Caseware — mature market with strong incumbents",
+    detail: "Strong WTP ($150–250/seat) but AuditBoard's dominance makes enterprise penetration hard. The opportunity is mid-market: companies large enough to need formal audits but too small for AuditBoard ($50K+). Your document pipeline handles audit evidence ingestion naturally. The big risk is seasonal demand — audit season creates revenue spikes and valleys that hurt bootstrapped cash flow."
+  },
+  {
+    rank: 7,
+    name: "PermitIQ",
+    icon: "🏛️",
+    pitch: "Municipal permit processing automation for local government agencies",
+    target: "City planning departments, building departments, code enforcement",
+    tam: "$10B",
+    tamNum: 10,
+    wtp: "$100–200",
+    wtpNum: 150,
+    shellFit: 20,
+    competition: 15,
+    soloViable: 12,
+    feasibility: 12,
+    score: 78,
+    effort: 200,
+    crowding: "low",
+    fitLabel: "high",
+    tags: ["low-crowd", "high-wtp"],
+    risk: "Government procurement is painfully slow (6–18 months); requires RFP responses, security certifications, and political relationships",
+    competitors: "GovWell (30+ states), Revver (hundreds of agencies) — market growing at 17.8% CAGR to $98B by 2033",
+    detail: "Massive TAM ($10B) and your EntitleFlow domain knowledge gives you a unique edge — you understand the permit workflow from the applicant side. Flipping to the government side (processing incoming applications) leverages 100% of your document pipeline and 95% of RBAC. The GovTech market is growing at 17.8% CAGR. However, government sales cycles are 6–18 months, require security certifications, and often need political connections. Not ideal as a solo founder's second product unless you already have a municipal relationship from EntitleFlow."
+  },
+  {
+    rank: 8,
+    name: "VendorCheck",
+    icon: "🔍",
+    pitch: "AI vendor risk assessment and due diligence document review",
+    target: "Procurement teams, security teams, vendor management offices",
+    tam: "$3B",
+    tamNum: 3,
+    wtp: "$100–180",
+    wtpNum: 140,
+    shellFit: 17,
+    competition: 16,
+    soloViable: 16,
+    feasibility: 16,
+    score: 76,
+    effort: 170,
+    crowding: "med",
+    fitLabel: "med",
+    tags: [],
+    risk: "Market is fragmented; companies often bundle vendor risk into broader GRC tools rather than buying standalone",
+    competitors: "OneTrust, Prevalent, Venminder — mostly enterprise GRC bundles",
+    detail: "Every company that evaluates vendors (security questionnaires, SOC 2 reports, financial docs) spends hours manually reviewing documents. Your shell maps well: upload vendor documentation → AI extracts risk indicators → classify by risk category → assign to reviewers → generate risk report. The challenge is that vendor risk is often bundled into larger GRC platforms rather than bought standalone. Best as a feature within ComplianceFlow rather than a separate product."
+  },
+  {
+    rank: 9,
+    name: "ProposalFlow",
+    icon: "📝",
+    pitch: "RFP response management with AI-powered content extraction and team collaboration",
+    target: "Sales engineering teams, proposal managers, consulting firms",
+    tam: "$3.5B",
+    tamNum: 3.5,
+    wtp: "$80–150",
+    wtpNum: 115,
+    shellFit: 16,
+    competition: 14,
+    soloViable: 15,
+    feasibility: 15,
+    score: 74,
+    effort: 180,
+    crowding: "med",
+    fitLabel: "med",
+    tags: [],
+    risk: "Loopio and Responsive have strong PLG motions; differentiation would need to come from AI quality, not features",
+    competitors: "Loopio ($100M+ ARR), Responsive (formerly RFPIO), Qvidian — established category",
+    detail: "RFP response is a well-understood pain point but already has category leaders. Loopio and Responsive dominate with $100M+ ARR. Your shell maps to the workflow (upload RFP → extract questions → assign sections → draft responses → compile submission) but competing against well-funded incumbents is tough. Better as a niche play (e.g., government RFPs only, or construction-specific RFPs leveraging your EntitleFlow domain knowledge)."
+  },
+  {
+    rank: 10,
+    name: "PatentFlow",
+    icon: "⚙️",
+    pitch: "AI patent review and prior art analysis collaboration platform",
+    target: "IP attorneys, patent agents, corporate IP departments",
+    tam: "$2B",
+    tamNum: 2,
+    wtp: "$200–400",
+    wtpNum: 300,
+    shellFit: 15,
+    competition: 12,
+    soloViable: 12,
+    feasibility: 12,
+    score: 68,
+    effort: 240,
+    crowding: "high",
+    fitLabel: "med",
+    tags: ["high-wtp"],
+    risk: "Requires deep patent law expertise; existing tools (PatSnap, CPA Global) have massive patent databases that are hard to replicate",
+    competitors: "PatSnap ($300M+ raised), Clarivate (CPA Global), Anaqua — well-funded, data moats",
+    detail: "High WTP ($200–400/seat) but the market has deep-pocketed incumbents with proprietary patent databases. PatSnap alone raised $300M+. Your document pipeline could handle patent document parsing, but competing requires patent corpus access and domain expertise that's hard to acquire solo. The risk outweighs the reward for a second product."
+  }
+];
+
+// Render cards
+function renderCards(data) {
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+  data.forEach((o, i) => {
+    const card = document.createElement('div');
+    card.className = 'opp-card' + (o.topPick ? ' top-pick' : '');
+    card.dataset.tags = JSON.stringify(o.tags);
+    card.innerHTML = `
+      <div class="rank-badge">#${o.rank}</div>
+      <div class="card-header">
+        <div class="card-icon">${o.icon}</div>
+        <div class="card-title-area">
+          <h3>${o.name}</h3>
+          <div class="pitch">${o.pitch}</div>
+          <div class="target">${o.target}</div>
+        </div>
+      </div>
+      <div class="metrics-bar">
+        <div class="metric"><div class="value">${o.tam}</div><div class="label">TAM</div></div>
+        <div class="metric"><div class="value">${o.wtp}</div><div class="label">$/seat/mo</div></div>
+        <div class="metric"><div class="value">${o.effort}h</div><div class="label">Build Effort</div></div>
+        <div class="metric"><div class="value">${o.score}/110</div><div class="label">Opp Score</div></div>
+      </div>
+      <div class="score-section">
+        <div class="score-row">
+          <span class="score-label">Shell Fit</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${o.shellFit*5}%;background:var(--accent)"></div></div>
+          <span class="score-num">${o.shellFit}/20</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Low Crowding</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${o.competition*5}%;background:var(--green)"></div></div>
+          <span class="score-num">${o.competition}/20</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Solo Viable</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${o.soloViable*5}%;background:var(--blue)"></div></div>
+          <span class="score-num">${o.soloViable}/20</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Feasibility</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${o.feasibility*5}%;background:var(--amber)"></div></div>
+          <span class="score-num">${o.feasibility}/20</span>
+        </div>
+      </div>
+      <div class="verdict-tags">
+        <span class="v-tag crowding-${o.crowding}">${o.crowding === 'low' ? 'Low Competition' : o.crowding === 'med' ? 'Moderate Competition' : 'Crowded'}</span>
+        <span class="v-tag fit-${o.fitLabel}">${o.fitLabel === 'high' ? 'High Shell Fit' : 'Medium Shell Fit'}</span>
+      </div>
+      <div class="risk-line">${o.risk}</div>
+      <div class="detail-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.nextElementSibling.classList.contains('open') ? '▾ Hide details' : '▸ Show competitive intel & deep dive'">▸ Show competitive intel & deep dive</div>
+      <div class="detail-body">
+        <p><strong>Key Competitors:</strong> ${o.competitors}</p>
+        <p style="margin-top:0.5rem">${o.detail}</p>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// Render table
+function renderTable(data) {
+  const body = document.getElementById('compareBody');
+  body.innerHTML = '';
+  data.forEach((o, i) => {
+    const row = document.createElement('tr');
+    if (o.topPick) row.className = 'highlight-row';
+    row.innerHTML = `
+      <td>${o.rank}</td>
+      <td><strong>${o.icon} ${o.name}</strong></td>
+      <td>${o.tam}</td>
+      <td>${o.wtp}</td>
+      <td>${o.shellFit}/20</td>
+      <td>${o.crowding === 'low' ? '🟢 Low' : o.crowding === 'med' ? '🟡 Moderate' : '🔴 High'}</td>
+      <td>${o.soloViable >= 17 ? '✅ Yes' : o.soloViable >= 14 ? '⚠️ Maybe' : '❌ Hard'}</td>
+      <td><strong>${o.score}</strong></td>
+    `;
+    body.appendChild(row);
+  });
+}
+
+// Filter
+document.getElementById('filters').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const f = e.target.dataset.filter;
+  let filtered = [...opportunities];
+  if (f === 'top') filtered = filtered.filter(o => o.topPick);
+  else if (f === 'low-crowd') filtered = filtered.filter(o => o.crowding === 'low');
+  else if (f === 'high-wtp') filtered = filtered.filter(o => o.wtpNum >= 150);
+  else if (f === 'fast-build') filtered = filtered.filter(o => o.effort <= 160);
+  renderCards(filtered);
+  renderTable(filtered);
+});
+
+// Sort
+document.getElementById('sortSelect').addEventListener('change', e => {
+  const v = e.target.value;
+  const sorted = [...opportunities].sort((a, b) => {
+    if (v === 'score') return b.score - a.score;
+    if (v === 'tam') return b.tamNum - a.tamNum;
+    if (v === 'wtp') return b.wtpNum - a.wtpNum;
+    if (v === 'effort') return a.effort - b.effort;
+    if (v === 'competition') return b.competition - a.competition;
+    return 0;
+  });
+  // Reset filter
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-filter="all"]').classList.add('active');
+  renderCards(sorted);
+  renderTable(sorted);
+});
+
+// Initial render
+renderCards(opportunities);
+renderTable(opportunities);
+</script>
+</body>
+</html>

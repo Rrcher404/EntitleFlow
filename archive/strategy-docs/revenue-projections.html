@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three-Product Portfolio — Revenue Projections</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap');
+  :root {
+    --bg:#f6f5f0;--fg:#102034;--card:#fff;--primary:#0f3c35;--primary-light:#dff2ef;
+    --secondary:#edf3f2;--muted:#f0f2f4;--muted-fg:#5a6676;--accent:#25a18e;--border:#e2e5e5;
+    --green:#16a34a;--amber:#d97706;--blue:#2563eb;--purple:#7c3aed;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;padding:2rem 1rem}
+  .container{max-width:1280px;margin:0 auto}
+  h1,h2,h3,h4{font-family:'Manrope',sans-serif;letter-spacing:-0.02em}
+  .header{text-align:center;margin-bottom:2.5rem}
+  .header .eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+  .header h1{font-size:2rem;font-weight:800;margin-bottom:.4rem}
+  .header p{color:var(--muted-fg);font-size:.9rem;max-width:620px;margin:0 auto}
+  .scenario-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;justify-content:center}
+  .scenario-tab{padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--border);background:var(--card);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Instrument Sans',sans-serif;color:var(--fg)}
+  .scenario-tab:hover{border-color:var(--accent)}
+  .scenario-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .assumptions-panel{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem}
+  .assumptions-panel h3{font-size:.9rem;margin-bottom:1rem}
+  .product-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1rem}
+  .product-col{border:1px solid var(--border);border-radius:.75rem;padding:1rem}
+  .product-col.ef-col{border-top:3px solid var(--primary)}
+  .product-col.cf-col{border-top:3px solid var(--blue)}
+  .product-col.gf-col{border-top:3px solid var(--purple)}
+  .product-col h4{font-size:.8rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+  .product-col .fields{display:flex;flex-direction:column;gap:.6rem}
+  .assumption-item label{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-fg);margin-bottom:.25rem}
+  .assumption-item input{width:100%;padding:.4rem .5rem;border:1px solid var(--border);border-radius:.4rem;font-size:.82rem;font-family:'Manrope',sans-serif;font-weight:600;background:var(--muted);color:var(--fg)}
+  .assumption-item input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,161,142,.15)}
+  .shared-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+  .product-label{font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:1rem;display:inline-block}
+  .product-label.ef{background:var(--primary-light);color:var(--primary)}
+  .product-label.cf{background:#dbeafe;color:var(--blue)}
+  .product-label.gf{background:#ede9fe;color:var(--purple)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dot.ef{background:var(--primary)}.dot.cf{background:var(--blue)}.dot.gf{background:var(--purple)}
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.6rem;margin-bottom:1.5rem}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:.85rem;text-align:center}
+  .kpi-card .kpi-value{font-family:'Manrope',sans-serif;font-weight:800;font-size:1.4rem;color:var(--primary)}
+  .kpi-card .kpi-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-fg);font-weight:600;margin-top:.15rem}
+  .kpi-card .kpi-sub{font-size:.68rem;color:var(--accent);font-weight:500;margin-top:.1rem}
+  .kpi-card.highlight{background:var(--primary);border-color:var(--primary)}
+  .kpi-card.highlight .kpi-value{color:#fff}
+  .kpi-card.highlight .kpi-label{color:rgba(255,255,255,.7)}
+  .kpi-card.highlight .kpi-sub{color:rgba(255,255,255,.85)}
+  .chart-section{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem}
+  .chart-section h3{font-size:1rem;margin-bottom:1rem}
+  .chart-tabs{display:flex;gap:.4rem;margin-bottom:1rem}
+  .chart-tab{padding:.3rem .8rem;border-radius:.4rem;border:1px solid var(--border);background:var(--muted);font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;color:var(--muted-fg)}
+  .chart-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  canvas{width:100%!important;height:320px!important}
+  .table-section{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;margin-bottom:1.5rem}
+  .table-section h3{font-size:1rem;padding:1rem 1.5rem .75rem}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.75rem}
+  th{background:var(--secondary);text-align:right;padding:.5rem .7rem;font-weight:700;font-family:'Manrope',sans-serif;white-space:nowrap}
+  th:first-child{text-align:left}
+  td{padding:.45rem .7rem;border-top:1px solid var(--border);text-align:right;font-family:'Manrope',sans-serif;font-weight:500}
+  td:first-child{text-align:left;font-weight:700;color:var(--fg)}
+  tr:hover td{background:var(--muted)}
+  tr.total-row td{background:var(--primary-light);font-weight:800;border-top:2px solid var(--primary)}
+  tr.section-header td{background:var(--secondary);font-weight:700;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted-fg)}
+  .insight-box{background:var(--primary);color:#fff;border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem}
+  .insight-box h3{color:#fff;font-size:1rem;margin-bottom:.75rem}
+  .insight-box p{opacity:.9;font-size:.85rem;line-height:1.7;margin-bottom:.5rem}
+  .milestone-track{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+  .milestone{background:rgba(255,255,255,.12);border-radius:.5rem;padding:.55rem .75rem;font-size:.75rem;flex:1;min-width:140px}
+  .milestone .ms-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6;margin-bottom:.15rem}
+  .milestone .ms-value{font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem}
+  .milestone .ms-note{font-size:.65rem;opacity:.7;margin-top:.1rem}
+  .portfolio-mix{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem}
+  .portfolio-mix h3{font-size:1rem;margin-bottom:1rem}
+  .mix-bars{display:flex;flex-direction:column;gap:.6rem}
+  .mix-row{display:flex;align-items:center;gap:.6rem}
+  .mix-label{width:100px;font-size:.75rem;font-weight:600;text-align:right;flex-shrink:0}
+  .mix-bar-bg{flex:1;height:28px;background:var(--muted);border-radius:.4rem;overflow:hidden;display:flex}
+  .mix-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;transition:width .4s ease}
+  .mix-seg.ef{background:var(--primary)}.mix-seg.cf{background:var(--blue)}.mix-seg.gf{background:var(--purple)}.mix-seg.ai{background:var(--accent)}
+  .mix-legend{display:flex;gap:1rem;margin-top:.5rem;font-size:.7rem;color:var(--muted-fg)}
+  .mix-legend span{display:flex;align-items:center;gap:.3rem}
+  @media(max-width:900px){.product-row{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}body{padding:1rem .5rem}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="eyebrow">Financial Projections — 2026–2027</div>
+    <h1>Three-Product Portfolio Revenue Model</h1>
+    <p>EntitleFlow + ContractFlow + GrantFlow — interactive projections for 200+ clients onboarded across all three products in Q3–Q4 2026</p>
+  </div>
+  <div class="scenario-tabs" id="scenarioTabs"></div>
+  <div class="assumptions-panel">
+    <h3>Assumptions (edit any field to update all projections live)</h3>
+    <div class="product-row">
+      <div class="product-col ef-col">
+        <h4><span class="dot ef"></span> EntitleFlow</h4>
+        <div class="fields">
+          <div class="assumption-item"><label>Clients by Q4 2026</label><input type="number" id="efClients" value="100" min="0" max="500"></div>
+          <div class="assumption-item"><label>Avg Revenue / Client / Mo</label><input type="number" id="efARPC" value="2200" min="500" max="10000"></div>
+          <div class="assumption-item"><label>Monthly Churn %</label><input type="number" id="efChurn" value="3" min="0" max="20" step="0.5"></div>
+        </div>
+      </div>
+      <div class="product-col cf-col">
+        <h4><span class="dot cf"></span> ContractFlow</h4>
+        <div class="fields">
+          <div class="assumption-item"><label>Clients by Q4 2026</label><input type="number" id="cfClients" value="60" min="0" max="500"></div>
+          <div class="assumption-item"><label>Avg Revenue / Client / Mo</label><input type="number" id="cfARPC" value="1800" min="500" max="10000"></div>
+          <div class="assumption-item"><label>Monthly Churn %</label><input type="number" id="cfChurn" value="4" min="0" max="20" step="0.5"></div>
+        </div>
+      </div>
+      <div class="product-col gf-col">
+        <h4><span class="dot gf"></span> GrantFlow</h4>
+        <div class="fields">
+          <div class="assumption-item"><label>Clients by Q4 2026</label><input type="number" id="gfClients" value="40" min="0" max="500"></div>
+          <div class="assumption-item"><label>Avg Revenue / Client / Mo</label><input type="number" id="gfARPC" value="950" min="200" max="5000"></div>
+          <div class="assumption-item"><label>Monthly Churn %</label><input type="number" id="gfChurn" value="2" min="0" max="20" step="0.5"></div>
+        </div>
+      </div>
+    </div>
+    <div class="shared-row">
+      <div class="assumption-item"><label>Net Expansion Rate (Monthly %)</label><input type="number" id="expansion" value="2" min="0" max="10" step="0.5"></div>
+      <div class="assumption-item"><label>2027 New Client Growth (per month, all products)</label><input type="number" id="monthlyGrowth" value="15" min="0" max="100"></div>
+      <div class="assumption-item"><label>AI Add-On Price ($/portal/mo)</label><input type="number" id="aiPrice" value="30" min="0" max="200"></div>
+    </div>
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="portfolio-mix" id="portfolioMix">
+    <h3>Portfolio Revenue Mix (Dec 2027)</h3>
+    <div class="mix-bars" id="mixBars"></div>
+  </div>
+  <div class="chart-section">
+    <h3>Monthly Revenue Trajectory</h3>
+    <div class="chart-tabs" id="chartTabs"></div>
+    <canvas id="revenueChart"></canvas>
+  </div>
+  <div class="table-section">
+    <h3>Quarterly P&amp;L Summary</h3>
+    <div class="table-wrap"><table id="quarterlyTable"></table></div>
+  </div>
+  <div class="insight-box">
+    <h3>Key Milestones</h3>
+    <p>Based on your current assumptions, here's when you hit the major revenue milestones:</p>
+    <div class="milestone-track" id="milestones"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var chart=null;
+  var chartView='mrr';
+
+  var scenarios={
+    conservative:{efClients:70,efARPC:1800,efChurn:5,cfClients:40,cfARPC:1500,cfChurn:6,gfClients:25,gfARPC:750,gfChurn:3,expansion:1,monthlyGrowth:8,aiPrice:30},
+    base:{efClients:100,efARPC:2200,efChurn:3,cfClients:60,cfARPC:1800,cfChurn:4,gfClients:40,gfARPC:950,gfChurn:2,expansion:2,monthlyGrowth:15,aiPrice:30},
+    aggressive:{efClients:120,efARPC:2800,efChurn:2,cfClients:80,cfARPC:2200,cfChurn:3,gfClients:60,gfARPC:1200,gfChurn:1.5,expansion:3,monthlyGrowth:25,aiPrice:30}
+  };
+
+  var tabContainer=document.getElementById('scenarioTabs');
+  ['conservative','base','aggressive'].forEach(function(s){
+    var btn=document.createElement('button');
+    btn.className='scenario-tab'+(s==='base'?' active':'');
+    btn.setAttribute('data-scenario',s);
+    btn.textContent=s.charAt(0).toUpperCase()+s.slice(1);
+    tabContainer.appendChild(btn);
+  });
+
+  var cTabContainer=document.getElementById('chartTabs');
+  [['mrr','MRR'],['arr','ARR'],['clients','Clients'],['breakdown','Product Split']].forEach(function(t){
+    var btn=document.createElement('button');
+    btn.className='chart-tab'+(t[0]==='mrr'?' active':'');
+    btn.setAttribute('data-view',t[0]);
+    btn.textContent=t[1];
+    cTabContainer.appendChild(btn);
+  });
+
+  function gi(id){return document.getElementById(id)}
+  function getInputs(){
+    return{
+      efClients:+gi('efClients').value,efARPC:+gi('efARPC').value,efChurn:+gi('efChurn').value/100,
+      cfClients:+gi('cfClients').value,cfARPC:+gi('cfARPC').value,cfChurn:+gi('cfChurn').value/100,
+      gfClients:+gi('gfClients').value,gfARPC:+gi('gfARPC').value,gfChurn:+gi('gfChurn').value/100,
+      expansion:+gi('expansion').value/100,monthlyGrowth:+gi('monthlyGrowth').value,aiPrice:+gi('aiPrice').value
+    };
+  }
+  function setInputs(v){
+    gi('efClients').value=v.efClients;gi('efARPC').value=v.efARPC;gi('efChurn').value=v.efChurn;
+    gi('cfClients').value=v.cfClients;gi('cfARPC').value=v.cfARPC;gi('cfChurn').value=v.cfChurn;
+    gi('gfClients').value=v.gfClients;gi('gfARPC').value=v.gfARPC;gi('gfChurn').value=v.gfChurn;
+    gi('expansion').value=v.expansion;gi('monthlyGrowth').value=v.monthlyGrowth;gi('aiPrice').value=v.aiPrice;
+  }
+
+  function buildModel(inp){
+    var labels=['Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27','Feb 27','Mar 27','Apr 27','May 27','Jun 27','Jul 27','Aug 27','Sep 27','Oct 27','Nov 27','Dec 27'];
+    var ramp=[0.08,0.15,0.20,0.22,0.20,0.15];
+    var months=[];
+    var eA=0,cA=0,gA=0;
+    var eR=inp.efARPC,cR=inp.cfARPC,gR=inp.gfARPC;
+    for(var m=0;m<18;m++){
+      var eN=0,cN=0,gN=0;
+      if(m<6){
+        eN=Math.round(inp.efClients*ramp[m]);
+        cN=Math.round(inp.cfClients*ramp[m]);
+        gN=Math.round(inp.gfClients*ramp[m]);
+      }else{
+        // Post-ramp growth split: 45% EF, 30% CF, 25% GF
+        eN=Math.round(inp.monthlyGrowth*0.45);
+        cN=Math.round(inp.monthlyGrowth*0.30);
+        gN=Math.round(inp.monthlyGrowth*0.25);
+      }
+      var eC=Math.round(eA*inp.efChurn);
+      var cC=Math.round(cA*inp.cfChurn);
+      var gC=Math.round(gA*inp.gfChurn);
+      eA=eA-eC+eN;cA=cA-cC+cN;gA=gA-gC+gN;
+      if(m>0){
+        eR=eR*(1+inp.expansion/3);
+        cR=cR*(1+inp.expansion/3);
+        gR=gR*(1+inp.expansion/3);
+      }
+      var eMRR=eA*eR,cMRR=cA*cR,gMRR=gA*gR;
+      var aiAdopt=m<3?0.1:m<6?0.25:0.4;
+      var aiRev=(eA+cA+gA)*inp.aiPrice*aiAdopt;
+      var total=eMRR+cMRR+gMRR+aiRev;
+      months.push({
+        label:labels[m],month:m+1,
+        efC:eA,cfC:cA,gfC:gA,totalC:eA+cA+gA,
+        eNew:eN,cNew:cN,gNew:gN,eChurned:eC,cChurned:cC,gChurned:gC,
+        efMRR:eMRR,cfMRR:cMRR,gfMRR:gMRR,
+        aiRev:aiRev,totalMRR:total,arr:total*12
+      });
+    }
+    return months;
+  }
+
+  function buildQuarters(months){
+    var qn=['Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027'];
+    return qn.map(function(name,qi){
+      var qm=months.slice(qi*3,qi*3+3);var last=qm[qm.length-1];
+      var sum=function(fn){return qm.reduce(function(s,m){return s+fn(m)},0)};
+      return{
+        name:name,endMRR:last.totalMRR,exitARR:last.arr,
+        qRev:sum(function(m){return m.totalMRR}),
+        efRev:sum(function(m){return m.efMRR}),cfRev:sum(function(m){return m.cfMRR}),gfRev:sum(function(m){return m.gfMRR}),
+        aiRev:sum(function(m){return m.aiRev}),
+        endC:last.totalC,efC:last.efC,cfC:last.cfC,gfC:last.gfC,
+        newC:sum(function(m){return m.eNew+m.cNew+m.gNew}),
+        churnC:sum(function(m){return m.eChurned+m.cChurned+m.gChurned})
+      };
+    });
+  }
+
+  function fmt(n){if(n>=1000000)return '$'+(n/1000000).toFixed(1)+'M';if(n>=1000)return '$'+(n/1000).toFixed(0)+'K';return '$'+Math.round(n)}
+  function fmtF(n){return '$'+Math.round(n).toLocaleString()}
+
+  function renderKPIs(months){
+    var last=months[17],m6=months[5];
+    var t18=months.reduce(function(s,m){return s+m.totalMRR},0);
+    var yr1=months.slice(0,12).reduce(function(s,m){return s+m.totalMRR},0);
+    var el=gi('kpiRow');while(el.firstChild)el.removeChild(el.firstChild);
+    var cards=[
+      {v:fmt(last.totalMRR),l:'Exit MRR (Dec 2027)',s:fmt(last.arr)+' ARR',hl:true},
+      {v:fmt(m6.totalMRR),l:'MRR at Ramp Complete',s:'End Q4 2026 ('+m6.totalC+' clients)'},
+      {v:fmt(t18),l:'Total Revenue (18 mo)',s:'Jul 2026 – Dec 2027'},
+      {v:String(last.totalC),l:'Active Clients (Dec 2027)',s:last.efC+' EF / '+last.cfC+' CF / '+last.gfC+' GF'},
+      {v:fmt(yr1),l:'Year 1 Revenue',s:'First 12 months'},
+      {v:fmt(last.efMRR),l:'EntitleFlow MRR',s:last.efC+' clients'},
+      {v:fmt(last.cfMRR),l:'ContractFlow MRR',s:last.cfC+' clients'},
+      {v:fmt(last.gfMRR),l:'GrantFlow MRR',s:last.gfC+' clients'},
+      {v:fmt(last.aiRev),l:'AI Add-On MRR',s:'FlowE agents'}
+    ];
+    cards.forEach(function(c){
+      var d=document.createElement('div');d.className='kpi-card'+(c.hl?' highlight':'');
+      var v=document.createElement('div');v.className='kpi-value';v.textContent=c.v;
+      var l=document.createElement('div');l.className='kpi-label';l.textContent=c.l;
+      var s=document.createElement('div');s.className='kpi-sub';s.textContent=c.s;
+      d.appendChild(v);d.appendChild(l);d.appendChild(s);el.appendChild(d);
+    });
+  }
+
+  function renderMix(months){
+    var last=months[17];
+    var total=last.totalMRR;if(total===0)total=1;
+    var pcts=[
+      {cls:'ef',pct:last.efMRR/total*100,lbl:'EntitleFlow'},
+      {cls:'cf',pct:last.cfMRR/total*100,lbl:'ContractFlow'},
+      {cls:'gf',pct:last.gfMRR/total*100,lbl:'GrantFlow'},
+      {cls:'ai',pct:last.aiRev/total*100,lbl:'AI Add-On'}
+    ];
+    var container=gi('mixBars');while(container.firstChild)container.removeChild(container.firstChild);
+
+    // Revenue bar
+    var row=document.createElement('div');row.className='mix-row';
+    var lab=document.createElement('div');lab.className='mix-label';lab.textContent='Revenue';
+    var barBg=document.createElement('div');barBg.className='mix-bar-bg';
+    pcts.forEach(function(p){
+      if(p.pct<1)return;
+      var seg=document.createElement('div');seg.className='mix-seg '+p.cls;
+      seg.style.width=p.pct+'%';
+      seg.textContent=Math.round(p.pct)+'%';
+      barBg.appendChild(seg);
+    });
+    row.appendChild(lab);row.appendChild(barBg);container.appendChild(row);
+
+    // Client bar
+    var cRow=document.createElement('div');cRow.className='mix-row';
+    var cLab=document.createElement('div');cLab.className='mix-label';cLab.textContent='Clients';
+    var cBarBg=document.createElement('div');cBarBg.className='mix-bar-bg';
+    var tc=last.totalC||1;
+    [{cls:'ef',pct:last.efC/tc*100},{cls:'cf',pct:last.cfC/tc*100},{cls:'gf',pct:last.gfC/tc*100}].forEach(function(p){
+      if(p.pct<1)return;
+      var seg=document.createElement('div');seg.className='mix-seg '+p.cls;
+      seg.style.width=p.pct+'%';
+      seg.textContent=Math.round(p.pct)+'%';
+      cBarBg.appendChild(seg);
+    });
+    cRow.appendChild(cLab);cRow.appendChild(cBarBg);container.appendChild(cRow);
+
+    // Legend
+    var legend=document.createElement('div');legend.className='mix-legend';
+    [{cls:'ef',l:'EntitleFlow'},{cls:'cf',l:'ContractFlow'},{cls:'gf',l:'GrantFlow'},{cls:'ai',l:'AI Add-On'}].forEach(function(item){
+      var sp=document.createElement('span');
+      var dot=document.createElement('span');dot.className='dot '+item.cls;
+      sp.appendChild(dot);
+      var txt=document.createTextNode(' '+item.l);sp.appendChild(txt);
+      legend.appendChild(sp);
+    });
+    container.appendChild(legend);
+  }
+
+  function renderChart(months){
+    var ctx=gi('revenueChart').getContext('2d');
+    if(chart)chart.destroy();
+    var labels=months.map(function(m){return m.label});
+    var ds=[];var isBar=chartView==='breakdown';
+    if(chartView==='mrr'){
+      ds=[{label:'Total MRR',data:months.map(function(m){return Math.round(m.totalMRR)}),borderColor:'#0f3c35',backgroundColor:'rgba(15,60,53,0.08)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#0f3c35'}];
+    }else if(chartView==='arr'){
+      ds=[{label:'ARR Run Rate',data:months.map(function(m){return Math.round(m.arr)}),borderColor:'#25a18e',backgroundColor:'rgba(37,161,142,0.08)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#25a18e'}];
+    }else if(chartView==='clients'){
+      ds=[
+        {label:'EntitleFlow',data:months.map(function(m){return m.efC}),borderColor:'#0f3c35',backgroundColor:'rgba(15,60,53,0.08)',fill:true,tension:.3},
+        {label:'ContractFlow',data:months.map(function(m){return m.cfC}),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.08)',fill:true,tension:.3},
+        {label:'GrantFlow',data:months.map(function(m){return m.gfC}),borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.08)',fill:true,tension:.3}
+      ];
+    }else{
+      ds=[
+        {label:'EntitleFlow',data:months.map(function(m){return Math.round(m.efMRR)}),backgroundColor:'#0f3c35',stack:'s1'},
+        {label:'ContractFlow',data:months.map(function(m){return Math.round(m.cfMRR)}),backgroundColor:'#2563eb',stack:'s1'},
+        {label:'GrantFlow',data:months.map(function(m){return Math.round(m.gfMRR)}),backgroundColor:'#7c3aed',stack:'s1'},
+        {label:'AI Add-On',data:months.map(function(m){return Math.round(m.aiRev)}),backgroundColor:'#25a18e',stack:'s1'}
+      ];
+    }
+    chart=new Chart(ctx,{
+      type:isBar?'bar':'line',data:{labels:labels,datasets:ds},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{intersect:false,mode:'index'},
+        plugins:{
+          legend:{display:ds.length>1,position:'top',labels:{font:{family:'Instrument Sans',size:11}}},
+          tooltip:{callbacks:{label:function(c){var v=c.parsed.y;return chartView==='clients'?c.dataset.label+': '+v:c.dataset.label+': $'+v.toLocaleString()}}}
+        },
+        scales:{
+          y:{beginAtZero:true,ticks:{callback:function(v){return chartView==='clients'?v:(v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+(v/1000).toFixed(0)+'K')},font:{family:'Manrope',weight:600}},grid:{color:'#e2e5e5'},stacked:isBar},
+          x:{ticks:{font:{family:'Instrument Sans',size:10}},grid:{display:false},stacked:isBar}
+        }
+      }
+    });
+  }
+
+  function renderTable(quarters){
+    var tbl=gi('quarterlyTable');while(tbl.firstChild)tbl.removeChild(tbl.firstChild);
+    var thead=document.createElement('thead');var hr=document.createElement('tr');
+    var th0=document.createElement('th');th0.textContent='';hr.appendChild(th0);
+    quarters.forEach(function(q){var th=document.createElement('th');th.textContent=q.name;hr.appendChild(th)});
+    thead.appendChild(hr);tbl.appendChild(thead);
+    var tbody=document.createElement('tbody');
+    var rows=[
+      {label:'Revenue',section:true},
+      {label:'EntitleFlow',vals:quarters.map(function(q){return fmtF(q.efRev)})},
+      {label:'ContractFlow',vals:quarters.map(function(q){return fmtF(q.cfRev)})},
+      {label:'GrantFlow',vals:quarters.map(function(q){return fmtF(q.gfRev)})},
+      {label:'AI Add-On',vals:quarters.map(function(q){return fmtF(q.aiRev)})},
+      {label:'Total Quarterly Revenue',vals:quarters.map(function(q){return fmtF(q.qRev)}),cls:'total-row'},
+      {label:'Run Rate Metrics',section:true},
+      {label:'Exit MRR',vals:quarters.map(function(q){return fmtF(q.endMRR)})},
+      {label:'Exit ARR',vals:quarters.map(function(q){return fmtF(q.exitARR)}),cls:'total-row'},
+      {label:'Client Metrics',section:true},
+      {label:'Total Clients',vals:quarters.map(function(q){return String(q.endC)})},
+      {label:'  EntitleFlow',vals:quarters.map(function(q){return String(q.efC)})},
+      {label:'  ContractFlow',vals:quarters.map(function(q){return String(q.cfC)})},
+      {label:'  GrantFlow',vals:quarters.map(function(q){return String(q.gfC)})},
+      {label:'New (Qtr)',vals:quarters.map(function(q){return '+'+q.newC})},
+      {label:'Churned (Qtr)',vals:quarters.map(function(q){return '-'+q.churnC})},
+      {label:'Net New',vals:quarters.map(function(q){var n=q.newC-q.churnC;return(n>=0?'+':'')+n}),cls:'total-row'}
+    ];
+    rows.forEach(function(r){
+      var tr=document.createElement('tr');
+      if(r.section){tr.className='section-header';var td=document.createElement('td');td.setAttribute('colspan',String(quarters.length+1));td.textContent=r.label;tr.appendChild(td)}
+      else{if(r.cls)tr.className=r.cls;var td0=document.createElement('td');td0.textContent=r.label;tr.appendChild(td0);r.vals.forEach(function(v){var td=document.createElement('td');td.textContent=v;tr.appendChild(td)})}
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+  }
+
+  function renderMilestones(months){
+    var el=gi('milestones');while(el.firstChild)el.removeChild(el.firstChild);
+    [{label:'$100K MRR',target:100000},{label:'$250K MRR',target:250000},{label:'$500K MRR',target:500000},
+     {label:'$1M ARR',target:1000000,isArr:true},{label:'$5M ARR',target:5000000,isArr:true},{label:'$10M ARR',target:10000000,isArr:true}
+    ].forEach(function(ms){
+      var hit=null;
+      for(var i=0;i<months.length;i++){if((ms.isArr?months[i].arr:months[i].totalMRR)>=ms.target){hit=months[i];break}}
+      var d=document.createElement('div');d.className='milestone';
+      var lb=document.createElement('div');lb.className='ms-label';lb.textContent=ms.label;
+      var vl=document.createElement('div');vl.className='ms-value';vl.textContent=hit?hit.label:'Beyond 18 mo';
+      var nt=document.createElement('div');nt.className='ms-note';nt.textContent=hit?'Month '+hit.month:'Extend model';
+      d.appendChild(lb);d.appendChild(vl);d.appendChild(nt);el.appendChild(d);
+    });
+  }
+
+  function update(){
+    var inp=getInputs();var months=buildModel(inp);var quarters=buildQuarters(months);
+    renderKPIs(months);renderMix(months);renderChart(months);renderTable(quarters);renderMilestones(months);
+  }
+
+  document.querySelectorAll('.assumptions-panel input').forEach(function(el){el.addEventListener('input',update)});
+
+  gi('scenarioTabs').addEventListener('click',function(e){
+    if(!e.target.classList.contains('scenario-tab'))return;
+    document.querySelectorAll('.scenario-tab').forEach(function(b){b.classList.remove('active')});
+    e.target.classList.add('active');
+    setInputs(scenarios[e.target.getAttribute('data-scenario')]);
+    update();
+  });
+
+  gi('chartTabs').addEventListener('click',function(e){
+    if(!e.target.classList.contains('chart-tab'))return;
+    document.querySelectorAll('.chart-tab').forEach(function(b){b.classList.remove('active')});
+    e.target.classList.add('active');
+    chartView=e.target.getAttribute('data-view');
+    renderChart(buildModel(getInputs()));
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
