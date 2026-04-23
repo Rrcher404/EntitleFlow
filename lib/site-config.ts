@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const siteConfig = {
-  name: "EntitleFlow NC",
+  name: "EntitleFlow",
   shortName: "EntitleFlow",
   description:
-    "Development approval operations software for North Carolina firms managing reviewer comments, resubmittals, and approval workflow visibility.",
+    "Reviewer redline PDFs become a structured, assignable comment list in under two minutes — then tracked through to the resubmittal.",
   siteUrl: rawSiteUrl.replace(/\/$/, ""),
   ogImage: "/entitleflow-og.svg",
-  email: "hello@entitleflownc.com",
+  email: "hello@entitleflow.com",
 };
 
 type MetadataInput = {

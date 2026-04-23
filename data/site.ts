@@ -31,7 +31,7 @@ export const credibilitySignals: CredibilitySignal[] = [
     description: "$299/mo per firm. Unlimited seats. First month of founder-led onboarding free.",
   },
   {
-    title: "Founder-led, North Carolina-built",
-    description: "Built in NC with local AEC firms. Works everywhere reviewer redlines do.",
+    title: "Founder-led onboarding",
+    description: "First month runs with the founder directly so the workspace fits the way your team actually works.",
   },
 ];

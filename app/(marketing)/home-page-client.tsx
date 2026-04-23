@@ -8,7 +8,6 @@ import { HowItWorks } from '@/components/marketing/how-it-works';
 import { TrustBand } from '@/components/marketing/trust-band';
 import { SectionShell } from '@/components/site/section-shell';
 import { TrackedLink } from '@/components/site/tracked-link';
-import { TrackedLinkButton } from '@/components/site/tracked-link-button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { featureModules } from '@/data/product';
@@ -23,9 +22,9 @@ export function HomePageClient() {
   const content = getHomeContent();
 
   const stats = [
-    { value: 'NC-first', label: 'Workflow depth built for regional firms' },
-    { value: '1 view', label: 'For comments, resubmittals, and status visibility' },
-    { value: 'Founder-led', label: 'Walkthroughs and workflow audits at launch' },
+    { value: 'Under 2 min', label: 'From reviewer PDF to a structured comment list' },
+    { value: '1 workspace', label: 'Comments, owners, and resubmittal prep' },
+    { value: 'Founder-led', label: 'Onboarding and workflow setup for your first month' },
   ];
 
   const trustBandItems = credibilitySignals.map((signal) => ({
@@ -122,16 +121,16 @@ export function HomePageClient() {
       {/* Feature Grid */}
       <FeatureGrid
         eyebrow="What the product does"
-        title="A control layer for North Carolina approval operations."
-        description="EntitleFlow sits above fragmented public systems and helps private-side teams manage the real work that keeps projects moving."
+        title="Two modules, one workspace. No module-by-module upsell."
+        description="Redline parsing earns the demo. Response tracking is why teams pay. That is the entire product."
         features={featureModules}
       />
 
       {/* How It Works */}
       <HowItWorks
         eyebrow="How it works"
-        title="Start narrow. Fix the ugliest part of the workflow first."
-        description="The first wedge is comments, resubmittals, and workflow visibility because that is where regional firms usually lose time, control, and coordination."
+        title="Start with the reviewer PDF. Ship the resubmittal clean."
+        description="Drop the redline, assign owners, draft responses, and prep the resubmittal package — in a single workspace instead of five tools."
         stages={workflowStages}
       />
 
@@ -187,68 +186,14 @@ export function HomePageClient() {
         </div>
       </SectionShell>
 
-      {/* North Carolina Depth */}
-      <SectionShell className="py-12 sm:py-14" animate>
-        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
-          <div className="space-y-4">
-            <Badge className="eyebrow-pill w-fit px-3 py-1 text-[11px] uppercase tracking-[0.18em]" variant="outline">
-              North Carolina depth
-            </Badge>
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Local credibility comes from useful workflow depth, not generic permitting language.
-            </h2>
-            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-              EntitleFlow is being shaped around real jurisdiction research so launch conversations can stay grounded in how approvals actually move in North Carolina.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {content.jurisdictionTeaser.map((item) => (
-              <Card key={item}>
-                <CardContent className="p-4 text-sm leading-6 text-muted-foreground">{item}</CardContent>
-              </Card>
-            ))}
-            <Card className="bg-primary text-primary-foreground md:col-span-2">
-              <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
-                <div className="space-y-2">
-                  <div className="font-display text-2xl font-semibold">Start with Greensboro and Raleigh.</div>
-                  <p className="max-w-2xl text-sm leading-6 text-primary-foreground/70">
-                    Two initial jurisdiction guides are live now. More NC workflow coverage is feeding into the launch site and early pilot conversations next.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
-                  <TrackedLinkButton
-                    className="bg-white text-foreground hover:bg-white/90"
-                    eventName="guide_card_click"
-                    eventProps={{ title: 'Greensboro guide' }}
-                    href="/nc-jurisdictions/greensboro"
-                    variant="secondary"
-                  >
-                    View Greensboro
-                  </TrackedLinkButton>
-                  <TrackedLinkButton
-                    className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
-                    eventName="guide_card_click"
-                    eventProps={{ title: 'Raleigh guide' }}
-                    href="/nc-jurisdictions/raleigh"
-                    variant="outline"
-                  >
-                    View Raleigh
-                  </TrackedLinkButton>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </SectionShell>
-
       {/* CTA Banner */}
       <CTABanner
-        title="Make approval operations easier to run before the chaos compounds."
-        description="Book a walkthrough if your team wants cleaner reviewer comment handling, calmer resubmittals, or a clearer approval status layer before the next cycle gets noisy."
-        primaryHref="/walkthrough"
-        primaryLabel="Request a walkthrough"
-        secondaryHref="/early-access"
-        secondaryLabel="Join early access"
+        title="See it work on your own reviewer PDF."
+        description="Drop a redline and see the structured comment list in under two minutes. No setup, no spreadsheet gymnastics, no scheduling a sales call to try it."
+        primaryHref="/try"
+        primaryLabel="Try it with your PDF"
+        secondaryHref="/walkthrough"
+        secondaryLabel="Book a walkthrough"
       />
     </>
   );

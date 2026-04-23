@@ -8,7 +8,7 @@ import { workflowStages } from '@/data/workflow';
 export const metadata = buildMetadata({
   title: 'How EntitleFlow works',
   description:
-    'See the four-stage EntitleFlow NC workflow: intake the project, map the approval path, organize reviewer comments, and coordinate resubmittals.',
+    'Four stages: drop the redline, organize the comments, draft the responses, ship the resubmittal. See how each step feels inside the workspace.',
   path: '/how-it-works',
 });
 
@@ -17,26 +17,26 @@ export default function HowItWorksPage() {
     <>
       <SectionShell animate>
         <PageIntro
-          description="EntitleFlow starts with the part of development approval work that usually turns into a manual mess: comments, resubmittals, and the visibility around them."
+          description="Drop the reviewer PDF. Organize the comments. Draft the responses. Ship the resubmittal. Four stages, one workspace, no transcription."
           eyebrow="How it works"
-          title="A four-stage workflow for cleaner approval operations."
+          title="From reviewer redline to resubmittal — in four stages."
         />
       </SectionShell>
 
       <HowItWorks
         eyebrow="How it works"
-        title="Start narrow. Fix the ugliest part of the workflow first."
-        description="The first wedge is comments, resubmittals, and workflow visibility because that is where regional firms usually lose time, control, and coordination."
+        title="Start with the reviewer PDF. Ship the resubmittal clean."
+        description="Redline parsing earns the demo. Response tracking is why teams pay. This is what that looks like stage by stage."
         stages={workflowStages}
       />
 
       <CTABanner
-        title="Translate your current review-cycle friction into a cleaner process."
-        description="If these stages look familiar, the walkthrough is where we can map the messy parts of your current workflow and show where EntitleFlow fits."
-        primaryHref="/walkthrough"
-        primaryLabel="Request a walkthrough"
-        secondaryHref="/early-access"
-        secondaryLabel="Join early access"
+        title="See the parse before booking the walkthrough."
+        description="Drop a reviewer PDF and see the structured comment list in under two minutes. Or book a walkthrough if you want the founder to walk you through your actual workflow."
+        primaryHref="/try"
+        primaryLabel="Try it with your PDF"
+        secondaryHref="/walkthrough"
+        secondaryLabel="Book a walkthrough"
       />
     </>
   );

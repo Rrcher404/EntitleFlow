@@ -13,16 +13,16 @@ export function ProductPageClient() {
     <>
       <SectionShell animate>
         <PageIntro
-          description="EntitleFlow NC is designed as a control layer above fragmented approval systems so regional teams can manage comments, resubmittals, and visibility with less operational drag."
+          description="Two modules, one workspace. Redline parsing earns the demo. Response tracking is why teams pay. That is the entire product."
           eyebrow="Product"
-          title="Development approval operations software for North Carolina."
+          title="Redline parsing and response tracking, in one workspace."
         />
       </SectionShell>
 
       <FeatureGrid
         eyebrow="What the product does"
-        title="A control layer for approval operations."
-        description="EntitleFlow sits above fragmented public systems and helps private-side teams manage the real work that keeps projects moving."
+        title="Two modules. No module-by-module upsell."
+        description="Drop the PDF. Assign the owners. Ship the resubmittal. The product stops where teams stop paying attention."
         features={featureModules}
       />
 
@@ -50,12 +50,12 @@ export function ProductPageClient() {
       </SectionShell>
 
       <CTABanner
-        title="See the wedge in action before the next review cycle hits."
-        description="If your team needs cleaner reviewer comment workflows, better resubmittal prep, or a clearer NC operating layer, a walkthrough is the best next step."
-        primaryHref="/walkthrough"
-        primaryLabel="Request a walkthrough"
-        secondaryHref="/early-access"
-        secondaryLabel="Join early access"
+        title="See the parse happen on a real redline PDF."
+        description="Drop one of your own redlines and see the structured comment list in under two minutes. No demo setup, no sales call to see it work."
+        primaryHref="/try"
+        primaryLabel="Try it with your PDF"
+        secondaryHref="/walkthrough"
+        secondaryLabel="Book a walkthrough"
       />
     </>
   );

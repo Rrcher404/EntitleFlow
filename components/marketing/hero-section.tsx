@@ -93,24 +93,15 @@ export function HeroSection({
             {/* CTA Buttons */}
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start gap-3 pt-1">
               <Button size="lg" asChild>
-                <Link href="/walkthrough">
-                  Request a walkthrough
+                <Link href="/try">
+                  Try it with your PDF
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/early-access">
-                  Join early access
+                <Link href="/walkthrough">
+                  Book a walkthrough
                 </Link>
               </Button>
-            </motion.div>
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/demo/dashboard"
-                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Or explore the demo portal
-                <span aria-hidden="true">&rarr;</span>
-              </Link>
             </motion.div>
 
             {/* Stats row */}

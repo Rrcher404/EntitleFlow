@@ -11,7 +11,7 @@ import { compareRows } from '@/data/compare';
 export const metadata = buildMetadata({
   title: 'Compare EntitleFlow to manual workflows and generic tools',
   description:
-    'See how EntitleFlow NC differs from spreadsheet-and-email workflows and generic national permitting software for regional North Carolina teams.',
+    'See how EntitleFlow compares to spreadsheet-and-email workflows and generic national permitting software for AEC teams handling reviewer redlines.',
   path: '/compare',
 });
 
@@ -37,12 +37,12 @@ export default function ComparePage() {
       </SectionShell>
 
       <CTABanner
-        title="Move from workflow sprawl to a cleaner operating layer."
-        description="If your current stack is still a pile of portals, PDFs, inboxes, and private trackers, a walkthrough is the fastest way to see whether EntitleFlow fits your team."
-        primaryHref="/walkthrough"
-        primaryLabel="Request a walkthrough"
-        secondaryHref="/early-access"
-        secondaryLabel="Join early access"
+        title="Skip the pitch. See how a redline becomes a structured list."
+        description="Drop a reviewer PDF and see the parse in under two minutes — or book a walkthrough if your team would rather talk through the workflow first."
+        primaryHref="/try"
+        primaryLabel="Try it with your PDF"
+        secondaryHref="/walkthrough"
+        secondaryLabel="Book a walkthrough"
       />
     </>
   );

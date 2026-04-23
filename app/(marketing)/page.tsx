@@ -2,9 +2,9 @@ import { buildMetadata } from '@/lib/site-config';
 import { HomePageClient } from './home-page-client';
 
 export const metadata = buildMetadata({
-  title: 'North Carolina approval workflows, comments, and resubmittals',
+  title: 'Cut redline chaos. Ship the resubmittal clean.',
   description:
-    'EntitleFlow NC helps architecture and civil firms manage reviewer comments, resubmittals, and approval workflow visibility across North Carolina jurisdictions.',
+    'Drop a reviewer redline PDF. EntitleFlow turns it into a structured, assignable comment list in under two minutes — then tracks the response until the resubmittal ships.',
   path: '/',
 });
 

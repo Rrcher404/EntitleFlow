@@ -2,9 +2,9 @@ import { buildMetadata } from '@/lib/site-config';
 import { ProductPageClient } from './product-page-client';
 
 export const metadata = buildMetadata({
-  title: 'Development approval operations software for North Carolina',
+  title: 'Redline parsing and response tracking for AEC teams',
   description:
-    'EntitleFlow NC combines jurisdiction intelligence, reviewer comment management, resubmittal coordination, and approval visibility for regional teams.',
+    'Two modules, one workspace. EntitleFlow parses reviewer redline PDFs into structured comments and tracks every response through to the resubmittal.',
   path: '/product',
 });
 

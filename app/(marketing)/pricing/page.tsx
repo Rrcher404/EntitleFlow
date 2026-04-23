@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { CTABanner } from '@/components/marketing/cta-banner';
 import { PageIntro } from '@/components/site/page-intro';
@@ -6,15 +6,14 @@ import { PricingCard } from '@/components/site/pricing-card';
 import { SectionShell } from '@/components/site/section-shell';
 import { FAQAccordionBlock } from '@/components/ui/faq-accordion-block';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { buildMetadata } from '@/lib/site-config';
-import { pricingFaqs, pricingTiers, pricingAddOns } from '@/data/pricing';
+import { pricingFaqs, pricingTiers } from '@/data/pricing';
 import { TrackedLinkButton } from '@/components/site/tracked-link-button';
 
 export const metadata = buildMetadata({
-  title: 'Launch pricing and workflow audit paths',
+  title: 'Simple pricing. One flagship tier.',
   description:
-    'EntitleFlow NC launches with a Permit Readiness Sprint, starter platform pricing, growth paths, and founder-led walkthroughs for North Carolina teams.',
+    'EntitleFlow is $299/mo per firm. Unlimited projects, unlimited seats. First month of founder-led onboarding included.',
   path: '/pricing',
 });
 
@@ -23,90 +22,16 @@ export default function PricingPage() {
     <>
       <SectionShell animate>
         <PageIntro
-          description="EntitleFlow launches with a service-assisted workflow audit path, clear software starting points, and founder-led guidance for North Carolina teams that need cleaner approval operations."
+          description="One flagship tier. Unlimited projects, unlimited seats, AI-assisted classification included. The first month runs with the founder so the workspace fits your actual workflow."
           eyebrow="Pricing"
-          title="Pricing that matches a launch-stage workflow product."
+          title="One price. One product. Zero module-by-module upsell."
         />
       </SectionShell>
 
       <SectionShell className="py-10 sm:py-12" animate>
-        <div className="grid gap-6 xl:grid-cols-4">
+        <div className="mx-auto grid max-w-xl gap-6">
           {pricingTiers.map((tier) => (
             <PricingCard key={tier.name} tier={tier} />
-          ))}
-        </div>
-      </SectionShell>
-
-      <SectionShell className="py-12 sm:py-14" animate>
-        <div className="space-y-6">
-          <div className="text-center space-y-3">
-            <Badge variant="outline" className="mx-auto">Add-ons</Badge>
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Enhance your platform with AI capabilities
-            </h2>
-            <p className="text-base leading-7 text-muted-foreground sm:text-lg max-w-2xl mx-auto">
-              Add specialized AI agents to any plan to augment your team&apos;s capabilities.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:max-w-2xl">
-            {pricingAddOns.map((addOn) => (
-              <Card key={addOn.name} className="flex flex-col transition-all duration-300 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:border-slate-300">
-                <CardContent className="flex flex-col flex-grow p-5">
-                  <div className="space-y-3">
-                    <h3 className="font-display text-xl font-semibold text-slate-950">{addOn.name}</h3>
-                    <div className="text-2xl font-semibold tracking-tight text-slate-950">{addOn.price}</div>
-                    <p className="text-sm leading-6 text-slate-600">{addOn.description}</p>
-                  </div>
-
-                  <ul className="mt-6 flex-grow space-y-2 text-sm leading-6 text-slate-700">
-                    {addOn.features.map((feature) => (
-                      <li className="flex gap-3" key={feature}>
-                        <span className="mt-0.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <TrackedLinkButton
-                    className="w-full justify-center mt-6"
-                    eventName="pricing_cta_click"
-                    eventProps={{ tier: addOn.name }}
-                    href="/walkthrough?focus=flowe-addon"
-                    variant="outline"
-                  >
-                    Add to your plan
-                    <ArrowUp className="h-4 w-4 rotate-45" />
-                  </TrackedLinkButton>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </SectionShell>
-
-      <SectionShell className="py-12 sm:py-14" animate>
-        <div className="grid gap-6 lg:grid-cols-3">
-          {[
-            {
-              title: 'Permit Readiness Sprint',
-              body: 'Best when a live workflow already feels messy and the team needs a clean operational read before software rollout.',
-            },
-            {
-              title: 'Starter / Growth',
-              body: 'Best when the team wants to move from workflow pain into a clearer launch path with comments, resubmittals, and visibility in view.',
-            },
-            {
-              title: 'What the walkthrough includes',
-              body: 'A founder-led review of your current review-cycle friction, NC jurisdiction mix, and whether a workflow audit or platform path is the right next step.',
-            },
-          ].map((item) => (
-            <Card key={item.title}>
-              <CardContent className="space-y-3 p-5">
-                <Badge variant="outline">{item.title}</Badge>
-                <p className="text-sm leading-7 text-muted-foreground">{item.body}</p>
-              </CardContent>
-            </Card>
           ))}
         </div>
       </SectionShell>
@@ -121,10 +46,10 @@ export default function PricingPage() {
               Enough clarity to start a real conversation.
             </h2>
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-              Launch pricing should make the business feel serious without pretending every edge case is already fully productized.
+              Simple pricing for a simple product. No tiers to choose between, no seats to count, no add-ons to upgrade into.
             </p>
             <TrackedLinkButton eventName="pricing_cta_click" eventProps={{ tier: 'Walkthrough' }} href="/walkthrough" size="lg">
-              Request a walkthrough
+              Book a walkthrough
               <ArrowRight className="h-4 w-4" />
             </TrackedLinkButton>
           </div>
@@ -140,12 +65,12 @@ export default function PricingPage() {
       </SectionShell>
 
       <CTABanner
-        title="Book a walkthrough to see where your team fits."
-        description="If you want to pressure-test the right entry point, the walkthrough is the best place to sort out workflow audit fit, rollout scope, and launch timing."
-        primaryHref="/walkthrough"
-        primaryLabel="Request a walkthrough"
-        secondaryHref="/early-access"
-        secondaryLabel="Join early access"
+        title="See the parse before the pricing conversation."
+        description="Drop a reviewer PDF and see the structured comment list in under two minutes. Pricing makes more sense once the product is real."
+        primaryHref="/try"
+        primaryLabel="Try it with your PDF"
+        secondaryHref="/walkthrough"
+        secondaryLabel="Book a walkthrough"
       />
     </>
   );
