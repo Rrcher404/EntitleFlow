@@ -72,7 +72,7 @@ function TryHero() {
         </h1>
         <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
           Browse a live sample on the right to see what your team gets back. Or drop your own
-          PDF and the founder will follow up to run it through EntitleFlow for you.
+          PDF and we will follow up from support@entitleflow.com to run it through for you.
         </p>
       </div>
     </section>
@@ -187,9 +187,9 @@ function UploadCard() {
             </div>
           </div>
           <p className="text-sm leading-6 text-muted-foreground">
-            Jene will reach out to <strong>{status.email}</strong> to pick up your PDF and send
-            the structured comment list back. In the meantime, browse the live sample on the
-            right.
+            We will reach out to <strong>{status.email}</strong> from support@entitleflow.com to
+            pick up your PDF and send the structured comment list back. In the meantime, browse
+            the live sample on the right.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button onClick={handleClear} variant="outline" size="sm">
@@ -212,8 +212,8 @@ function UploadCard() {
             Want to try this on your own PDF?
           </div>
           <p className="text-sm leading-6 text-muted-foreground">
-            Drop it here and leave your email. The founder will follow up to pull it through
-            EntitleFlow and send the structured list back.
+            Drop it here and leave your email. We will follow up from support@entitleflow.com to
+            pull it through EntitleFlow and send the structured list back.
           </p>
         </div>
 
@@ -477,7 +477,7 @@ function ShareCard({ sample }: { sample: TrySample }) {
                 Want this sample list by email?
               </div>
               <p className="text-sm leading-6 text-primary-foreground/80">
-                Leave your email — Jene will follow up with a shareable copy of this{" "}
+                Leave your email — we will follow up with a shareable copy of this{" "}
                 {sample.comments.length}-comment sample.
               </p>
             </div>
@@ -485,7 +485,7 @@ function ShareCard({ sample }: { sample: TrySample }) {
               <div className="flex items-center gap-2 rounded-lg bg-primary-foreground/10 px-4 py-3 text-sm">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>
-                  Thanks — Jene will follow up to <strong>{state.email}</strong>.
+                  Thanks — we will follow up to <strong>{state.email}</strong>.
                 </span>
               </div>
             ) : (

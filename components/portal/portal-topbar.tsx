@@ -220,10 +220,10 @@ export function PortalTopbar() {
           <Popover.Trigger asChild>
             <button className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-secondary transition-colors">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-medium text-primary">
-                JM
+                EM
               </div>
               <div className="hidden sm:block">
-                <div className="text-sm font-medium text-foreground">Jene Maybury</div>
+                <div className="text-sm font-medium text-foreground">Eugene Maybury</div>
                 <div className="text-[11px] text-muted-foreground">Demo account</div>
               </div>
               <ChevronDown className="h-3 w-3 text-muted-foreground ml-1" />

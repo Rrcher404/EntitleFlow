@@ -18,6 +18,7 @@ const FROM_ADDRESS = 'EntitleFlow Platform <notifications@entitleflow.com>';
 // ─── Destination Inboxes ──────────────────────────────────────
 export const NOTIFY_WALKTHROUGH = 'WalkthroughRequests@entitleflow.com';
 export const NOTIFY_LICENSES = 'Licenses@entitleflow.com';
+export const NOTIFY_SUPPORT = 'support@entitleflow.com';
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -273,6 +274,95 @@ export async function notifyLicenseChangeRequest(data: LicenseChangeNotifyData) 
   `;
 
   return sendNotification({ to: NOTIFY_LICENSES, subject, html });
+}
+
+// ─── /try Parse Request Notification ──────────────────────────
+
+interface TryParseRequestData {
+  leadId: string;
+  email: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+}
+
+export async function notifyTryParseRequest(data: TryParseRequestData) {
+  const sizeLabel =
+    data.fileSize > 1024 * 1024
+      ? `${(data.fileSize / (1024 * 1024)).toFixed(1)} MB`
+      : `${Math.round(data.fileSize / 1024)} KB`;
+
+  const subject = `📄 /try PDF parse request — ${data.email}`;
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #1B3B2D;">
+      <div style="background: #1B3B2D; color: #f6f5f0; padding: 20px 24px; border-radius: 8px 8px 0 0;">
+        <h2 style="margin: 0; font-size: 18px;">New /try PDF parse request</h2>
+        <p style="margin: 4px 0 0; opacity: 0.8; font-size: 13px;">Lead ID: ${data.leadId}</p>
+      </div>
+      <div style="background: #f6f5f0; padding: 24px; border: 1px solid #e0ddd5; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="margin: 0 0 16px; font-size: 14px;">A visitor dropped a PDF on /try and is expecting a follow-up from EntitleFlow.</p>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 8px 12px; font-weight: 600; color: #6b7a6f; width: 140px; vertical-align: top;">Email</td>
+            <td style="padding: 8px 12px;"><a href="mailto:${data.email}" style="color: #25a18e;">${data.email}</a></td>
+          </tr>
+          <tr style="background: #eeedea;">
+            <td style="padding: 8px 12px; font-weight: 600; color: #6b7a6f; vertical-align: top;">File</td>
+            <td style="padding: 8px 12px;">${data.fileName} <span style="color: #6b7a6f;">(${sizeLabel})</span></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; font-weight: 600; color: #6b7a6f; vertical-align: top;">Next step</td>
+            <td style="padding: 8px 12px;">Reply to the visitor to pick up the PDF, then run it through the portal parse flow and send the structured list back.</td>
+          </tr>
+        </table>
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0ddd5; font-size: 12px; color: #6b7a6f;">
+          Sent from EntitleFlow Platform • <a href="https://entitleflow.com" style="color: #25a18e;">entitleflow.com</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return sendNotification({ to: NOTIFY_SUPPORT, subject, html });
+}
+
+// ─── /try Sample Share Notification ───────────────────────────
+
+interface TrySampleShareData {
+  leadId: string;
+  email: string;
+  sampleId: string;
+}
+
+export async function notifyTrySampleShare(data: TrySampleShareData) {
+  const subject = `📋 /try sample list share — ${data.email}`;
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #1B3B2D;">
+      <div style="background: #1B3B2D; color: #f6f5f0; padding: 20px 24px; border-radius: 8px 8px 0 0;">
+        <h2 style="margin: 0; font-size: 18px;">/try sample list share requested</h2>
+        <p style="margin: 4px 0 0; opacity: 0.8; font-size: 13px;">Lead ID: ${data.leadId}</p>
+      </div>
+      <div style="background: #f6f5f0; padding: 24px; border: 1px solid #e0ddd5; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="margin: 0 0 16px; font-size: 14px;">A visitor asked for a shareable copy of a sample comment list.</p>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 8px 12px; font-weight: 600; color: #6b7a6f; width: 140px; vertical-align: top;">Email</td>
+            <td style="padding: 8px 12px;"><a href="mailto:${data.email}" style="color: #25a18e;">${data.email}</a></td>
+          </tr>
+          <tr style="background: #eeedea;">
+            <td style="padding: 8px 12px; font-weight: 600; color: #6b7a6f; vertical-align: top;">Sample</td>
+            <td style="padding: 8px 12px;">${data.sampleId}</td>
+          </tr>
+        </table>
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0ddd5; font-size: 12px; color: #6b7a6f;">
+          Sent from EntitleFlow Platform • <a href="https://entitleflow.com" style="color: #25a18e;">entitleflow.com</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return sendNotification({ to: NOTIFY_SUPPORT, subject, html });
 }
 
 // ─── Helpers ──────────────────────────────────────────────────

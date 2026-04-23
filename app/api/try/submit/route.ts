@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { notifyTryParseRequest, notifyTrySampleShare } from "@/lib/email/notify";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
 const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB — matches /api/documents/upload
@@ -115,7 +116,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Could not save your request." }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, leadId: inserted?.id ?? null }, { status: 200 });
+    const leadId = inserted?.id ?? null;
+
+    if (leadId) {
+      if (input.kind === "upload") {
+        notifyTryParseRequest({
+          leadId,
+          email: input.email.trim().toLowerCase(),
+          fileName: input.fileName,
+          fileSize: input.fileSize,
+          fileType: input.fileType || "application/pdf",
+        }).catch((err) => console.error("[try/submit] parse-request notify failed:", err));
+      } else {
+        notifyTrySampleShare({
+          leadId,
+          email: input.email.trim().toLowerCase(),
+          sampleId: input.sampleId,
+        }).catch((err) => console.error("[try/submit] sample-share notify failed:", err));
+      }
+    }
+
+    return NextResponse.json({ ok: true, leadId }, { status: 200 });
   } catch (error) {
     console.error("[try/submit] unexpected error:", error);
     const message = error instanceof Error ? error.message : "Unexpected error.";

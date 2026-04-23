@@ -9,7 +9,7 @@ export const siteConfig = {
     "Reviewer redline PDFs become a structured, assignable comment list in under two minutes — then tracked through to the resubmittal.",
   siteUrl: rawSiteUrl.replace(/\/$/, ""),
   ogImage: "/entitleflow-og.svg",
-  email: "hello@entitleflow.com",
+  email: "support@entitleflow.com",
 };
 
 type MetadataInput = {
