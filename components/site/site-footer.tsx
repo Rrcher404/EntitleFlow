@@ -45,7 +45,7 @@ export function SiteFooter() {
             <div className="space-y-3">
               <Logo height={30} theme="light" />
               <p className="text-sm leading-7 text-muted-foreground">
-                Development approval operations software for North Carolina teams managing reviewer comments, resubmittals, and workflow visibility.
+                Reviewer redlines become a structured comment list in under two minutes. Then owners, responses, and the resubmittal package live in one workspace.
               </p>
             </div>
             <p className="text-xs leading-6 text-muted-foreground">
@@ -158,7 +158,7 @@ export function SiteFooter() {
         {/* Footer bottom */}
         <div className="border-t border-border pt-8">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
-            <p>&copy; {currentYear} EntitleFlow NC. All rights reserved.</p>
+            <p>&copy; {currentYear} EntitleFlow. All rights reserved.</p>
             <div className="flex items-center gap-6">
               <TrackedLink href="/privacy" className="transition hover:text-foreground">
                 Privacy

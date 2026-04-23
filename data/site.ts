@@ -2,17 +2,16 @@ import type { CredibilitySignal, SiteNavItem } from "@/lib/types";
 
 export const primaryNav: SiteNavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/compare", label: "Compare" },
   { href: "/how-it-works", label: "How it works" },
-  { href: "/resources", label: "Resources" },
-  { href: "/product", label: "Product" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export const footerNav: SiteNavItem[] = [
-  { href: "/walkthrough", label: "Request a walkthrough" },
-  { href: "/early-access", label: "Join early access" },
-  { href: "/how-it-works", label: "How it works" },
+  { href: "/walkthrough", label: "Book a walkthrough" },
+  { href: "/try", label: "Try it with your PDF" },
+  { href: "/product", label: "Product detail" },
+  { href: "/compare", label: "Compare" },
+  { href: "/resources", label: "Resources" },
   { href: "/nc-jurisdictions/greensboro", label: "Greensboro guide" },
   { href: "/nc-jurisdictions/raleigh", label: "Raleigh guide" },
   { href: "/privacy", label: "Privacy policy" },
@@ -20,19 +19,19 @@ export const footerNav: SiteNavItem[] = [
 
 export const credibilitySignals: CredibilitySignal[] = [
   {
-    title: "North Carolina-first workflow depth",
-    description: "Built around real Greensboro, Raleigh, Charlotte/Mecklenburg, and DEQ workflow research.",
+    title: "Built for the part of the workflow everyone else ignores",
+    description: "Most AEC software stops at submission. EntitleFlow starts where the reviewer comments come back.",
   },
   {
-    title: "Focused on the gap after submission",
-    description: "Designed for the messy work between reviewer comments, resubmittals, and approvals.",
+    title: "AI that actually reads redline PDFs",
+    description: "Google Cloud Document AI and Vertex AI Gemini parse markups, not just text — scanned, native, or Bluebeam.",
   },
   {
-    title: "Made for regional operators",
-    description: "Shaped for architecture and civil teams managing repeat approvals without enterprise overhead.",
+    title: "Priced for the firms that feel the pain",
+    description: "$299/mo per firm. Unlimited seats. First month of founder-led onboarding free.",
   },
   {
     title: "Founder-led onboarding",
-    description: "Launch motion starts with guided walkthroughs and workflow audits, not self-serve guesswork.",
+    description: "First month runs with the founder directly so the workspace fits the way your team actually works.",
   },
 ];

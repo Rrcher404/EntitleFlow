@@ -3,7 +3,6 @@ import {
   Building2,
   ClipboardList,
   FileSearch,
-  MapPinned,
   MessageSquareMore,
   Workflow,
 } from "lucide-react";
@@ -12,126 +11,100 @@ import type { PreviewPanel } from "@/lib/types";
 
 export const homeContent = {
   hero: {
-    eyebrow: "Development approval operations software for North Carolina",
-    title: "Cut permit chaos in North Carolina.",
+    eyebrow: "Permit comment operations for AEC teams",
+    title: "Cut redline chaos. Ship the resubmittal clean.",
     description:
-      "EntitleFlow NC helps architecture and civil firms turn messy reviewer comments into cleaner resubmittals and gives regional teams one live view of approval workflows.",
+      "Drop a reviewer redline PDF. EntitleFlow turns it into a structured, assignable comment list in under two minutes — then tracks the response until the resubmittal ships.",
   },
   audiences: [
     {
       title: "Architecture firms",
-      description: "Keep reviewer comments, discipline owners, and resubmittal prep out of email sprawl.",
+      description: "Stop retyping reviewer markups into spreadsheets. Keep comments, owners, and response language in one workspace.",
       icon: Building2,
     },
     {
       title: "Civil and site teams",
-      description: "Track jurisdiction requirements, engineering notes, and response cycles with less manual chasing.",
+      description: "Turn mixed-discipline redlines into assigned work without chasing email threads or inbox trackers.",
       icon: Workflow,
     },
     {
-      title: "Developers and builders",
-      description: "Get cleaner status visibility when approvals touch multiple portals, reviewers, and project teams.",
+      title: "Developers and GCs",
+      description: "Get real status visibility on every active permit cycle without asking your architect for a new update email.",
       icon: Activity,
     },
   ],
   whyNow: [
     {
-      title: "Portal sprawl is normal now",
-      description: "Most projects still bounce between PDFs, portals, emails, and internal trackers even when submissions are digital.",
-      icon: FileSearch,
-    },
-    {
-      title: "Reviewer comments drive the rework",
-      description: "The ugliest work usually happens after the first review cycle, not at the point of initial submission.",
+      title: "Redlines still drive the rework",
+      description: "Most submission software stops at upload. The ugliest work happens after — in the reviewer comments that come back and the resubmittal that has to answer them.",
       icon: MessageSquareMore,
     },
     {
-      title: "Regional firms need control without bloat",
-      description: "North Carolina firms need operational clarity without buying into generic national software that misses local nuance.",
+      title: "PDF annotations do not fit in a tracker",
+      description: "Bluebeam handles markup. Monday and Asana handle tasks. Nothing bridges the two — so teams transcribe PDFs by hand or lose comments in email.",
+      icon: FileSearch,
+    },
+    {
+      title: "Coordination costs more than the parse",
+      description: "A single firm can carry 75 to 250 open reviewer comments at once. Hiring a permit coordinator costs $50K–$80K a year. A focused tool costs less and loses less.",
       icon: ClipboardList,
     },
   ],
+  // Retained for type compatibility — now used only as a quiet list of upcoming jurisdiction content.
   jurisdictionTeaser: [
-    "Greensboro / Guilford workflows",
-    "Raleigh / Wake workflows",
-    "Charlotte / Mecklenburg research in progress",
-    "AccessDEQ coordination guides coming next",
+    "Greensboro and Guilford County guides",
+    "Raleigh and Wake County guides",
+    "Charlotte / Mecklenburg in research",
+    "State-by-state expansion throughout 2026",
   ],
 };
 
 export const previewPanels: PreviewPanel[] = [
   {
     eyebrow: "Guided preview 01",
-    title: "Reviewer comments workspace",
+    title: "Redline parsing in under two minutes",
     description:
-      "Capture reviewer notes, assign owners, and keep response language attached to the actual issue instead of scattered across inbox threads.",
-    status: "3 open issues · 2 ready for review",
+      "Upload the PDF your reviewer sent back. Every comment becomes a structured, assignable record — with the source page, the reviewer text, and the recommended owner already attached.",
+    status: "25 comments parsed · ready for assignment",
     notes: [
-      "Discipline owners and next actions stay visible in one place.",
-      "Response language is prepared before the next cycle starts.",
-      "Open issues do not disappear inside markups and email chains.",
+      "Scanned PDFs, native PDFs, and Bluebeam markups all land as structured records.",
+      "The source page and original markup stay linked to every comment.",
+      "No retyping, no missed items, no spreadsheet drift.",
     ],
     stats: [
-      { label: "Open comments", value: "03" },
-      { label: "Assigned owners", value: "04" },
-      { label: "Next cycle", value: "R2" },
+      { label: "Parse time", value: "<2 min" },
+      { label: "Comments extracted", value: "25" },
+      { label: "Source fidelity", value: "100%" },
     ],
   },
   {
     eyebrow: "Guided preview 02",
-    title: "Resubmittal response matrix",
+    title: "Response tracking and resubmittal prep",
     description:
-      "Organize what changed, what still needs an answer, and what must travel with the next submission package.",
-    status: "Resubmittal package in prep",
+      "Assign every comment to an owner, draft the response language in place, and build the resubmittal package without reopening five different tools.",
+    status: "Resubmittal package in prep · 3 open",
     notes: [
-      "Comments map to sheets, memos, and action owners.",
-      "The next package is clear before upload day arrives.",
-      "Teams can share a clean response matrix with clients or reviewers.",
+      "Owners, status, and response copy live on the same record.",
+      "Principals and PMs see a single live view of where the cycle stands.",
+      "The next submission package is already assembled when upload day arrives.",
     ],
     stats: [
-      { label: "Resolved", value: "11" },
+      { label: "Resolved", value: "22 / 25" },
       { label: "Needs memo", value: "02" },
       { label: "Upload prep", value: "Ready" },
-    ],
-  },
-  {
-    eyebrow: "Guided preview 03",
-    title: "Client and project status view",
-    description:
-      "Give principals, project managers, and clients a calmer readout of where approvals stand without forcing everyone into the underlying workflow detail.",
-    status: "Shared weekly status",
-    notes: [
-      "The status story stays tied to real approval events.",
-      "Milestones, blockers, and next moves are easy to scan.",
-      "Leadership gets visibility without pulling the team into another spreadsheet.",
-    ],
-    stats: [
-      { label: "Jurisdictions", value: "02" },
-      { label: "Cycle status", value: "In review" },
-      { label: "Client summary", value: "Live" },
     ],
   },
 ];
 
 export const highlightModules = [
   {
-    title: "NC jurisdiction intelligence",
-    description: "Track departments, platforms, forms, and workflow checkpoints without starting from scratch each time.",
-    icon: MapPinned,
+    title: "Redline parsing",
+    description: "Drop the PDF. Get a structured, assignable comment list in under two minutes. No transcription, no drift.",
+    icon: FileSearch,
   },
   {
-    title: "Reviewer comment management",
-    description: "Turn comment chaos into assigned issues, cleaner responses, and a more controlled next cycle.",
+    title: "Response tracking",
+    description: "Assign owners, draft responses, and build the resubmittal package in one workspace — not five tools.",
     icon: MessageSquareMore,
-  },
-  {
-    title: "Resubmittal coordination",
-    description: "See what changed, what is still open, and what the next submission package needs.",
-    icon: Workflow,
-  },
-  {
-    title: "Approval workflow visibility",
-    description: "Give the broader project team one operational view of status, blockers, and next steps.",
-    icon: ClipboardList,
   },
 ];

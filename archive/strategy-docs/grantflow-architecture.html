@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrantFlow — System Architecture</title>
+<style>
+:root {
+  --bg: #f6f5f0;
+  --fg: #102034;
+  --card: #ffffff;
+  --primary: #7c3aed;
+  --primary-light: #ede9fe;
+  --primary-dark: #5b21b6;
+  --secondary: #f0ecfe;
+  --accent: #a78bfa;
+  --border: #e2e5e5;
+  --muted: #5a6676;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --teal: #0f3c35;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.badge-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: rgba(255,255,255,0.2);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.tab:hover { background: var(--secondary); color: var(--primary); }
+.tab.active { background: var(--primary); color: white; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card h3 .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.8rem; }
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 16px 0;
+  margin-bottom: 20px;
+}
+
+.flow-step {
+  min-width: 130px;
+  padding: 14px 16px;
+  background: var(--primary-light);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.flow-step .step-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.flow-step .step-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.flow-step .step-items {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.flow-arrow {
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.rubric-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--secondary);
+  font-weight: 600;
+  color: var(--primary-dark);
+  border-bottom: 2px solid var(--accent);
+}
+
+.rubric-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.weight-bar {
+  display: inline-block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--primary);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.agent-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.agent-card:hover { border-color: var(--accent); }
+
+.agent-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.agent-info h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.agent-info .agent-role {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.agent-info .agent-maps {
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.reuse-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.reuse-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 160px;
+}
+
+.reuse-bar-track {
+  flex: 1;
+  height: 24px;
+  background: #f0f2f4;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.reuse-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.pricing-card {
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.pricing-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.pricing-card.featured {
+  border-color: var(--primary);
+  background: linear-gradient(180deg, var(--primary-light) 0%, var(--card) 40%);
+}
+
+.pricing-card .tier-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.pricing-card .price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+
+.pricing-card .price-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.pricing-card .feature-list {
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--fg);
+  line-height: 1.8;
+}
+
+.timeline-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+
+.timeline-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-content h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.timeline-content p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.stat-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 140px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat-card .stat-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.sop-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--secondary);
+  align-items: center;
+}
+
+.sop-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sop-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.competitor-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.competitor-row.header {
+  font-weight: 700;
+  color: var(--primary-dark);
+  border-bottom: 2px solid var(--accent);
+}
+
+.chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.chip-green { background: #d1fae5; color: #065f46; }
+.chip-yellow { background: #fef3c7; color: #92400e; }
+.chip-red { background: #fee2e2; color: #991b1b; }
+.chip-purple { background: var(--primary-light); color: var(--primary-dark); }
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.radar-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+canvas { max-width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GrantFlow Architecture</h1>
+  <p>The elite nonprofit platform — grant creation, scoring, workflow education, and SOP standardization on one AI-native foundation</p>
+  <div class="badge-row">
+    <span class="badge">ADR-001</span>
+    <span class="badge">5 Core Modules</span>
+    <span class="badge">7 AI Agents</span>
+    <span class="badge">85-90% Shell Reuse</span>
+    <span class="badge">6-Week Build</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tab-bar" id="tabBar"></div>
+
+  <!-- OVERVIEW PANEL -->
+  <div class="panel active" id="panel-overview">
+    <div class="stat-row" id="overviewStats"></div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F3AF;</span> Platform Vision</h3>
+      <p style="font-size:0.9rem;color:var(--muted);margin-bottom:16px">
+        GrantFlow replaces the fragmented nonprofit grant workflow — scattered Word docs, email chains, missed deadlines, and tribal knowledge — with a single structured platform. Unlike competitors that focus on either grant discovery, AI writing, or post-award management, GrantFlow covers the <strong>entire lifecycle</strong> from funder research to closeout reporting, with team education and SOP standardization built in.
+      </p>
+      <div id="moduleCards" class="grid-3"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:#d1fae5;color:#059669">&#x1F504;</span> Grant Lifecycle Flow</h3>
+      <div class="flow-diagram" id="lifecycleFlow"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F4CA;</span> Platform Shell Reuse</h3>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px">
+        Every bar shows how much of the existing EntitleFlow component carries over to GrantFlow.
+      </p>
+      <div id="reuseBars"></div>
+    </div>
+  </div>
+
+  <!-- SCORING PANEL -->
+  <div class="panel" id="panel-scoring">
+    <div class="section-title">Scoring & Review Engine</div>
+    <div class="section-subtitle">Configurable rubric system synthesized from NIH, NSF, and community foundation methodologies</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="icon" style="background:#fef3c7;color:#92400e">&#x1F3AF;</span> Default Nonprofit Rubric</h3>
+        <table class="rubric-table" id="rubricTable"></table>
+      </div>
+      <div class="card">
+        <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F4C8;</span> Scoring Radar</h3>
+        <div class="radar-container">
+          <canvas id="radarCanvas" width="360" height="360"></canvas>
+        </div>
+        <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:8px">
+          Sample proposal score visualization — AI pre-score (purple) vs. Human review (teal)
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:#ede9fe;color:var(--primary)">&#x2696;</span> Dual Scoring Pathway</h3>
+      <div class="grid-2">
+        <div style="padding:16px;background:var(--secondary);border-radius:12px">
+          <h4 style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--primary)">AI Pre-Score (FlowE)</h4>
+          <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">
+            FlowE's Proposal Reviewer agent analyzes each section against the selected rubric and funder preferences. Outputs section-level scores, gap analysis, and specific improvement suggestions. Runs in seconds — gives teams immediate feedback before human review.
+          </p>
+        </div>
+        <div style="padding:16px;background:var(--secondary);border-radius:12px">
+          <h4 style="font-size:0.9rem;font-weight:700;margin-bottom:8px;color:var(--teal)">Human Review Score</h4>
+          <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">
+            Team members score using the same rubric with written comments and discussion threads. Supports multiple reviewers with consensus scoring. Combines with AI score into a weighted composite with confidence interval and submission readiness indicator.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:#d1fae5;color:#059669">&#x1F52C;</span> Scoring Methodology Sources</h3>
+      <div class="grid-3">
+        <div style="padding:14px;border:1px solid var(--border);border-radius:10px">
+          <h4 style="font-size:0.85rem;font-weight:700;color:var(--primary);margin-bottom:6px">NIH Simplified Framework (2025)</h4>
+          <p style="font-size:0.78rem;color:var(--muted);line-height:1.5">
+            3 factors: Importance of Research, Rigor & Feasibility, Expertise & Resources. 1-9 scale with binary sufficiency gates. Adapted for nonprofit proposals.
+          </p>
+        </div>
+        <div style="padding:14px;border:1px solid var(--border);border-radius:10px">
+          <h4 style="font-size:0.85rem;font-weight:700;color:var(--primary);margin-bottom:6px">NSF Merit Review</h4>
+          <p style="font-size:0.78rem;color:var(--muted);line-height:1.5">
+            Intellectual Merit + Broader Impacts + Commercial Potential. Binary rating per criterion. Adapted to Community Impact + Organizational Merit.
+          </p>
+        </div>
+        <div style="padding:14px;border:1px solid var(--border);border-radius:10px">
+          <h4 style="font-size:0.85rem;font-weight:700;color:var(--primary);margin-bottom:6px">Foundation Standard</h4>
+          <p style="font-size:0.78rem;color:var(--muted);line-height:1.5">
+            Weighted rubric matrix used by community foundations. Criteria x Weight = Score. 4-point scale (Excellent/Good/Adequate/Poor). Fully configurable.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGENTS PANEL -->
+  <div class="panel" id="panel-agents">
+    <div class="section-title">FlowE Agent System</div>
+    <div class="section-subtitle">7 specialized agents on the model-agnostic registry (Gemini backbone + MiMo enhancement layer) — surfaced as "workflow intelligence," not AI</div>
+
+    <div class="grid-2" id="agentGrid"></div>
+
+    <div class="card" style="margin-top:20px">
+      <h3><span class="icon" style="background:#fef3c7;color:#92400e">&#x1F3F7;</span> Branding Rule</h3>
+      <div class="grid-2">
+        <div>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--danger);margin-bottom:8px">Never say:</p>
+          <div style="font-size:0.8rem;color:var(--muted);line-height:1.8">
+            "AI recommendations"<br>
+            "AI-powered scoring"<br>
+            "AI-generated proposal"<br>
+            "Machine learning analysis"
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--success);margin-bottom:8px">Instead say:</p>
+          <div style="font-size:0.8rem;color:var(--muted);line-height:1.8">
+            "Workflow suggestions"<br>
+            "Smart scoring analysis"<br>
+            "Guided draft assistance"<br>
+            "Intelligent review insights"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOP & EDUCATION PANEL -->
+  <div class="panel" id="panel-sop">
+    <div class="section-title">SOP Factory & Workflow Academy</div>
+    <div class="section-subtitle">Standard operating procedures that become live workflows + structured learning pathways for nonprofit teams</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F4CB;</span> Sample SOP: Proposal Submission</h3>
+        <div id="sopSteps"></div>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:12px;font-style:italic">
+          SOPs aren't static documents — they become live checklists inside grant projects with sign-offs, timestamps, and audit trails.
+        </p>
+      </div>
+      <div class="card">
+        <h3><span class="icon" style="background:#d1fae5;color:#059669">&#x1F393;</span> Workflow Academy Pathways</h3>
+        <div id="pathways"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:#fef3c7;color:#92400e">&#x1F4B0;</span> SOP Revenue Model</h3>
+      <div class="grid-3">
+        <div style="padding:16px;background:var(--secondary);border-radius:12px;text-align:center">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--primary);text-transform:uppercase;margin-bottom:6px">Included in Base</div>
+          <div style="font-size:1.3rem;font-weight:800;color:var(--fg)">10 SOPs</div>
+          <div style="font-size:0.78rem;color:var(--muted)">Pre-built nonprofit templates</div>
+        </div>
+        <div style="padding:16px;background:var(--secondary);border-radius:12px;text-align:center">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--primary);text-transform:uppercase;margin-bottom:6px">Academy Pro Add-on</div>
+          <div style="font-size:1.3rem;font-weight:800;color:var(--fg)">$200/mo</div>
+          <div style="font-size:0.78rem;color:var(--muted)">All pathways + custom SOPs + team analytics</div>
+        </div>
+        <div style="padding:16px;background:var(--secondary);border-radius:12px;text-align:center">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--primary);text-transform:uppercase;margin-bottom:6px">Custom SOP Service</div>
+          <div style="font-size:1.3rem;font-weight:800;color:var(--fg)">$500-2K</div>
+          <div style="font-size:0.78rem;color:var(--muted)">Per engagement, Jene-led consulting</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F4DA;</span> SOP Category Library</h3>
+      <div id="sopCategories" class="grid-3"></div>
+    </div>
+  </div>
+
+  <!-- COMPETITIVE PANEL -->
+  <div class="panel" id="panel-competitive">
+    <div class="section-title">Competitive Landscape</div>
+    <div class="section-subtitle">$3.07B market (2025) growing at 10.17% CAGR — top 5 hold only 23% share</div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-value">$3.07B</div>
+        <div class="stat-label">Market Size (2025)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$8.09B</div>
+        <div class="stat-label">Projected (2035)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">10.17%</div>
+        <div class="stat-label">CAGR</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">23%</div>
+        <div class="stat-label">Top 5 Share</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x2694;</span> Competitive Matrix</h3>
+      <div id="competitorMatrix"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:#d1fae5;color:#059669">&#x1F48E;</span> GrantFlow Unique Differentiators</h3>
+      <div id="differentiators" class="grid-2"></div>
+    </div>
+  </div>
+
+  <!-- PRICING PANEL -->
+  <div class="panel" id="panel-pricing">
+    <div class="section-title">Pricing Architecture</div>
+    <div class="section-subtitle">Nonprofit-friendly pricing with multiple revenue streams</div>
+
+    <div class="grid-3" id="pricingCards" style="margin-bottom:24px"></div>
+
+    <div class="card">
+      <h3><span class="icon" style="background:var(--primary-light);color:var(--primary)">&#x1F4B5;</span> Revenue Streams</h3>
+      <div id="revenueStreams"></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE PANEL -->
+  <div class="panel" id="panel-timeline">
+    <div class="section-title">Implementation Timeline</div>
+    <div class="section-subtitle">6-week build leveraging 85-90% EntitleFlow shell reuse</div>
+
+    <div class="card" id="timelineCard"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────
+const tabs = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'scoring', label: 'Scoring Engine' },
+  { id: 'agents', label: 'FlowE Agents' },
+  { id: 'sop', label: 'SOP & Education' },
+  { id: 'competitive', label: 'Competitive' },
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'timeline', label: 'Timeline' }
+];
+
+const modules = [
+  { icon: '\u270D', name: 'Grant Creation Engine', desc: 'AI-assisted proposal building with funder-aligned templates, section builder, and budget tool', color: '#7c3aed' },
+  { icon: '\uD83C\uDFAF', name: 'Scoring & Review', desc: 'Configurable rubric engine with dual AI + human scoring pathways', color: '#059669' },
+  { icon: '\uD83C\uDF93', name: 'Workflow Academy', desc: 'Team education pathways for grant writing and nonprofit operations', color: '#d97706' },
+  { icon: '\uD83D\uDCCB', name: 'SOP Factory', desc: 'Standardized procedures that become live enforced checklists', color: '#dc2626' },
+  { icon: '\uD83D\uDCC5', name: 'Grant PM', desc: 'Deadline-driven project management across the full grant lifecycle', color: '#0f3c35' }
+];
+
+const lifecycleStages = [
+  { label: 'Stage 1', title: 'Discover', items: 'Funder research\nFit scoring\nEligibility check' },
+  { label: 'Stage 2', title: 'Prepare', items: 'Team assembly\nTemplate selection\nTimeline setup' },
+  { label: 'Stage 3', title: 'Draft', items: 'Section writing\nBudget building\nNarrative editing' },
+  { label: 'Stage 4', title: 'Review', items: 'AI pre-score\nHuman review\nRevisions' },
+  { label: 'Stage 5', title: 'Submit', items: 'Compliance check\nPortal submission\nConfirmation' },
+  { label: 'Stage 6', title: 'Award', items: 'Decision tracking\nGrant period setup\nReporting schedule' },
+  { label: 'Stage 7', title: 'Execute', items: 'Program delivery\nBudget tracking\nCompliance' },
+  { label: 'Stage 8', title: 'Close', items: 'Final report\nLessons learned\nArchive' }
+];
+
+const reuseData = [
+  { label: 'AI Model Registry', pct: 100, color: '#7c3aed' },
+  { label: 'RBAC / Permissions', pct: 95, color: '#7c3aed' },
+  { label: 'Team Management', pct: 95, color: '#7c3aed' },
+  { label: 'Comment System', pct: 95, color: '#059669' },
+  { label: 'Notifications', pct: 90, color: '#059669' },
+  { label: 'Dashboard Framework', pct: 90, color: '#059669' },
+  { label: 'Task/Deadline View', pct: 90, color: '#059669' },
+  { label: 'Document Pipeline', pct: 85, color: '#d97706' },
+  { label: 'Project CRUD', pct: 85, color: '#d97706' },
+  { label: 'Activity Audit Log', pct: 100, color: '#7c3aed' },
+  { label: 'AI Agents (new prompts)', pct: 70, color: '#d97706' },
+  { label: 'Marketing Site Shell', pct: 80, color: '#d97706' }
+];
+
+const rubricCriteria = [
+  { name: 'Statement of Need', weight: 20, desc: 'Clarity, data-backed, community relevance' },
+  { name: 'Goals & Objectives', weight: 15, desc: 'SMART criteria, alignment to stated need' },
+  { name: 'Methods & Approach', weight: 20, desc: 'Feasibility, innovation, evidence-based' },
+  { name: 'Evaluation Plan', weight: 15, desc: 'Logic model, measurable outcomes' },
+  { name: 'Org. Capacity', weight: 10, desc: 'Track record, team, partnerships' },
+  { name: 'Budget & Justification', weight: 10, desc: 'Reasonable, complete, well-justified' },
+  { name: 'Sustainability', weight: 10, desc: 'Long-term viability, diversified funding' }
+];
+
+const agents = [
+  { emoji: '\uD83D\uDCAC', name: 'FlowE Grant Guide', role: 'Platform navigation + grant knowledge', maps: 'FlowE Assistant', bg: '#ede9fe', color: '#7c3aed' },
+  { emoji: '\uD83D\uDD0D', name: 'Proposal Reviewer', role: 'Score proposals against rubrics, classify feedback', maps: 'Comment Analyst', bg: '#d1fae5', color: '#059669' },
+  { emoji: '\u270D\uFE0F', name: 'Grant Writer', role: 'Draft sections, budget narratives, response letters', maps: 'Response Drafter', bg: '#fef3c7', color: '#92400e' },
+  { emoji: '\uD83D\uDCC4', name: 'Funder Analyst', role: 'Analyze RFPs, extract requirements, score alignment', maps: 'Document Strategist', bg: '#fee2e2', color: '#991b1b' },
+  { emoji: '\u2705', name: 'Compliance Checker', role: 'Verify eligibility, check limits, flag gaps', maps: 'Compliance Advisor', bg: '#d1fae5', color: '#065f46' },
+  { emoji: '\uD83D\uDD04', name: 'Revision Planner', role: 'Plan re-application from funder feedback', maps: 'Resubmittal Planner', bg: '#ede9fe', color: '#5b21b6' },
+  { emoji: '\uD83D\uDCD6', name: 'SOP Coach', role: 'Guide teams through procedures step by step', maps: 'NEW — GrantFlow only', bg: '#fef3c7', color: '#92400e' }
+];
+
+const competitors = [
+  { name: 'Blackbaud', type: 'Enterprise Suite', creation: false, scoring: false, education: false, sop: false, weakness: 'Expensive, complex' },
+  { name: 'Instrumentl', type: 'Discovery + Tracking', creation: false, scoring: false, education: false, sop: false, weakness: 'No creation' },
+  { name: 'Grantable', type: 'AI Writing Tool', creation: true, scoring: false, education: false, sop: false, weakness: 'Writing only' },
+  { name: 'GrantBoost', type: 'AI Writing Tool', creation: true, scoring: false, education: false, sop: false, weakness: 'No collaboration' },
+  { name: 'Submittable', type: 'App Management', creation: false, scoring: true, education: false, sop: false, weakness: 'Grantmaker-focused' },
+  { name: 'AmpliFund', type: 'Post-Award Mgmt', creation: false, scoring: false, education: false, sop: false, weakness: 'No creation' },
+  { name: 'GrantFlow', type: 'Full Platform', creation: true, scoring: true, education: true, sop: true, weakness: '—' }
+];
+
+const differentiators = [
+  { title: 'Scoring + Creation', desc: 'Only platform that combines AI-powered proposal creation with configurable scoring rubrics in a single workflow' },
+  { title: 'SOP-as-Workflow', desc: 'SOPs are not documents — they are enforced process steps with sign-offs, timestamps, and audit trails inside every grant project' },
+  { title: 'Workflow Education', desc: 'Teams improve over time through structured learning pathways. Branded as workflow education, not AI training' },
+  { title: 'Warm Distribution', desc: 'Jene\'s personal network of university and nonprofit contacts = immediate warm leads with near-zero customer acquisition cost' }
+];
+
+const pricing = [
+  { tier: 'Starter', price: '$495', period: '/mo', features: ['3 seats', '5 active proposals', 'Basic scoring rubric', '2 learning pathways', '10 pre-built SOPs', 'Email support'], featured: false },
+  { tier: 'Growth', price: '$950', period: '/mo', features: ['10 seats', 'Unlimited proposals', 'Custom rubrics', 'All learning pathways', 'SOP builder', 'Priority support'], featured: true },
+  { tier: 'Pro', price: '$1,500', period: '/mo', features: ['25 seats', 'API access', 'White-label reports', 'Custom SOPs included', 'Dedicated success manager', 'SSO + audit logs'], featured: false }
+];
+
+const timeline = [
+  { week: 'W1-2', title: 'Foundation', desc: 'Fork shell, database migrations (7 new tables), RBAC adaptation, GrantFlow branding + purple theme', color: '#7c3aed' },
+  { week: 'W2-3', title: 'Grant Creation Engine', desc: 'Funder profile CRUD, section builder with template library, budget builder with auto-calc, Grant Writer + Funder Analyst agent prompts', color: '#059669' },
+  { week: 'W3-4', title: 'Scoring Engine', desc: 'Rubric builder UI, AI scoring via Proposal Reviewer agent, human review interface, composite score + radar chart, readiness indicator', color: '#d97706' },
+  { week: 'W4-5', title: 'SOP Factory + Academy', desc: 'SOP template library (seed 20+), SOP builder + step editor, live checklists in grant projects, learning pathway viewer, SOP Coach agent', color: '#dc2626' },
+  { week: 'W5-6', title: 'Polish + Launch', desc: 'E2E testing with sample proposals, deadline intelligence, onboarding flow, marketing site reskin, beta launch to 5-10 nonprofits', color: '#0f3c35' }
+];
+
+const sopSteps = [
+  'Verify all proposal sections are complete (Section Builder > Status)',
+  'Run AI pre-score and review gap analysis results',
+  'Assign internal reviewers and set review deadline',
+  'Collect human review scores and achieve consensus',
+  'Run Compliance Checker for funder requirement verification',
+  'Obtain ED/Board approval (if required by org policy)',
+  'Upload to funder portal and capture confirmation receipt',
+  'Update proposal status to "Submitted" and log submission date',
+  'Set reminder for expected decision date'
+];
+
+const pathwayData = [
+  { name: 'Grant Writing Fundamentals', modules: 8, audience: 'New writers, program staff', difficulty: 'Beginner', color: '#059669' },
+  { name: 'Budget Mastery', modules: 5, audience: 'Finance staff, coordinators', difficulty: 'Intermediate', color: '#d97706' },
+  { name: 'Evaluation Design', modules: 6, audience: 'Program managers', difficulty: 'Intermediate', color: '#7c3aed' },
+  { name: 'Compliance & Reporting', modules: 4, audience: 'Admin, compliance officers', difficulty: 'Intermediate', color: '#dc2626' },
+  { name: 'Team Project Management', modules: 5, audience: 'Coordinators, team leads', difficulty: 'Beginner', color: '#0f3c35' },
+  { name: 'Funder Relations', modules: 4, audience: 'Dev directors, ED', difficulty: 'Advanced', color: '#5b21b6' }
+];
+
+const sopCategories = [
+  { name: 'Grant Lifecycle', count: 8, examples: 'Pre-application, Writing, Submission, Post-award' },
+  { name: 'Financial Mgmt', count: 6, examples: 'Budget creation, Expense tracking, Audit prep' },
+  { name: 'Compliance', count: 5, examples: 'Funder reporting, Document retention, COI' },
+  { name: 'Team Operations', count: 5, examples: 'Onboarding, Review workflows, Approvals' },
+  { name: 'Program Mgmt', count: 4, examples: 'Outcome tracking, Data collection' },
+  { name: 'Board Governance', count: 3, examples: 'Grant approval, Reporting to board' }
+];
+
+// ─── RENDER FUNCTIONS ─────────────────────────────────────
+
+function renderTabs() {
+  var bar = document.getElementById('tabBar');
+  tabs.forEach(function(t, i) {
+    var btn = document.createElement('button');
+    btn.className = 'tab' + (i === 0 ? ' active' : '');
+    btn.textContent = t.label;
+    btn.setAttribute('data-tab', t.id);
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(function(el) { el.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(el) { el.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + t.id).classList.add('active');
+    });
+    bar.appendChild(btn);
+  });
+}
+
+function renderOverviewStats() {
+  var stats = [
+    { value: '5', label: 'Core Modules' },
+    { value: '7', label: 'AI Agents' },
+    { value: '85-90%', label: 'Shell Reuse' },
+    { value: '6 weeks', label: 'Build Time' },
+    { value: '$950', label: 'Target ARPC' }
+  ];
+  var container = document.getElementById('overviewStats');
+  stats.forEach(function(s) {
+    var card = document.createElement('div');
+    card.className = 'stat-card';
+    var val = document.createElement('div');
+    val.className = 'stat-value';
+    val.textContent = s.value;
+    var lbl = document.createElement('div');
+    lbl.className = 'stat-label';
+    lbl.textContent = s.label;
+    card.appendChild(val);
+    card.appendChild(lbl);
+    container.appendChild(card);
+  });
+}
+
+function renderModuleCards() {
+  var container = document.getElementById('moduleCards');
+  modules.forEach(function(m) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:16px;border:1px solid var(--border);border-radius:12px;border-left:4px solid ' + m.color;
+    var h = document.createElement('div');
+    h.style.cssText = 'font-size:1.1rem;margin-bottom:6px';
+    h.textContent = m.icon + ' ' + m.name;
+    var p = document.createElement('div');
+    p.style.cssText = 'font-size:0.8rem;color:var(--muted);line-height:1.4';
+    p.textContent = m.desc;
+    div.appendChild(h);
+    div.appendChild(p);
+    container.appendChild(div);
+  });
+}
+
+function renderLifecycle() {
+  var container = document.getElementById('lifecycleFlow');
+  lifecycleStages.forEach(function(s, i) {
+    if (i > 0) {
+      var arrow = document.createElement('div');
+      arrow.className = 'flow-arrow';
+      arrow.textContent = '\u25B6';
+      container.appendChild(arrow);
+    }
+    var step = document.createElement('div');
+    step.className = 'flow-step';
+    var lbl = document.createElement('div');
+    lbl.className = 'step-label';
+    lbl.textContent = s.label;
+    var ttl = document.createElement('div');
+    ttl.className = 'step-title';
+    ttl.textContent = s.title;
+    var items = document.createElement('div');
+    items.className = 'step-items';
+    items.textContent = s.items.replace(/\n/g, ' \u2022 ');
+    step.appendChild(lbl);
+    step.appendChild(ttl);
+    step.appendChild(items);
+    container.appendChild(step);
+  });
+}
+
+function renderReuseBars() {
+  var container = document.getElementById('reuseBars');
+  reuseData.forEach(function(r) {
+    var row = document.createElement('div');
+    row.className = 'reuse-bar-container';
+    var lbl = document.createElement('div');
+    lbl.className = 'reuse-label';
+    lbl.textContent = r.label;
+    var track = document.createElement('div');
+    track.className = 'reuse-bar-track';
+    var fill = document.createElement('div');
+    fill.className = 'reuse-bar-fill';
+    fill.style.width = r.pct + '%';
+    fill.style.background = r.color;
+    fill.textContent = r.pct + '%';
+    track.appendChild(fill);
+    row.appendChild(lbl);
+    row.appendChild(track);
+    container.appendChild(row);
+  });
+}
+
+function renderRubricTable() {
+  var table = document.getElementById('rubricTable');
+  var thead = document.createElement('thead');
+  var hr = document.createElement('tr');
+  ['Criterion', 'Weight', 'Description'].forEach(function(h) {
+    var th = document.createElement('th');
+    th.textContent = h;
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tbody = document.createElement('tbody');
+  rubricCriteria.forEach(function(c) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.style.fontWeight = '600';
+    td1.textContent = c.name;
+    var td2 = document.createElement('td');
+    var bar = document.createElement('span');
+    bar.className = 'weight-bar';
+    bar.style.width = (c.weight * 4) + 'px';
+    td2.appendChild(bar);
+    var span = document.createElement('span');
+    span.textContent = c.weight + '%';
+    td2.appendChild(span);
+    var td3 = document.createElement('td');
+    td3.style.color = 'var(--muted)';
+    td3.textContent = c.desc;
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+}
+
+function renderRadarChart() {
+  var canvas = document.getElementById('radarCanvas');
+  var ctx = canvas.getContext('2d');
+  var cx = 180, cy = 180, r = 140;
+  var labels = rubricCriteria.map(function(c) { return c.name; });
+  var n = labels.length;
+  var aiScores = [4.2, 3.8, 3.5, 3.0, 4.5, 3.2, 2.8];
+  var humanScores = [3.8, 4.0, 4.2, 3.5, 4.0, 3.8, 3.5];
+
+  function angleFor(i) { return (Math.PI * 2 * i / n) - Math.PI / 2; }
+  function pointAt(i, val) {
+    var a = angleFor(i);
+    var dist = (val / 5) * r;
+    return { x: cx + dist * Math.cos(a), y: cy + dist * Math.sin(a) };
+  }
+
+  // grid
+  ctx.strokeStyle = '#e2e5e5';
+  ctx.lineWidth = 1;
+  for (var ring = 1; ring <= 5; ring++) {
+    ctx.beginPath();
+    for (var i = 0; i <= n; i++) {
+      var p = pointAt(i % n, ring);
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+
+  // axes
+  for (var i = 0; i < n; i++) {
+    var p = pointAt(i, 5);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+
+  // AI polygon
+  ctx.fillStyle = 'rgba(124,58,237,0.15)';
+  ctx.strokeStyle = '#7c3aed';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (var i = 0; i < n; i++) {
+    var p = pointAt(i, aiScores[i]);
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Human polygon
+  ctx.fillStyle = 'rgba(15,60,53,0.12)';
+  ctx.strokeStyle = '#0f3c35';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (var i = 0; i < n; i++) {
+    var p = pointAt(i, humanScores[i]);
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // labels
+  ctx.fillStyle = '#102034';
+  ctx.font = '600 11px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  for (var i = 0; i < n; i++) {
+    var p = pointAt(i, 5.6);
+    ctx.fillText(labels[i], p.x, p.y + 4);
+  }
+
+  // legend
+  ctx.fillStyle = '#7c3aed';
+  ctx.fillRect(cx - 80, cy + r + 16, 12, 12);
+  ctx.fillStyle = '#102034';
+  ctx.font = '500 11px Inter, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('AI Pre-Score', cx - 64, cy + r + 26);
+  ctx.fillStyle = '#0f3c35';
+  ctx.fillRect(cx + 10, cy + r + 16, 12, 12);
+  ctx.fillStyle = '#102034';
+  ctx.fillText('Human Review', cx + 26, cy + r + 26);
+}
+
+function renderAgents() {
+  var container = document.getElementById('agentGrid');
+  agents.forEach(function(a) {
+    var card = document.createElement('div');
+    card.className = 'agent-card';
+    var avatar = document.createElement('div');
+    avatar.className = 'agent-avatar';
+    avatar.style.background = a.bg;
+    avatar.textContent = a.emoji;
+    var info = document.createElement('div');
+    info.className = 'agent-info';
+    var h4 = document.createElement('h4');
+    h4.textContent = a.name;
+    var role = document.createElement('div');
+    role.className = 'agent-role';
+    role.textContent = a.role;
+    var maps = document.createElement('div');
+    maps.className = 'agent-maps';
+    maps.textContent = '\u2190 Maps from: ' + a.maps;
+    info.appendChild(h4);
+    info.appendChild(role);
+    info.appendChild(maps);
+    card.appendChild(avatar);
+    card.appendChild(info);
+    container.appendChild(card);
+  });
+}
+
+function renderSOPSteps() {
+  var container = document.getElementById('sopSteps');
+  sopSteps.forEach(function(s, i) {
+    var row = document.createElement('div');
+    row.className = 'sop-step';
+    var num = document.createElement('div');
+    num.className = 'sop-num';
+    num.textContent = i + 1;
+    var text = document.createElement('div');
+    text.className = 'sop-text';
+    text.textContent = s;
+    row.appendChild(num);
+    row.appendChild(text);
+    container.appendChild(row);
+  });
+}
+
+function renderPathways() {
+  var container = document.getElementById('pathways');
+  pathwayData.forEach(function(p) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:12px;border-left:3px solid ' + p.color + ';margin-bottom:10px;background:var(--secondary);border-radius:0 10px 10px 0';
+    var h = document.createElement('div');
+    h.style.cssText = 'font-size:0.9rem;font-weight:700;margin-bottom:2px';
+    h.textContent = p.name;
+    var meta = document.createElement('div');
+    meta.style.cssText = 'font-size:0.75rem;color:var(--muted)';
+    meta.textContent = p.modules + ' modules \u2022 ' + p.audience + ' \u2022 ' + p.difficulty;
+    div.appendChild(h);
+    div.appendChild(meta);
+    container.appendChild(div);
+  });
+}
+
+function renderSOPCategories() {
+  var container = document.getElementById('sopCategories');
+  sopCategories.forEach(function(c) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:14px;border:1px solid var(--border);border-radius:10px';
+    var h = document.createElement('div');
+    h.style.cssText = 'font-size:0.9rem;font-weight:700;margin-bottom:4px';
+    h.textContent = c.name;
+    var count = document.createElement('div');
+    count.style.cssText = 'font-size:0.75rem;color:var(--primary);font-weight:600;margin-bottom:4px';
+    count.textContent = c.count + ' templates';
+    var ex = document.createElement('div');
+    ex.style.cssText = 'font-size:0.75rem;color:var(--muted)';
+    ex.textContent = c.examples;
+    div.appendChild(h);
+    div.appendChild(count);
+    div.appendChild(ex);
+    container.appendChild(div);
+  });
+}
+
+function renderCompetitorMatrix() {
+  var container = document.getElementById('competitorMatrix');
+  var headerRow = document.createElement('div');
+  headerRow.className = 'competitor-row header';
+  ['Platform', 'Creation', 'Scoring', 'Education + SOP'].forEach(function(h) {
+    var cell = document.createElement('div');
+    cell.textContent = h;
+    headerRow.appendChild(cell);
+  });
+  container.appendChild(headerRow);
+
+  competitors.forEach(function(c) {
+    var row = document.createElement('div');
+    row.className = 'competitor-row';
+    if (c.name === 'GrantFlow') row.style.background = 'var(--primary-light)';
+    var nameCell = document.createElement('div');
+    nameCell.style.fontWeight = '700';
+    nameCell.textContent = c.name;
+    var typeSpan = document.createElement('div');
+    typeSpan.style.cssText = 'font-size:0.7rem;color:var(--muted)';
+    typeSpan.textContent = c.type;
+    nameCell.appendChild(typeSpan);
+
+    function makeChip(val) {
+      var chip = document.createElement('span');
+      chip.className = 'chip ' + (val ? 'chip-green' : 'chip-red');
+      chip.textContent = val ? 'Yes' : 'No';
+      return chip;
+    }
+
+    var c1 = document.createElement('div');
+    c1.appendChild(makeChip(c.creation));
+    var c2 = document.createElement('div');
+    c2.appendChild(makeChip(c.scoring));
+    var c3 = document.createElement('div');
+    c3.appendChild(makeChip(c.education));
+
+    row.appendChild(nameCell);
+    row.appendChild(c1);
+    row.appendChild(c2);
+    row.appendChild(c3);
+    container.appendChild(row);
+  });
+}
+
+function renderDifferentiators() {
+  var container = document.getElementById('differentiators');
+  differentiators.forEach(function(d) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:16px;border:1px solid var(--border);border-radius:12px;border-left:4px solid var(--primary)';
+    var h = document.createElement('div');
+    h.style.cssText = 'font-size:0.95rem;font-weight:700;margin-bottom:6px;color:var(--primary)';
+    h.textContent = d.title;
+    var p = document.createElement('div');
+    p.style.cssText = 'font-size:0.8rem;color:var(--muted);line-height:1.5';
+    p.textContent = d.desc;
+    div.appendChild(h);
+    div.appendChild(p);
+    container.appendChild(div);
+  });
+}
+
+function renderPricing() {
+  var container = document.getElementById('pricingCards');
+  pricing.forEach(function(p) {
+    var card = document.createElement('div');
+    card.className = 'pricing-card' + (p.featured ? ' featured' : '');
+    var tier = document.createElement('div');
+    tier.className = 'tier-name';
+    tier.textContent = p.tier;
+    var price = document.createElement('div');
+    price.className = 'price';
+    price.textContent = p.price;
+    var sub = document.createElement('div');
+    sub.className = 'price-sub';
+    sub.textContent = p.period;
+    var list = document.createElement('div');
+    list.className = 'feature-list';
+    p.features.forEach(function(f) {
+      var line = document.createElement('div');
+      line.textContent = '\u2713 ' + f;
+      list.appendChild(line);
+    });
+    card.appendChild(tier);
+    card.appendChild(price);
+    card.appendChild(sub);
+    card.appendChild(list);
+    container.appendChild(card);
+  });
+
+  // Revenue streams
+  var streams = [
+    { name: 'SaaS Subscription', desc: 'Primary recurring revenue from Starter/Growth/Pro tiers', pct: 60 },
+    { name: 'FlowE Intelligence', desc: 'Per-seat AI add-on ($25/seat/mo)', pct: 15 },
+    { name: 'Workflow Academy Pro', desc: 'All pathways + custom SOPs + analytics ($200/mo)', pct: 10 },
+    { name: 'Custom SOP Services', desc: 'Jene-led consulting ($500-2K per engagement)', pct: 10 },
+    { name: 'Funder Database Premium', desc: 'Premium funder intelligence (future)', pct: 5 }
+  ];
+  var streamContainer = document.getElementById('revenueStreams');
+  streams.forEach(function(s) {
+    var row = document.createElement('div');
+    row.className = 'reuse-bar-container';
+    var lbl = document.createElement('div');
+    lbl.className = 'reuse-label';
+    lbl.textContent = s.name;
+    var track = document.createElement('div');
+    track.className = 'reuse-bar-track';
+    var fill = document.createElement('div');
+    fill.className = 'reuse-bar-fill';
+    fill.style.width = s.pct + '%';
+    fill.style.background = '#7c3aed';
+    fill.textContent = s.pct + '%';
+    track.appendChild(fill);
+    var desc = document.createElement('div');
+    desc.style.cssText = 'font-size:0.75rem;color:var(--muted);margin-top:-4px;margin-bottom:8px;padding-left:172px';
+    desc.textContent = s.desc;
+    row.appendChild(lbl);
+    row.appendChild(track);
+    streamContainer.appendChild(row);
+    streamContainer.appendChild(desc);
+  });
+}
+
+function renderTimeline() {
+  var container = document.getElementById('timelineCard');
+  timeline.forEach(function(t) {
+    var row = document.createElement('div');
+    row.className = 'timeline-row';
+    var marker = document.createElement('div');
+    marker.className = 'timeline-marker';
+    marker.style.background = t.color;
+    marker.textContent = t.week;
+    var content = document.createElement('div');
+    content.className = 'timeline-content';
+    var h4 = document.createElement('h4');
+    h4.textContent = t.title;
+    var p = document.createElement('p');
+    p.textContent = t.desc;
+    content.appendChild(h4);
+    content.appendChild(p);
+    row.appendChild(marker);
+    row.appendChild(content);
+    container.appendChild(row);
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────
+renderTabs();
+renderOverviewStats();
+renderModuleCards();
+renderLifecycle();
+renderReuseBars();
+renderRubricTable();
+renderRadarChart();
+renderAgents();
+renderSOPSteps();
+renderPathways();
+renderSOPCategories();
+renderCompetitorMatrix();
+renderDifferentiators();
+renderPricing();
+renderTimeline();
+</script>
+</body>
+</html>

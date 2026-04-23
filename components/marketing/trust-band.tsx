@@ -17,8 +17,8 @@ export interface TrustBandProps {
 const defaultItems: TrustBandItem[] = [
   {
     icon: CheckCircle,
-    value: 'NC-first depth',
-    description: 'Built on real Greensboro, Raleigh, Charlotte workflow research',
+    value: 'Under 2 minutes',
+    description: 'Reviewer redline PDFs become a structured, assignable comment list',
   },
   {
     icon: Zap,
@@ -27,13 +27,13 @@ const defaultItems: TrustBandItem[] = [
   },
   {
     icon: Users,
-    value: 'Regional operators',
+    value: 'AEC-operator built',
     description: 'Made for architecture and civil teams managing repeat approvals',
   },
   {
     icon: Shield,
-    value: 'Founder-led launch',
-    description: 'Guided walkthroughs and workflow audits from day one',
+    value: 'Founder-led onboarding',
+    description: 'First month runs with the founder so the workspace fits your workflow',
   },
 ];
 

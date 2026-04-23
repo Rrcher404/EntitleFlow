@@ -63,15 +63,8 @@ export function SiteHeader() {
           >
             Log in
           </TrackedLink>
-          <TrackedLink
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            eventName="early_access_cta_click"
-            href="/early-access"
-          >
-            Join early access
-          </TrackedLink>
-          <TrackedLinkButton eventName="walkthrough_cta_click" href="/walkthrough" size="sm">
-            Request a walkthrough
+          <TrackedLinkButton eventName="try_cta_click" href="/try" size="sm">
+            Try it
           </TrackedLinkButton>
         </div>
 
@@ -96,7 +89,7 @@ export function SiteHeader() {
                     <div className="space-y-2">
                       <Logo height={32} theme="light" />
                       <p className="text-sm leading-6 text-muted-foreground">
-                        Development approval operations software for North Carolina teams.
+                        Reviewer redlines into structured comment lists for AEC teams.
                       </p>
                     </div>
                     <nav className="space-y-3">
@@ -119,21 +112,13 @@ export function SiteHeader() {
                         >
                           Log in
                         </TrackedLink>
-                        <TrackedLink
-                          className="block text-base font-medium text-foreground transition hover:text-primary"
-                          eventName="early_access_cta_click"
-                          href="/early-access"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          Join early access
-                        </TrackedLink>
                         <TrackedLinkButton
                           className="w-full justify-center"
-                          eventName="walkthrough_cta_click"
-                          href="/walkthrough"
+                          eventName="try_cta_click"
+                          href="/try"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          Request a walkthrough
+                          Try it with your PDF
                         </TrackedLinkButton>
                       </div>
                     </nav>
