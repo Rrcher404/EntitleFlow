@@ -2,33 +2,21 @@ import type { ComparisonRow } from "@/lib/types";
 
 export const compareRows: ComparisonRow[] = [
   {
-    label: "North Carolina-specific workflow depth",
-    entitleFlow: "Built around actual NC jurisdiction research and repeat workflow patterns.",
-    manual: "Depends on who remembers the last project and where notes were saved.",
-    generic: "Often broad but shallow when local workflow details start to matter.",
+    label: "Turns a reviewer redline PDF into a structured comment list",
+    entitleFlow: "Upload the PDF. Get an assignable comment list in under two minutes.",
+    manual: "Someone on the team retypes the PDF into a spreadsheet. Hours per review cycle.",
+    generic: "Permit submission tools stop at upload. Markup tools stop at annotation. Neither closes the loop.",
   },
   {
-    label: "Reviewer comments and resubmittals",
-    entitleFlow: "Designed around the ugliest part of the workflow: comments, ownership, and cleaner resubmittals.",
-    manual: "Lives across PDFs, email threads, markups, and personal trackers.",
-    generic: "May capture submission status without solving the comment-to-resubmittal loop.",
+    label: "Tracks who owns every comment and what has to ship",
+    entitleFlow: "Owners, status, and response language live on every comment record in one workspace.",
+    manual: "Status lives in email threads, personal trackers, and tribal memory.",
+    generic: "Generic project tools capture tasks but do not understand the comment-to-resubmittal cycle.",
   },
   {
-    label: "Regional firm fit",
-    entitleFlow: "Shaped for architecture and civil firms that need control without enterprise theater.",
-    manual: "Flexible but fragile, and usually expensive in team attention.",
-    generic: "Can feel oversized, slow to adopt, or tuned for very different customer profiles.",
-  },
-  {
-    label: "Operational clarity",
-    entitleFlow: "Creates a shared workflow view for project teams, leadership, and clients.",
-    manual: "Status usually has to be recreated every time someone asks for an update.",
-    generic: "May expose system data without telling the team what actually needs to happen next.",
-  },
-  {
-    label: "Speed to useful adoption",
-    entitleFlow: "Starts with founder-led onboarding and a focused operational starting point.",
-    manual: "No real adoption work, but no durable operating layer either.",
-    generic: "Often requires more process change before the team sees value.",
+    label: "Priced where a small AEC team can actually afford it",
+    entitleFlow: "$299/mo per firm. Unlimited projects, unlimited seats. First month of onboarding free.",
+    manual: "Costs hours of senior-engineer time per cycle. Or $50K–$80K/yr for a dedicated permit coordinator.",
+    generic: "Enterprise platforms start at thousands per month and require implementation overhead.",
   },
 ];
