@@ -68,11 +68,11 @@ function TryHero() {
           Try it with your PDF
         </Badge>
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-          Drop a reviewer redline PDF. Get a structured comment list in under two minutes.
+          See a reviewer redline PDF become a structured comment list.
         </h1>
         <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
-          Upload your own PDF and we will email your parsed list within the hour. Or browse a
-          live sample on the right to see exactly what your team gets back.
+          Browse a live sample on the right to see what your team gets back. Or drop your own
+          PDF and the founder will follow up to run it through EntitleFlow for you.
         </p>
       </div>
     </section>
@@ -181,14 +181,15 @@ function UploadCard() {
             </div>
             <div>
               <div className="font-display text-lg font-semibold text-foreground">
-                Got your PDF request
+                Got it
               </div>
-              <p className="text-sm text-muted-foreground">Reply usually within the hour.</p>
+              <p className="text-sm text-muted-foreground">Founder follow-up within one business day.</p>
             </div>
           </div>
           <p className="text-sm leading-6 text-muted-foreground">
-            We will email the parsed comment list to <strong>{status.email}</strong>. While you
-            wait, browse the live sample on the right to see how it looks.
+            Jene will reach out to <strong>{status.email}</strong> to pick up your PDF and send
+            the structured comment list back. In the meantime, browse the live sample on the
+            right.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button onClick={handleClear} variant="outline" size="sm">
@@ -208,10 +209,11 @@ function UploadCard() {
       <CardContent className="space-y-5 p-6">
         <div className="space-y-1">
           <div className="font-display text-xl font-semibold text-foreground">
-            Upload your reviewer PDF
+            Want to try this on your own PDF?
           </div>
           <p className="text-sm leading-6 text-muted-foreground">
-            PDFs up to 100MB. Scanned, native, or Bluebeam-marked — all welcome.
+            Drop it here and leave your email. The founder will follow up to pull it through
+            EntitleFlow and send the structured list back.
           </p>
         </div>
 
@@ -266,7 +268,7 @@ function UploadCard() {
               required
             />
             <p className="text-xs text-muted-foreground">
-              We use this to email the parsed list back. No list-selling, ever.
+              We use this to follow up with your parsed list. No list-selling, ever.
             </p>
           </div>
 
@@ -290,7 +292,7 @@ function UploadCard() {
               </>
             ) : (
               <>
-                Parse this PDF for me
+                Send me a follow-up
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
@@ -472,18 +474,18 @@ function ShareCard({ sample }: { sample: TrySample }) {
                 </span>
               </div>
               <div className="font-display text-xl font-semibold">
-                Want to share this list with your team?
+                Want this sample list by email?
               </div>
               <p className="text-sm leading-6 text-primary-foreground/80">
-                Drop your email and we will send the {sample.comments.length}-comment list from
-                this sample as a structured report you can forward.
+                Leave your email — Jene will follow up with a shareable copy of this{" "}
+                {sample.comments.length}-comment sample.
               </p>
             </div>
             {state.status === "success" ? (
               <div className="flex items-center gap-2 rounded-lg bg-primary-foreground/10 px-4 py-3 text-sm">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>
-                  On the way to <strong>{state.email}</strong>.
+                  Thanks — Jene will follow up to <strong>{state.email}</strong>.
                 </span>
               </div>
             ) : (
@@ -502,7 +504,7 @@ function ShareCard({ sample }: { sample: TrySample }) {
                   variant="secondary"
                   className="bg-white text-foreground hover:bg-white/90"
                 >
-                  {state.status === "submitting" ? "Sending..." : "Send me the list"}
+                  {state.status === "submitting" ? "Sending..." : "Send me a copy"}
                 </Button>
               </form>
             )}

@@ -5,7 +5,7 @@ import { TryPageClient } from "./try-client";
 export const metadata = buildMetadata({
   title: "Try it with your PDF",
   description:
-    "Drop a reviewer redline PDF. See how EntitleFlow turns it into a structured, assignable comment list in under two minutes.",
+    "See a reviewer redline PDF become a structured, assignable comment list. Browse a live sample or drop your own PDF for a founder-led follow-up.",
   path: "/try",
 });
 
