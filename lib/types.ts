@@ -119,4 +119,7 @@ export type AnalyticsEventName =
   | "pricing_cta_click"
   | "guide_card_click"
   | "compare_page_cta_click"
-  | "login_click";
+  | "login_click"
+  | "try_cta_click"
+  | "try_upload_submit"
+  | "try_sample_share_submit";
